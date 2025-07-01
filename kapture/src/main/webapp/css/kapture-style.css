@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'font';
+    src: url('../css/SUIT-Regular.woff2') format('truetype');
+}
+
+* {
+    font-family: 'font', sans-serif;/* 자간 조절 (예: 0.05em ~ 0.1em 추천) */
+	         /* 기본 글자 크기 (예: 16px ~ 18px) */
+}

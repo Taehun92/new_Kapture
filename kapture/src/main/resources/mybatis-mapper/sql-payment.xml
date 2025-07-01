@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.payment.mapper.PaymentMapper">
+	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.kapture.payment.model.Payment">
+		SELECT *
+	    FROM BASKET B
+	    JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
+	    WHERE B.BASKET_NO IN 
+	    <foreach item="no" collection="list" open="(" separator="," close=")">
+	        #{no}
+	    </foreach>
+	</select>
+	<insert id="insertPayment" parameterType="map">
+	    INSERT INTO PAYMENTS (PAYMENT_NO, USER_NO, AMOUNT, METHOD, MERCHANT_ID, PAYMENT_STATUS, TOUR_NO, PAYMENT_DATE, NUM_PEOPLE, BASKET_NO) 
+		VALUES (PAYMENT_SEQ.NEXTVAL, #{userNo}, #{amount}, #{method}, #{merchantId}, '결제완료', #{tourNo}, SYSDATE, #{numPeople}, #{basketNo})
+	</insert>
+	<select id="selectPayment" parameterType="String" resultType="com.example.kapture.payment.model.Payment">
+	    SELECT P.PAYMENT_NO, P.USER_NO, P.TOUR_NO, P.AMOUNT, P.PAYMENT_DATE, P.METHOD, P.NUM_PEOPLE, P.BASKET_NO,T.TITLE, T.PRICE, T.DURATION, T.TOUR_DATE
+	    FROM PAYMENTS P
+	    INNER JOIN TOURS T ON P.TOUR_NO = T.TOUR_NO
+	    WHERE P.MERCHANT_ID = #{merchantId}
+	</select>
+	<update id="updateTourDeleteYn" parameterType="int">
+	    UPDATE TOURS SET DELETEYN = 'Y' WHERE TOUR_NO = #{tourNo}
+	</update>
+	<delete id="deleteBasketsByNo">
+	    DELETE FROM BASKET
+	    WHERE BASKET_NO IN
+	    <foreach item="no" collection="basketNoList" open="(" separator="," close=")">
+	        #{no}
+	    </foreach>
+	</delete>
+	<delete id="deleteBasket" parameterType="map">
+	    DELETE FROM BASKET
+	    WHERE BASKET_NO = #{basketNo}
+	</delete>
+	<update id="updateRequestMessage" parameterType="hashmap">
+	    UPDATE PAYMENTS
+	    SET ETC = #{requestMessage}
+	    WHERE PAYMENT_NO = #{paymentNo}
+	</update>
+	<!-- 결제 성공시 알림 정보 저장 -->
+	<insert id="insertAlarm" parameterType="hashmap">
+    INSERT INTO ALARM (
+        ALARM_NO,
+        TARGET_USER_NO,
+        REFERENCE_TYPE,
+        REFERENCE_ID,
+        URL_PARAM,
+        ALARM_STATUS,
+        AL_CREATED_AT
+    ) VALUES (
+        ALARM_SEQ.NEXTVAL,
+        #{targetUserNo},
+        #{referenceType},
+        #{referenceId},
+        #{urlParam, jdbcType=VARCHAR},
+        'N',
+        SYSDATE
+    )
+	</insert>
+	<!-- 해당 유저의 가장 최근 결제 번호 가져오기 -->
+	<select id="selectLatestPaymentNo" parameterType="int" resultType="int">
+	    SELECT PAYMENT_NO
+	    FROM PAYMENTS
+	    WHERE USER_NO = #{userNo}
+	    ORDER BY PAYMENT_DATE DESC
+	    FETCH FIRST 1 ROWS ONLY
+	</select>
+</mapper> 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.basket.mapper.BasketMapper">
+	<insert id="insertBasket" parameterType="hashmap">
+		INSERT INTO BASKET (BASKET_NO, TOUR_NO, USER_NO, NUM_PEOPLE)
+		VALUES(BASKET_SEQ.NEXTVAL, #{tourNo}, #{sessionId}, #{count} ) 
+	</insert>
+
+	<select id="existsBasketItem" parameterType="hashmap" resultType="int">
+    	SELECT COUNT(*) FROM BASKET WHERE TOUR_NO = #{tourNo} AND USER_NO = #{sessionId}
+	</select>
+	
+	<select id="selectCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM BASKET WHERE USER_NO = #{sessionId}
+	</select>
+	
+	<select id="selectMinTourDate" parameterType="hashmap" resultType="java.sql.Date">
+		SELECT MIN(TOUR_DATE) FROM BASKET B
+		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
+		WHERE USER_NO = #{sessionId}
+	</select>
+	
+	<select id="selectMaxTourDate" parameterType="hashmap" resultType="java.sql.Date">
+		SELECT MAX(TOUR_DATE) FROM BASKET B
+		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
+		WHERE USER_NO = #{sessionId}
+	</select>
+	
+	<select id="selectTourDateList" parameterType="hashmap" resultType="java.sql.Date">
+		SELECT TOUR_DATE FROM BASKET B
+		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
+		WHERE USER_NO = #{sessionId}
+	</select>
+	
+	<select id='selectBasketList' parameterType="hashmap" resultType="com.example.kapture.basket.model.Basket">
+		SELECT *
+		FROM BASKET B
+		INNER JOIN TOURS T
+		ON B.TOUR_NO = T.TOUR_NO
+		WHERE USER_NO = #{sessionId}
+	</select>
+	<select id="selectBasketByNo" parameterType="int">
+		SELECT *
+		FROM BASKET B
+		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
+		WHERE B.BASKET_NO = #{barsketNo}
+	</select>
+	
+	<update id="updateBasket" parameterType="hashmap">
+		UPDATE BASKET SET NUM_PEOPLE = #{count, jdbcType=NUMERIC}
+		WHERE BASKET_NO = #{basketNo, jdbcType=NUMERIC}
+		
+	</update>
+</mapper>

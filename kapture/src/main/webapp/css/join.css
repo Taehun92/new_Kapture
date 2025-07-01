@@ -1,0 +1,81 @@
+/* join.css */
+
+.join-container {
+    max-width: 420px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 0.3rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.join-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.join-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+}
+
+.join-birthday-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.birthday-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+}
+
+.join-check-group {
+    font-size: 14px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.join-view-button {
+    margin-left: 8px;
+    font-size: 12px;
+    color: #2b74e4;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.join-error {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.join-submit-button {
+    width: 100%;
+    background-color: #2b74e4;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 0.3rem;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.join-submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

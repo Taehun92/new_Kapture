@@ -1,0 +1,145 @@
+/* ✅ card.css - 카드 컴포넌트 전용 스타일 (반응형 대응 버전) */
+
+:root {
+    --card-bg: #ffffff;
+    --card-point: #171d41;
+}
+
+.card-container {
+    padding: 2vw;
+    background-color: var(--card-bg);
+}
+
+.card-list {
+    display: grid;
+    flex-wrap: wrap;
+	grid-template-columns: repeat(4, 1fr);
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 0.3rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  /* ✅ 그림자 */
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+    width: 100%;
+    max-width: 320px;
+	
+	
+}
+
+.card-image {
+    width: 100%;
+    height: 240px; /* ✅ 이미지 높이 증가 (원래 200px) */
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card-content {
+    border-radius: 0.3rem;
+	padding: 0.8rem;
+	background-color: #fff;
+    position: relative;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vw;
+}
+
+.card-date {
+	font-size: 1rem;
+	color: #333;  /* 🔧 기존 #eee였으면 너무 옅어서 안보였을 수 있음 */
+}
+
+.hashtags {
+	font-size: 0.8rem;
+	color: rgb(150, 150, 150);
+}
+
+.favorite {
+	width: 28px;
+	height: 28px;
+	background-image: url("/svg/taeguk-outline.svg"); /* ✅ 절대 경로로 지정 */
+	background-size: cover;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	transition: transform 0.3s ease;
+}
+	
+
+.favorite:hover {
+    transform: scale(1.2);
+}
+
+.favorite.active {
+	background-image: url("/svg/taeguk-full.svg"); /* ✅ 채워진 아이콘 */
+}
+
+.card-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: #000;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: rgb(100, 100, 100);
+    margin-bottom: 0.8rem;
+}
+
+.card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vw;
+}
+
+.rating {
+    font-size: 1rem;
+    color: #FFD700;
+}
+
+.price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color:  #171d41;
+	background: #fff;
+    padding: 0.5vw 1vw;
+    border-radius: 0.3rem;
+}
+
+.card-btn {
+	font-family: 'MangoDdobak';
+    width: 100%;
+    background: #171d41;
+    color: #fff;
+    border: none;
+    padding: 0.8vw;
+    font-size: 1.3rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+.card-btn:hover {
+    background-color: #162c67;
+}

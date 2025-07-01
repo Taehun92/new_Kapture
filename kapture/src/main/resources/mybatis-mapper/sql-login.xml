@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.login.mapper.LoginMapper">
+	<select id="getlogin" parameterType="hashmap" resultType="com.example.kapture.login.model.Login">
+		SELECT *
+		FROM USERS 
+		WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 지난 여행 중 알림 없는 상품 조회 쿼리 -->
+	<select id="selectReviewTargets" parameterType="int" resultType="int">
+	    SELECT DISTINCT t.TOUR_NO
+	    FROM PAYMENTS p
+	    JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
+	    WHERE p.USER_NO = #{userNo}
+	      AND p.PAYMENT_STATUS = '거래완료'
+	      AND t.TOUR_DATE &lt; SYSDATE
+	      AND NOT EXISTS (
+	          SELECT 1
+	          FROM ALARM a
+	          WHERE a.TARGET_USER_NO = p.USER_NO
+	            AND a.REFERENCE_TYPE = 'TOUR'
+	            AND a.REFERENCE_ID = t.TOUR_NO
+	      )
+	</select>
+	<!-- 알람 등록 -->
+	<insert id="insertAlarm" parameterType="hashmap">
+	    INSERT INTO ALARM (
+	        ALARM_NO,
+	        TARGET_USER_NO,
+	        REFERENCE_TYPE,
+	        REFERENCE_ID,
+	        URL_PARAM,
+	        ALARM_STATUS,
+	        AL_CREATED_AT
+	    ) VALUES (
+	        ALARM_SEQ.NEXTVAL,
+	        #{targetUserNo},
+	        #{referenceType},
+	        #{referenceId},
+	        #{urlParam, jdbcType=VARCHAR},
+	        'N',
+	        SYSDATE
+	    )
+	</insert>
+	<insert id="insertUser" parameterType="hashmap">
+		INSERT INTO USERS (USER_NO, PASSWORD, EMAIL, PHONE, ROLE, BIRTHDAY, GENDER, U_CREATED_AT, U_UPDATED_AT, USER_FIRSTNAME, USER_LASTNAME, ISFOREIGNER, PUSHYN)
+		VALUES (USERS_SEQ.NEXTVAL, #{password}, #{email}, #{phone}, 'TOURIST', #{birthday, jdbcType=DATE}, #{gender}, SYSDATE, SYSDATE,
+		 #{firstName}, #{lastName}, #{isForeigner}, #{pushYn})
+	</insert>
+	
+	<select id="checkUser" parameterType="hashmap" resultType="com.example.kapture.login.model.Login">
+		SELECT *
+		FROM USERS 
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="selectUserByEmail" parameterType="string" resultType="map">
+    SELECT * FROM (
+        SELECT USER_NO AS userNo,
+               EMAIL AS email,
+               USER_FIRSTNAME AS userFirstName,
+               USER_LASTNAME AS userLastName,
+               ROLE AS role
+          FROM USERS
+         WHERE EMAIL = #{email, jdbcType=VARCHAR}
+    )
+    WHERE ROWNUM = 1
+</select>
+
+
+	<insert id="insertSocialUser" parameterType="map">
+    INSERT INTO USERS(
+        USER_NO,
+        PASSWORD,
+        EMAIL,
+        PHONE,
+        ROLE,
+        USER_FIRSTNAME,
+        USER_LASTNAME,
+        SOCIAL_TYPE
+    ) VALUES (
+        USERS_SEQ.NEXTVAL,
+        'Test1234!',
+        #{email},
+        '010-1234-1234',
+        'TOURIST',
+        #{userFirstName},
+        NVL(#{userLastName}, 'N/A'),
+        'SOCIAL'
+    )
+</insert>
+	<select id="selectUserEmail" parameterType="hashmap" resultType="String">
+	    SELECT EMAIL
+	    FROM USERS
+	    WHERE USER_FIRSTNAME = #{firstName}
+	      AND USER_LASTNAME = #{lastName}
+	      AND PHONE = #{phone}
+	      AND BIRTHDAY = #{birthday}
+	</select>
+	<update id="updateUserPassword" parameterType="hashmap">
+		UPDATE USERS
+	    SET PASSWORD = #{password}
+	    WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 트위터 ID로 사용자 조회 -->
+<select id="selectUserByTwitterId" parameterType="string" resultType="hashmap">
+    SELECT 
+        USER_NO,
+        USER_FIRSTNAME,
+        USER_LASTNAME,
+        'TOURIST',
+        EMAIL,
+    FROM USERS
+    WHERE EMAIL = #{email}
+</select>
+
+	<!-- 트위터 사용자 신규 등록 -->
+	<insert id="insertTwitterUser" parameterType="hashmap">
+    INSERT INTO USERS (
+        USER_NO,
+        PASSWORD,
+        EMAIL,
+        ROLE,
+        USER_FIRSTNAME,
+        USER_LASTNAME,
+        SOCIAL_TYPE,
+        
+    ) VALUES (
+        USER_SEQ.NEXTVAL,
+        'Test1234!',
+        #{email},            <!-- 트위터 username 기반 이메일 -->
+        'TOURIST',
+        #{userFirstName},
+        #{userLastName},
+        'SOCIAL'
+    )
+	</insert>
+	
+	<update id="updateLastLogin" parameterType="int">
+		UPDATE USERS
+    	SET LAST_LOGIN = SYSDATE
+    	WHERE USER_NO = #{userNo}
+	</update>
+	
+</mapper>
+
+
+
+

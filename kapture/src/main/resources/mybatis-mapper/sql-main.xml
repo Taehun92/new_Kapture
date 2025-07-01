@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.main.mapper.MainMapper">
+	<select id="selectTourandRatingList" parameterType="hashmap" resultType="com.example.kapture.tours.model.Tours">
+		SELECT *
+		FROM TOURS T
+		LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO
+		LEFT JOIN (
+		    SELECT TOUR_NO, ROUND(AVG(RATING),1) AS RATING 
+		    FROM REVIEWS
+		    GROUP BY TOUR_NO
+		) TEMP1 ON T.TOUR_NO = TEMP1.TOUR_NO
+		INNER JOIN (
+		    SELECT T1.THEME_NO, T1.THEME_NAME, T2.THEME_NO AS PARENT_NO, T2.THEME_NAME AS PARENT_NAME
+		    FROM THEME T1
+		    INNER JOIN THEME T2 ON T1.THEME_PARENT_NO = T2.THEME_NO
+		)TEMP2 ON T.THEME_NO = TEMP2.THEME_NO
+		WHERE T.DELETEYN = 'N' AND I.THUMBNAIL = 'Y'
+		ORDER BY NVL(RATING, 0) DESC
+		OFFSET 0 ROWS FETCH NEXT 12 ROWS ONLY
+	</select>
+	
+	<select id="selectReviewList" parameterType="hashmap" resultType="com.example.kapture.main.model.Main">
+		SELECT 
+			R.TOUR_NO, RATING, "COMMENT", R_CREATED_AT, T.TITLE, DURATION, PRICE, TOUR_DATE, FILE_PATH, THUMBNAIL, USER_FIRSTNAME, USER_LASTNAME
+		FROM REVIEWS R
+		INNER JOIN TOURS T ON T.TOUR_NO = R.TOUR_NO
+		INNER JOIN USERS U ON U.USER_NO = R.USER_NO
+		INNER JOIN IMG I ON I.TOUR_NO = R.TOUR_NO
+		WHERE THUMBNAIL = 'Y'
+		ORDER BY R_CREATED_AT DESC
+	</select>
+</mapper>
+
+
+
+

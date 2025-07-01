@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.cs.mapper.CsMapper">
+	
+	<select id="faqCs" parameterType="hashmap" resultType="com.example.kapture.cs.model.Cs">
+		SELECT *
+		FROM FAQ
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (CATEGORY LIKE '%' || #{keyword} || '%' 
+					OR QUESTION LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'category'">
+			AND CATEGORY LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'question'">
+			AND QUESTION LIKE '%' || #{keyword} || '%' 
+		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="faqCsCnt" parameterType="hashmap" resultType="int">
+		
+		SELECT COUNT(*) 
+		FROM FAQ
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (CATEGORY LIKE '%' || #{keyword} || '%' 
+			OR QUESTION LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'category'">
+			AND CATEGORY LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'question'">
+			AND QUESTION LIKE '%' || #{keyword} || '%' 
+		</if>
+	</select>
+	
+	<select id="csNotice" parameterType="hashmap" resultType="com.example.kapture.cs.model.Cs">
+		SELECT *
+		FROM NOTICES
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (TITLE LIKE '%' || #{keyword} || '%' 
+					OR CONTENT LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'content'">
+			AND CONTENT LIKE '%' || #{keyword} || '%' 
+		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="noticeCsCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM NOTICES
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (TITLE LIKE '%' || #{keyword} || '%' 
+					OR CONTENT LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'content'">
+			AND CONTENT LIKE '%' || #{keyword} || '%' 
+		</if>
+	</select>
+	
+	<insert id="insertQna" parameterType="hashmap" useGeneratedKeys="true" keyProperty="inquiryNo" keyColumn="INQUIRY_NO">
+  		INSERT INTO INQUIRIES (INQUIRY_NO, USER_NO, CATEGORY, QUESTION, INQ_CREATED_AT, INQ_UPDATED_AT, QNA_TITLE)
+  		VALUES(INQUIRIES_SEQ.NEXTVAL, #{userNo}, #{category}, #{question}, SYSDATE, SYSDATE, #{qnaTitle})
+	</insert>
+	
+	<select id="searchFaq" parameterType="hashmap" resultType="hashmap">
+    SELECT *
+    FROM FAQ
+    WHERE QUESTION LIKE '%' || #{keyword} || '%'
+       OR ANSWER LIKE '%' || #{keyword} || '%'
+       OR CATEGORY LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<select id="searchQna" parameterType="hashmap" resultType="hashmap">
+	    SELECT TITLE, CONTENT
+	    FROM NOTICES
+	    WHERE TITLE LIKE '%' || #{keyword} || '%'
+	       OR CONTENT LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<insert id="insertPartnership" parameterType="hashmap" useGeneratedKeys="true" keyProperty="partnershipNo" keyColumn="PARTNERSHIP_NO">
+	    INSERT INTO PARTNERSHIP(PARTNERSHIP_NO, TITLE, CONTENT, NAME, EMAIL, PHONE, PS_USER_NO)
+	    VALUES (PARTNERSHIP_SEQ.NEXTVAL, #{title}, #{content}, #{name}, #{email}, #{phone}, #{sessionId})
+	</insert>
+	<!-- 관리자 유저 리스트 조회 -->
+	<select id="selectAdminUserList" resultType="hashmap">
+	    SELECT USER_NO
+	    FROM USERS
+	    WHERE ROLE = 'ADMIN' AND UNREGISTERYN = 'N'
+	</select>
+	<!-- 문의시 알림 정보 저장 -->
+	<insert id="insertQnaAlarm" parameterType="hashmap">
+	    INSERT INTO ALARM (
+	        ALARM_NO,
+	        TARGET_USER_NO,
+	        REFERENCE_TYPE,
+	        REFERENCE_ID,
+	        URL_PARAM,
+	        ALARM_STATUS,
+	        AL_CREATED_AT
+	    ) VALUES (
+	        ALARM_SEQ.NEXTVAL,
+	        #{targetUserNo},
+	        #{referenceType},
+	        #{referenceId},
+	        #{urlParam, jdbcType=VARCHAR},
+	        'N',
+	        SYSDATE
+	    )
+	</insert>
+	<!-- 제휴 요청시 알림 정보 저장 -->
+	<insert id="insertAnswerAlarm" parameterType="hashmap">
+	    INSERT INTO ALARM (
+	        ALARM_NO,
+	        TARGET_USER_NO,
+	        REFERENCE_TYPE,
+	        REFERENCE_ID,
+	        URL_PARAM,
+	        ALARM_STATUS,
+	        AL_CREATED_AT
+	    ) VALUES (
+	        ALARM_SEQ.NEXTVAL,
+	        #{targetUserNo},
+	        #{referenceType},
+	        #{referenceId},
+	        null,
+	        'N',
+	        SYSDATE
+	    )
+	</insert>
+</mapper>

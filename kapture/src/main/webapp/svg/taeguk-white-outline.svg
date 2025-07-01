@@ -1,0 +1,25 @@
+<!-- 외곽선(비어있는) 태극 아이콘 -->
+<svg viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(-90)">
+    <!-- 윗부분 (흰색 내부, 검은색 외곽선) -->
+    <path d="
+      M 0,-100
+      A 100,100 0 0,1 0,100
+      A 50,50 0 0,0 0,0
+      A 50,50 0 0,1 0,-100 Z"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="4"/>
+
+    <!-- 아랫부분 (흰색 내부, 검은색 외곽선, 상하반전 적용) -->
+    <path d="
+      M 0,-100
+      A 100,100 0 0,0 0,100
+      A 50,50 0 0,1 0,0
+      A 50,50 0 0,0 0,-100 Z"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="4"
+      transform="scale(1,-1)"/>
+  </g>
+</svg>

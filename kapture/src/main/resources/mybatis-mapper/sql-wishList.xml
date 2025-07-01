@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.basket.mapper.WishListMapper">
+	<select id='selectWishList' parameterType="hashmap" resultType="com.example.kapture.basket.model.WishList">
+		SELECT *
+		FROM WISHLIST 
+		WHERE USER_NO = #{userNo}
+	</select>
+	<insert id="insertWishList" parameterType="hashmap">
+		INSERT INTO WISHLIST
+		VALUES(#{tourNo},#{guideNo},#{userNo},SYSDATE)
+	</insert>
+	<delete id="deleteWishList" parameterType="hashmap">
+		DELETE FROM WISHLIST
+		WHERE USER_NO = #{userNo} AND TOUR_NO = #{tourNo}
+	</delete>
+</mapper>

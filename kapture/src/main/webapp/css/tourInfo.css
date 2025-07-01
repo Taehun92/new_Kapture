@@ -1,0 +1,295 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'MangoDdobak', sans-serif;
+}
+
+#app {
+  max-width: 70%;
+  margin: 40px auto;
+}
+
+.container {
+  width: 80%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-section {
+  display: flex;
+  gap: 10px;
+}
+
+.thumbnail {
+  width: 37%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0.3rem;
+  object-fit: cover;
+}
+
+.info {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 0.3rem;
+}
+
+.guide-info {
+  text-align: center;
+  padding: 10px;
+  min-height: 180px;
+  background: #eee;
+  border-radius: 0.3rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 10px 25px;
+  background-color: #171d41;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  opacity: 0.9;
+}
+
+.count-btn {
+    font-size: 18px;
+    padding: 6px 14px;
+    background-color: #171d41;
+    color: white;
+    border: none;
+    border-radius: 0.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    vertical-align: middle; /* 버튼 수직 정렬 */
+}
+
+.people-count {
+    display: inline-block;
+    vertical-align: middle; /* 텍스트 수직 정렬 */
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0 10px;
+    line-height: 47px; /* 버튼 높이와 맞추기 */
+}
+
+
+.favorite {
+	width: 50px;
+	height: 50px;
+	background-image: url("/svg/taeguk-outline.svg"); /* ✅ 절대 경로로 지정 */
+	background-size: cover;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	transition: transform 0.3s ease;
+}
+
+.favorite:hover {
+    transform: scale(1.2);
+}
+
+.favorite.active {
+	background-image: url("/svg/taeguk-full.svg"); /* ✅ 채워진 아이콘 */
+}
+
+
+.contents {
+  background: #f4f4f4;
+  max-width: 98%;
+  min-height: 400px;
+  margin : 10px 0;
+  padding: 10px;
+  font-size: 1rem;
+  line-height: 1.6;
+  border-radius: 0.3rem;
+}
+
+.reviews {
+  margin-top: 10px;
+  background: #fff;
+  padding: 20px;
+  border-top: 2px solid #171d41;
+  border-radius: 0.3rem;
+}
+
+.review-score {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.rating-bars {
+  margin: 15px 0;
+}
+
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #ddd;
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: #ffa500;
+}
+
+.user-review {
+  margin-top: 15px;
+  font-size: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+/* 🛒 하단 슬라이딩 모달 스타일 */
+.bottom-cart-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  background-color: #171d41;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.bottom-cart-modal {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: 70%;
+  max-height: 90vh;
+  background-color: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  z-index: 999;
+  overflow-y: auto;
+  transition: transform 0.4s ease;
+}
+
+.bottom-cart-modal.show {
+  transform: translate(-50%, 0);
+}
+
+.bottom-cart-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 18px;
+  background: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.modal-table td {
+  padding: 9px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.black-box, .white-box {
+  padding: 10px;
+  border-radius: 0.3rem;
+  font-weight: bold;
+}
+
+.black-box {
+  background-color: #171d41;
+  color: white;
+}
+
+.white-box {
+  background-color: #f4f4f4;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.total-price {
+  text-align: right;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.confirm-btn {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 25px;
+  font-size: 16px;
+  background-color: #171d41;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.item-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* 버튼과 숫자 사이 간격 */
+}
+
+.item-controls button {
+    padding: 2px 8px;
+    font-size: 14px;
+}

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.common.mapper.CommonMapper">
+	<select id="selectBoardList" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT *
+		FROM BOARD
+	</select>
+	
+	<insert id="insertBoard" parameterType="hashmap">
+		INSERT INTO BOARD(BOARDNO, TITLE, CONTENTS, USERID, CNT, CDATETIME, UDATETIME)
+		VALUES(BOARD_SEQ.NEXTVAL, #{title}, #{contents}, 'user04', 0, SYSDATE, SYSDATE)
+	</insert>
+	
+	<select id="selectBoard" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT *
+		FROM BOARD
+		WHERE BOARDNO = #{boardNo}
+	</select>
+	
+	<update id="updateBoard" parameterType="hashmap">
+		UPDATE BOARD
+		SET TITLE = #{title}, CONTENTS = #{contents}
+		WHERE BOARDNO = #{boardNo}	
+	</update>
+	
+	<select id="selectRegionList" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT SI_NO, 
+    		CASE
+        		WHEN SI_NAME LIKE '%남도%' THEN SUBSTR(SI_NAME,1,2)||'도'
+       			WHEN SI_NAME LIKE '%북도%' THEN SUBSTR(SI_NAME,1,2)||'도'
+        		ELSE SUBSTR(SI_NAME, 1, 2)
+    		END AS SI_NAME 
+		FROM 	REGION
+	</select>
+	
+	<select id="selectThemeList" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT T1.THEME_NO, T1.THEME_NAME, T1.THEME_PARENT_NO, T2.THEME_NAME AS PARENT_NAME
+		FROM THEME T1
+		INNER JOIN THEME T2 ON T1.THEME_PARENT_NO = T2.THEME_NO
+	</select>
+	
+	<select id="selectReviewsList" parameterType="hashmap" resultType="com.example.kapture.common.model.Reviews">
+		SELECT R.*, U.USER_FIRSTNAME, U.USER_LASTNAME
+		FROM REVIEWS R
+		INNER JOIN USERS U ON R.USER_NO = U.USER_NO
+		WHERE TOUR_NO = #{tourNo}
+	</select>
+	
+	<select id="selectSiNameList" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT SI_NAME FROM REGION
+	</select>
+	
+	<select id="selectGuNameList" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT GU_NAME FROM REGION
+		WHERE SI_NAME = #{siName} AND GU_NAME IS NOT NULL
+	</select>
+	
+	<select id="selectThemeParentList" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT * FROM THEME
+		WHERE THEME_NO IN (100, 200, 300, 400, 500)
+	</select>
+	
+	<select id="selectThemeNameList" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT T2.THEME_NAME FROM THEME T1
+		INNER JOIN THEME T2 ON T1.THEME_NO = T2.THEME_PARENT_NO
+		WHERE T2.THEME_PARENT_NO = (
+    		SELECT THEME_NO 
+    		FROM THEME 
+    		WHERE THEME_NAME = #{themeParent}
+		)
+	</select>
+	
+	<select id="selectSiName" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT SI_NAME FROM REGION
+		WHERE SI_NO = #{siNo}
+	</select>
+	
+	<select id="selectGuName" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT GU_NAME FROM REGION
+		WHERE SI_NO = #{siNo} AND GU_NO = #{guNo}
+	</select>
+	
+	<select id="selectThemeParent" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT THEME_NAME FROM THEME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+		WHERE THEME_NO = #{themeParentNo}
+	</select> 
+	
+	<select id="selectThemeName" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT THEME_NAME FROM THEME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+		WHERE THEME_NO = #{themeNo}
+	</select>
+	
+	<select id="selectThemeListByParentNo" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
+		SELECT * 
+		FROM THEME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+		WHERE THEME_PARENT_NO = #{themeParentNo}
+	</select>
+	
+	<select id="selectGuListBysiNo" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT * 
+		FROM REGION
+		WHERE SI_NO = #{siNo} AND GU_NO IS NOT NULL
+	</select>
+	<select id="selectgetSiNameNoList" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
+		SELECT DISTINCT SI_NAME, SI_NO 
+		FROM REGION
+	</select>
+	
+	<!--날씨 정보-->
+	
+	<select id="selectSi" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT DISTINCT SI FROM AREA
+	</select>
+	
+	<select id="selectGu" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT DISTINCT GU
+		FROM AREA
+		WHERE SI = #{si} AND GU IS NOT NULL
+	</select>
+	
+	<select id="selectDong" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT DONG
+		FROM AREA
+		WHERE SI = #{si} AND GU = #{gu} AND DONG IS NOT NULL
+	</select>
+	
+	<select id="selectXY" parameterType="hashmap" resultType="com.example.kapture.common.model.Common">
+		SELECT NX, NY FROM AREA 
+		WHERE SI = #{si} AND GU = #{gu} AND DONG = #{dong}
+	</select>
+	
+	<select id="selectTourThumbnail" parameterType="hashmap" resultType="com.example.kapture.common.model.Img">
+		SELECT * FROM IMG
+		WHERE TOUR_NO = #{tourNo} AND THUMBNAIL = 'Y'
+	</select>
+	
+	<select id="selectWeather" parameterType="hashmap" resultType="com.example.kapture.common.model.Weather">
+		SELECT * 
+		FROM REGION R
+		INNER JOIN RIG_WEATHER W ON R.SI_NAME LIKE '%' || W.SI_NAME || '%' OR R.GU_NAME LIKE '%' || W.SI_NAME || '%'
+		WHERE R.SI_NAME = #{si} AND GU_NAME =#{gu}
+	</select>
+	<!-- 최신 10개 알람 조회 -->
+	<select id="selectRecentAlarms" parameterType="int" resultType="com.example.kapture.common.model.Alarm">
+    SELECT *
+    FROM (
+        SELECT *
+        FROM ALARM
+        WHERE TARGET_USER_NO = #{userNo}
+        ORDER BY AL_CREATED_AT DESC
+    )
+    WHERE ROWNUM &lt;= 10
+	</select>
+	<!-- 읽은 알람 상태 처리 -->
+	<update id="updateAlarmStatus" parameterType="hashmap">
+	    UPDATE ALARM
+	    SET ALARM_STATUS = 'Y'
+	    WHERE ALARM_NO = #{alarmNo}
+	</update>
+</mapper>
+
+
+
+

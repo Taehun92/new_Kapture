@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kapture.tours.mapper.ToursMapper">
+	
+	<select id="selectToursList" parameterType="hashmap" resultType="com.example.kapture.tours.model.Tours">
+		SELECT DISTINCT 
+    	T.TOUR_NO, T.GUIDE_NO, T.TITLE, T.DURATION, TO_CHAR(T.DESCRIPTION) AS DESCRIPTION, T.PRICE, T.MAX_PEOPLE, T.TOUR_DATE, T.T_CREATED_AT, T.T_UPDATED_AT, T.DELETEYN, T.SI_NO, T.GU_NO, T.THEME_NO,
+    	M.*, I.*, R.*, G.*, TEMP1.*
+		FROM TOURS T
+		INNER JOIN THEME M ON T.THEME_NO = M.THEME_NO
+		LEFT JOIN (
+		    SELECT TOUR_NO, ROUND(AVG(RATING),1) AS RATING 
+		    FROM REVIEWS
+		    GROUP BY TOUR_NO
+		) TEMP1 ON T.TOUR_NO = TEMP1.TOUR_NO
+		LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND THUMBNAIL = 'Y'
+		INNER JOIN (
+            SELECT DISTINCT SI_NO, SI_NAME
+            FROM REGION
+        )R ON T.SI_NO = R.SI_NO
+        INNER JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+		WHERE T.DELETEYN = 'N'
+		<if test="siNo != null and siNo != 999">
+			AND T.SI_NO = #{siNo}
+		</if>
+		<if test="siNo != null and siNo == 999">
+			AND T.SI_NO IN(34, 37, 26, 38, 25, 22, 29, 24, 33, 36)
+		</if>
+		<if test="keyword != null">
+			AND T.TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="selectedDates != null and selectedDates.size() > 0">
+        	AND TOUR_DATE BETWEEN
+	        <foreach collection="selectedDates" item="item" open="" close="" separator=" AND ">
+	            TO_DATE(#{item}, 'YY/MM/DD')
+	        </foreach>
+   		</if>
+		<if test="selectedThemes != null and selectedThemes.size() > 0">
+        	AND T.THEME_NO IN
+	        <foreach collection="selectedThemes" item="item" open="(" close=")" separator=",">
+	            #{item}
+	        </foreach>
+   		</if>
+   		<if test="selectedRegions != null and selectedRegions.size() > 0">
+        	AND T.SI_NO IN
+	        <foreach collection="selectedRegions" item="item" open="(" close=")" separator=",">
+	            #{item}
+	        </foreach>
+   		</if>
+   		<if test="selectedLanguages != null and selectedLanguages.size() > 0">
+        	AND 
+	        <foreach collection="selectedLanguages" item="item" separator=" OR ">
+	            LANGUAGE LIKE '%' || #{item} || '%'
+	        </foreach>
+   		</if>
+   		ORDER BY T.TOUR_DATE 
+
+   		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+
+	<select id="selectAll" parameterType="hashmap" resultType="com.example.kapture.tours.model.Tours">
+	SELECT *
+		FROM TOURS
+		ORDER BY TOUR_DATE
+	</select>
+
+	<select id="selectTourInfo" parameterType="hashmap" resultType="com.example.kapture.tours.model.Tours">
+		SELECT *
+		FROM TOURS T
+		INNER JOIN THEME M ON T.THEME_NO = M.THEME_NO
+		LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND THUMBNAIL = 'Y'
+		INNER JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+		INNER JOIN USERS U ON G.USER_NO = U.USER_NO
+		LEFT JOIN GUIDE_IMG I ON G.GUIDE_NO = I.P_GUIDE_NO
+		WHERE T.TOUR_NO =  #{tourNo}
+	</select>
+	
+	<delete id="deleteTour" parameterType="hashmap">
+		DELETE FROM TOURS
+		WHERE TOUR_NO = #{tourNo}
+	</delete>
+	
+	<update id="toggleTourDeleteYn" parameterType="hashmap">
+		UPDATE TOURS
+	    SET DELETEYN = #{deleteYN}
+	    WHERE TOUR_NO = #{tourNo}
+	</update>
+	<insert id="insertResaleTour" parameterType="hashmap">
+	INSERT INTO TOURS
+	VALUES (TOUR_SEQ.NEXTVAL, #{guideNo}, #{title}, #{duration}, #{price}, 4, #{tourDate}, SYSDATE, SYSDATE,
+		'N', #{siNo}, #{guNo}, #{themeNo}, #{description}, #{vehicle})
+	</insert>
+	
+	<select id="selectCntTours" parameterType="hashmap" resultType="int">
+SELECT COUNT(DISTINCT T.TOUR_NO)
+	FROM TOURS T
+	INNER JOIN THEME M ON T.THEME_NO = M.THEME_NO
+	LEFT JOIN (
+	    SELECT TOUR_NO, ROUND(AVG(RATING),1) AS RATING 
+	    FROM REVIEWS
+	    GROUP BY TOUR_NO
+	) TEMP1 ON T.TOUR_NO = TEMP1.TOUR_NO
+	LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND THUMBNAIL = 'Y'
+	INNER JOIN (
+        SELECT DISTINCT SI_NO, SI_NAME
+        FROM REGION
+    ) R ON T.SI_NO = R.SI_NO
+	INNER JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+	WHERE T.DELETEYN = 'N'
+	
+	<if test="siNo != null and siNo != 999">
+		AND T.SI_NO = #{siNo}
+	</if>
+	<if test="siNo != null and siNo == 999">
+		AND T.SI_NO IN(34, 37, 26, 38, 25, 22, 29, 24, 33, 36)
+	</if>
+	<if test="keyword != null">
+		AND T.TITLE LIKE '%' || #{keyword} || '%'
+	</if>
+	<if test="selectedDates != null and selectedDates.size() > 0">
+    	AND TOUR_DATE BETWEEN
+        <foreach collection="selectedDates" item="item" open="" close="" separator=" AND ">
+            TO_DATE(#{item}, 'YY/MM/DD')
+        </foreach>
+	</if>
+	<if test="selectedThemes != null and selectedThemes.size() > 0">
+    	AND T.THEME_NO IN
+        <foreach collection="selectedThemes" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+	</if>
+	<if test="selectedRegions != null and selectedRegions.size() > 0">
+    	AND T.SI_NO IN
+        <foreach collection="selectedRegions" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+	</if>
+	<if test="selectedLanguages != null and selectedLanguages.size() > 0">
+    	AND 
+        <foreach collection="selectedLanguages" item="item" separator=" OR ">
+            LANGUAGE LIKE '%' || #{item} || '%'
+        </foreach>
+	</if>
+	</select>
+	
+</mapper>
+
+
+
+
+
+

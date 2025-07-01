@@ -1,0 +1,1 @@
+<img src="/svg/south-korea.svg" alt="대한민국 지도" class="w-full h-auto" />
