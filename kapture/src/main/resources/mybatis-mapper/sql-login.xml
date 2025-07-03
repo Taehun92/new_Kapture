@@ -16,7 +16,7 @@
 	    JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
 	    WHERE p.USER_NO = #{userNo}
 	      AND p.PAYMENT_STATUS = '거래완료'
-	      AND t.TOUR_DATE &lt; SYSDATE
+	      AND t.TOUR_DATE &lt; NOW()
 	      AND NOT EXISTS (
 	          SELECT 1
 	          FROM ALARM a
@@ -36,18 +36,18 @@
 	        ALARM_STATUS,
 	        AL_CREATED_AT
 	    ) VALUES (
-	        ALARM_SEQ.NEXTVAL,
+	        NULL,
 	        #{targetUserNo},
 	        #{referenceType},
 	        #{referenceId},
 	        #{urlParam, jdbcType=VARCHAR},
 	        'N',
-	        SYSDATE
+	        NOW()
 	    )
 	</insert>
 	<insert id="insertUser" parameterType="hashmap">
 		INSERT INTO USERS (USER_NO, PASSWORD, EMAIL, PHONE, ROLE, BIRTHDAY, GENDER, U_CREATED_AT, U_UPDATED_AT, USER_FIRSTNAME, USER_LASTNAME, ISFOREIGNER, PUSHYN)
-		VALUES (USERS_SEQ.NEXTVAL, #{password}, #{email}, #{phone}, 'TOURIST', #{birthday, jdbcType=DATE}, #{gender}, SYSDATE, SYSDATE,
+		VALUES (NULL, #{password}, #{email}, #{phone}, 'TOURIST', #{birthday, jdbcType=DATE}, #{gender}, NOW(), NOW(),
 		 #{firstName}, #{lastName}, #{isForeigner}, #{pushYn})
 	</insert>
 	
@@ -58,16 +58,14 @@
 	</select>
 	
 	<select id="selectUserByEmail" parameterType="string" resultType="map">
-    SELECT * FROM (
-        SELECT USER_NO AS userNo,
-               EMAIL AS email,
-               USER_FIRSTNAME AS userFirstName,
-               USER_LASTNAME AS userLastName,
-               ROLE AS role
-          FROM USERS
-         WHERE EMAIL = #{email, jdbcType=VARCHAR}
-    )
-    WHERE ROWNUM = 1
+  SELECT USER_NO AS userNo,
+         EMAIL AS email,
+         USER_FIRSTNAME AS userFirstName,
+         USER_LASTNAME AS userLastName,
+         ROLE AS role
+  FROM USERS
+  WHERE EMAIL = #{email, jdbcType=VARCHAR}
+  LIMIT 1
 </select>
 
 
@@ -82,13 +80,13 @@
         USER_LASTNAME,
         SOCIAL_TYPE
     ) VALUES (
-        USERS_SEQ.NEXTVAL,
+        NULL,
         'Test1234!',
         #{email},
         '010-1234-1234',
         'TOURIST',
         #{userFirstName},
-        NVL(#{userLastName}, 'N/A'),
+        IFNULL(#{userLastName}, 'N/A'),
         'SOCIAL'
     )
 </insert>
@@ -130,7 +128,7 @@
         SOCIAL_TYPE,
         
     ) VALUES (
-        USER_SEQ.NEXTVAL,
+        NULL,
         'Test1234!',
         #{email},            <!-- 트위터 username 기반 이메일 -->
         'TOURIST',
@@ -142,7 +140,7 @@
 	
 	<update id="updateLastLogin" parameterType="int">
 		UPDATE USERS
-    	SET LAST_LOGIN = SYSDATE
+    	SET LAST_LOGIN = NOW()
     	WHERE USER_NO = #{userNo}
 	</update>
 	

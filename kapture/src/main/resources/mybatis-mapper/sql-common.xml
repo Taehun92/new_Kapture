@@ -26,13 +26,13 @@
 	</update>
 	
 	<select id="selectRegionList" parameterType="hashmap" resultType="com.example.kapture.common.model.Region">
-		SELECT DISTINCT SI_NO, 
-    		CASE
-        		WHEN SI_NAME LIKE '%남도%' THEN SUBSTR(SI_NAME,1,2)||'도'
-       			WHEN SI_NAME LIKE '%북도%' THEN SUBSTR(SI_NAME,1,2)||'도'
-        		ELSE SUBSTR(SI_NAME, 1, 2)
-    		END AS SI_NAME 
-		FROM 	REGION
+		SELECT DISTINCT SI_NO,
+			CASE
+				WHEN SI_NAME LIKE '%남도%' THEN CONCAT(SUBSTRING(SI_NAME, 1, 2), '도')
+				WHEN SI_NAME LIKE '%북도%' THEN CONCAT(SUBSTRING(SI_NAME, 1, 2), '도')
+				ELSE SUBSTRING(SI_NAME, 1, 2)
+			END AS SI_NAME
+		FROM REGION
 	</select>
 	
 	<select id="selectThemeList" parameterType="hashmap" resultType="com.example.kapture.common.model.Theme">
@@ -137,21 +137,20 @@
 	</select>
 	
 	<select id="selectWeather" parameterType="hashmap" resultType="com.example.kapture.common.model.Weather">
-		SELECT * 
-		FROM REGION R
-		INNER JOIN RIG_WEATHER W ON R.SI_NAME LIKE '%' || W.SI_NAME || '%' OR R.GU_NAME LIKE '%' || W.SI_NAME || '%'
-		WHERE R.SI_NAME = #{si} AND GU_NAME =#{gu}
+    	SELECT * 
+    	FROM REGION R
+    	INNER JOIN RIG_WEATHER W 
+        	ON R.SI_NAME LIKE CONCAT('%', W.SI_NAME, '%') 
+        	OR R.GU_NAME LIKE CONCAT('%', W.SI_NAME, '%')
+    	WHERE R.SI_NAME = #{si} AND R.GU_NAME = #{gu}
 	</select>
 	<!-- 최신 10개 알람 조회 -->
 	<select id="selectRecentAlarms" parameterType="int" resultType="com.example.kapture.common.model.Alarm">
-    SELECT *
-    FROM (
-        SELECT *
-        FROM ALARM
-        WHERE TARGET_USER_NO = #{userNo}
-        ORDER BY AL_CREATED_AT DESC
-    )
-    WHERE ROWNUM &lt;= 10
+		SELECT *
+		FROM ALARM
+		WHERE TARGET_USER_NO = #{userNo}
+		ORDER BY AL_CREATED_AT DESC
+		LIMIT 10
 	</select>
 	<!-- 읽은 알람 상태 처리 -->
 	<update id="updateAlarmStatus" parameterType="hashmap">
