@@ -137,7 +137,7 @@
 	</select> 
 
 
-	<!--페이징 처리 -->
+	<!-- 판매 내역 페이징 처리 -->
 	<select id="selectTransactionTotalCount" resultType="int">
 	    SELECT COUNT(*)
 		  FROM PAYMENTS p
@@ -718,7 +718,7 @@
 	    U.*,
 	    R.SI_NAME,
 	    TH.THEME_NAME,
-	    I.IMG_PATH
+	    I.FILE_PATH
 	  FROM TOURS T
 	  INNER JOIN GUIDES G 
 	    ON T.GUIDE_NO = G.GUIDE_NO

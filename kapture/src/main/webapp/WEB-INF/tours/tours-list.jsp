@@ -722,7 +722,7 @@
                         page: (self.page - 1) * self.pageSize,
                         pageSize: self.pageSize,
                     };
-                    console.log(">>>>>>>>>nparmap>>" + nparmap);
+                    console.log(">>>>>>>>>nparmap>>", nparmap);
                     $.ajax({
                         url: "/tours/list.dox",
                         dataType: "json",
