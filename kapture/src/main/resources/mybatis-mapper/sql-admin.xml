@@ -4,45 +4,45 @@
 
 <mapper namespace="com.example.kapture.admin.mapper.AdminMapper">
 	
- <!-- 📅 월별 매출 -->
+ 	<!-- 📅 월별 매출 -->
     <select id="getMonthChartByYear" parameterType="hashmap" resultType="map">
-		SELECT
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 1 THEN AMOUNT ELSE 0 END), 0) AS '01월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 2 THEN AMOUNT ELSE 0 END), 0) AS '02월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 3 THEN AMOUNT ELSE 0 END), 0) AS '03월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 4 THEN AMOUNT ELSE 0 END), 0) AS '04월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 5 THEN AMOUNT ELSE 0 END), 0) AS '05월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 6 THEN AMOUNT ELSE 0 END), 0) AS '06월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 7 THEN AMOUNT ELSE 0 END), 0) AS '07월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 8 THEN AMOUNT ELSE 0 END), 0) AS '08월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 9 THEN AMOUNT ELSE 0 END), 0) AS '09월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 10 THEN AMOUNT ELSE 0 END), 0) AS '10월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 11 THEN AMOUNT ELSE 0 END), 0) AS '11월',
-    	IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 12 THEN AMOUNT ELSE 0 END), 0) AS '12월'
-		FROM PAYMENTS
-		WHERE YEAR(PAYMENT_DATE) = #{year}
-    </select>
+	  SELECT
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 1 THEN AMOUNT ELSE 0 END), 0) AS `01월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 2 THEN AMOUNT ELSE 0 END), 0) AS `02월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 3 THEN AMOUNT ELSE 0 END), 0) AS `03월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 4 THEN AMOUNT ELSE 0 END), 0) AS `04월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 5 THEN AMOUNT ELSE 0 END), 0) AS `05월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 6 THEN AMOUNT ELSE 0 END), 0) AS `06월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 7 THEN AMOUNT ELSE 0 END), 0) AS `07월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 8 THEN AMOUNT ELSE 0 END), 0) AS `08월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 9 THEN AMOUNT ELSE 0 END), 0) AS `09월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 10 THEN AMOUNT ELSE 0 END), 0) AS `10월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 11 THEN AMOUNT ELSE 0 END), 0) AS `11월`,
+	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 12 THEN AMOUNT ELSE 0 END), 0) AS `12월`
+	  FROM PAYMENTS
+	  WHERE YEAR(PAYMENT_DATE) = #{year}
+	</select>
 
     <!--  지역 + 테마별  -->
     <select id="getThemeSalesByRegion" resultType="hashmap">
-    SELECT 
-        SI_NAME AS REGION,
-        THEME_NAME AS THEME, 
-        COUNT(*) AS TOTAL
-    FROM PAYMENTS p
-    JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
-    JOIN THEME th ON t.THEME_NO = th.THEME_NO
-    JOIN REGION r ON t.SI_NO = r.SI_NO
-    WHERE 1=1
-        <if test="year != null and year != ''">
-            AND YEAR(PAYMENT_DATE) = #{year}
-        </if>
-        <if test="region != null and region != ''">
-            AND SI_NAME = #{region}
-        </if>
-    GROUP BY SI_NAME, THEME_NAME
-    ORDER BY TOTAL DESC
-</select>
+	    SELECT 
+	        SI_NAME AS REGION,
+	        THEME_NAME AS THEME, 
+	        COUNT(*) AS TOTAL
+	    FROM PAYMENTS p
+	    JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
+	    JOIN THEME th ON t.THEME_NO = th.THEME_NO
+	    JOIN REGION r ON t.SI_NO = r.SI_NO
+	    WHERE 1=1
+	        <if test="year != null and year != ''">
+	            AND YEAR(PAYMENT_DATE) = #{year}
+	        </if>
+	        <if test="region != null and region != ''">
+	            AND SI_NAME = #{region}
+	        </if>
+	    GROUP BY SI_NAME, THEME_NAME
+	    ORDER BY TOTAL DESC
+	</select>
 	
 	<!-- 시 이름 조회 -->
 	<select id="getRegionList" resultType="string">
@@ -105,138 +105,142 @@
 	    WHERE p.PAYMENT_STATUS IN ('환불요청', '환불완료')
 	</select>
 	
+	<!-- 판매 내역 조회 -->
 	<select id="selectTransactionList" resultType="hashmap">
-		  SELECT
-    PAYMENT_NO, PAYMENT_DATE, AMOUNT, PAYMENT_STATUS, NUM_PEOPLE, ETC,
-    p.USER_NO, USER_FIRSTNAME, USER_LASTNAME,
-    PHONE, EMAIL, ISFOREIGNER,
-    t.TOUR_NO, TOUR_DATE, DURATION, TITLE
-  FROM PAYMENTS p
-  JOIN USERS u ON p.USER_NO = u.USER_NO
-  JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
-  WHERE 1 = 1
-    <if test="startDate != null and startDate != ''">
-      AND DATE(PAYMENT_DATE) &gt;= #{startDate}
-    </if>
-    <if test="endDate != null and endDate != ''">
-      AND DATE(PAYMENT_DATE) &lt;= #{endDate}
-    </if>
-    <if test="status != null and status != ''">
-      AND PAYMENT_STATUS = #{status}
-    </if>
-    <if test="keyword != null and keyword != ''">
-      AND (
-        USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-        OR TITLE LIKE CONCAT('%', #{keyword}, '%')
-      )
-    </if>
-  ORDER BY PAYMENT_DATE DESC
-  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  SELECT
+	    PAYMENT_NO, PAYMENT_DATE, AMOUNT, PAYMENT_STATUS, NUM_PEOPLE, ETC,
+	    p.USER_NO, USER_FIRSTNAME, USER_LASTNAME,
+	    PHONE, EMAIL, ISFOREIGNER,
+	    t.TOUR_NO, TOUR_DATE, DURATION, TITLE
+	  FROM PAYMENTS p
+	  JOIN USERS u ON p.USER_NO = u.USER_NO
+	  JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
+	  WHERE 1 = 1
+	    <if test="startDate != null and startDate != ''">
+	      AND DATE(PAYMENT_DATE) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND DATE(PAYMENT_DATE) &lt;= #{endDate}
+	    </if>
+	    <if test="status != null and status != ''">
+	      AND PAYMENT_STATUS = #{status}
+	    </if>
+	    <if test="keyword != null and keyword != ''">
+	      AND (
+	        USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	        OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+	        OR TITLE LIKE CONCAT('%', #{keyword}, '%')
+	      )
+	    </if>
+	  ORDER BY PAYMENT_DATE DESC
+	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
 	</select> 
 
 
 	<!--페이징 처리 -->
 	<select id="selectTransactionTotalCount" resultType="int">
 	    SELECT COUNT(*)
-  FROM PAYMENTS p
-  JOIN USERS u ON p.USER_NO = u.USER_NO
-  JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
-  WHERE 1 = 1
-  <if test="startDate != null and startDate != ''">
-    AND DATE(PAYMENT_DATE) &gt;= #{startDate}
-  </if>
-  <if test="endDate != null and endDate != ''">
-    AND DATE(PAYMENT_DATE) &lt;= #{endDate}
-  </if>
-  <if test="status != null and status != ''">
-    AND PAYMENT_STATUS = #{status}
-  </if>
-  <if test="keyword != null and keyword != ''">
-    AND (
-      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-      OR TITLE LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
+		  FROM PAYMENTS p
+		  JOIN USERS u ON p.USER_NO = u.USER_NO
+		  JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
+	  WHERE 1 = 1
+	  <if test="startDate != null and startDate != ''">
+	    AND DATE(PAYMENT_DATE) &gt;= #{startDate}
+	  </if>
+	  <if test="endDate != null and endDate != ''">
+	    AND DATE(PAYMENT_DATE) &lt;= #{endDate}
+	  </if>
+	  <if test="status != null and status != ''">
+	    AND PAYMENT_STATUS = #{status}
+	  </if>
+	  <if test="keyword != null and keyword != ''">
+	    AND (
+	      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+	      OR TITLE LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
 	</select>	
 	
     <!-- 가이드 정보조회 -->
     <select id="selectguidesList" parameterType="map" resultType="com.example.kapture.mypage.model.Guide">
-        SELECT *
-  FROM USERS U
-  INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
-  INNER JOIN GUIDE_IMG I ON G.GUIDE_NO = I.P_GUIDE_NO
-  WHERE 1 = 1
-  <if test="startDate != null and startDate != ''">
-    AND DATE(U_CREATED_AT) &gt;= #{startDate}
-  </if>
-  <if test="endDate != null and endDate != ''">
-    AND DATE(U_CREATED_AT) &lt;= #{endDate}
-  </if>
+      SELECT *
+	  FROM USERS U
+	  INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
+	  INNER JOIN GUIDE_IMG I ON G.GUIDE_NO = I.P_GUIDE_NO
+	  WHERE 1 = 1
+	  <if test="startDate != null and startDate != ''">
+	    AND DATE(U_CREATED_AT) &gt;= #{startDate}
+	  </if>
+	  <if test="endDate != null and endDate != ''">
+	    AND DATE(U_CREATED_AT) &lt;= #{endDate}
+	  </if>
+	
+	  <!-- 통합 검색 조건 -->
+	  <if test="statusFilter == null or statusFilter == ''">
+	    AND (
+	      U.USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	      OR G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')  
+	    )
+	  </if>
 
-  <!-- 통합 검색 조건 -->
-  <if test="statusFilter == null or statusFilter == ''">
-    AND (
-      U.USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-      OR G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')  
-    )
-  </if>
+	  <!-- 조건별 검색 -->
+	  <if test="statusFilter != null and statusFilter == 'userNo'">
+	    AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'guideNo'">
+	    AND G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'name'">
+	    AND USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
 
-  <!-- 조건별 검색 -->
-  <if test="statusFilter != null and statusFilter == 'userNo'">
-    AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'guideNo'">
-    AND G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'name'">
-    AND USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-
-  ORDER BY U_CREATED_AT DESC
-  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  ORDER BY U_CREATED_AT DESC
+	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
     </select>
+    
     <!--  가이드리스트 총 인원  -->
     <select id="selectGuidesTotalCount" resultType="int">
-    	SELECT COUNT(*)
-  FROM USERS U
-  INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
-  INNER JOIN GUIDE_IMG I ON G.GUIDE_NO = I.P_GUIDE_NO
-  WHERE 1 = 1
-  <if test="startDate != null and startDate != ''">
-    AND DATE(U_CREATED_AT) &gt;= #{startDate}
-  </if>
-  <if test="endDate != null and endDate != ''">
-    AND DATE(U_CREATED_AT) &lt;= #{endDate}
-  </if>
-  
-  <if test="statusFilter == null or statusFilter == ''">
-    AND (
-      U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
-      OR G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%')
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-
-  <if test="statusFilter != null and statusFilter == 'userNo'">
-    AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
-  </if>
-  <if test="statusFilter != null and statusFilter == 'guideNo'">
-    AND G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%')
-  </if>
-  <if test="statusFilter != null and statusFilter == 'name'">
-    AND USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-  </if>
+	  SELECT COUNT(*)
+	  FROM USERS U
+	  INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
+	  INNER JOIN GUIDE_IMG I ON G.GUIDE_NO = I.P_GUIDE_NO
+	  WHERE 1 = 1
+	  <if test="startDate != null and startDate != ''">
+	    AND DATE(U_CREATED_AT) &gt;= #{startDate}
+	  </if>
+	  <if test="endDate != null and endDate != ''">
+	    AND DATE(U_CREATED_AT) &lt;= #{endDate}
+	  </if>
+	  
+	  <if test="statusFilter == null or statusFilter == ''">
+	    AND (
+	      U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
+	      OR G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%')
+	      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
+	
+	  <if test="statusFilter != null and statusFilter == 'userNo'">
+	    AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'guideNo'">
+	    AND G.GUIDE_NO LIKE CONCAT('%', #{keyword}, '%')
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'name'">
+	    AND USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	  </if>
 	</select>
 	
     <!-- 가이드관리 가이드정보 수정 -->
 	<update id="updateGuideInfo" parameterType="hashmap">
-  UPDATE GUIDES
-  SET
-  <if test="language != null">LANGUAGE = #{language},</if>
-  <if test="experience != null">EXPERIENCE = #{experience},</if>
-  G_UPDATED_AT = NOW()
-  WHERE GUIDE_NO = #{guideNo}
+	  UPDATE GUIDES
+	  SET
+	  <if test="language != null">LANGUAGE = #{language},</if>
+	  <if test="experience != null">EXPERIENCE = #{experience},</if>
+	  G_UPDATED_AT = NOW()
+	  WHERE GUIDE_NO = #{guideNo}
 	</update>
 	
 	<!-- 가이드관리 유저정보 수정 -->
@@ -278,85 +282,85 @@
 	
 	<!-- 회원관리 유저정보 조회 -->
 	<select id="selectUsersList" parameterType="map" resultType="com.example.kapture.login.model.Login">
-  SELECT *
-  FROM USERS
-  WHERE 1 = 1
-  <if test="startDate != null and startDate != ''">
-    AND DATE(U_CREATED_AT) &gt;= #{startDate}
-  </if>
-  <if test="endDate != null and endDate != ''">
-    AND DATE(U_CREATED_AT) &lt;= #{endDate}
-  </if>
-
-  <!-- 전체 조건 검색 -->
-  <if test="statusFilter == null or statusFilter == ''">
-    AND (
-      USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-      OR EMAIL LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR PHONE LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-
-  <!-- 조건별 검색 -->
-  <if test="statusFilter != null and statusFilter == 'userNo'">
-    AND USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'email'">
-    AND EMAIL LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'name'">
-    AND (
-      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-  <if test="statusFilter != null and statusFilter == 'phone'">
-    AND PHONE LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-
-  ORDER BY U_CREATED_AT DESC
-  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  SELECT *
+	  FROM USERS
+	  WHERE 1 = 1
+	  <if test="startDate != null and startDate != ''">
+	    AND DATE(U_CREATED_AT) &gt;= #{startDate}
+	  </if>
+	  <if test="endDate != null and endDate != ''">
+	    AND DATE(U_CREATED_AT) &lt;= #{endDate}
+	  </if>
+	
+	  <!-- 전체 조건 검색 -->
+	  <if test="statusFilter == null or statusFilter == ''">
+	    AND (
+	      USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	      OR EMAIL LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR PHONE LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
+	
+	  <!-- 조건별 검색 -->
+	  <if test="statusFilter != null and statusFilter == 'userNo'">
+	    AND USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'email'">
+	    AND EMAIL LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'name'">
+	    AND (
+	      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'phone'">
+	    AND PHONE LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	
+	  ORDER BY U_CREATED_AT DESC
+	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
 	</select>
 	
 	<!--  회원 총 인원  -->
     <select id="selectUsersTotalCount" resultType="int">
-  SELECT COUNT(*)
-  FROM USERS
-  WHERE 1 = 1
-  <if test="startDate != null and startDate != ''">
-    AND DATE(U_CREATED_AT) &gt;= #{startDate}
-  </if>
-  <if test="endDate != null and endDate != ''">
-    AND DATE(U_CREATED_AT) &lt;= #{endDate}
-  </if>
-
-  <if test="statusFilter == null or statusFilter == ''">
-    AND (
-      USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-      OR EMAIL LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR PHONE LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-
-  <if test="statusFilter != null and statusFilter == 'userNo'">
-    AND USER_NO LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'email'">
-    AND EMAIL LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
-  <if test="statusFilter != null and statusFilter == 'name'">
-    AND (
-      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-  <if test="statusFilter != null and statusFilter == 'phone'">
-    AND PHONE LIKE CONCAT('%', #{keyword}, '%') 
-  </if>
+	  SELECT COUNT(*)
+	  FROM USERS
+	  WHERE 1 = 1
+	  <if test="startDate != null and startDate != ''">
+	    AND DATE(U_CREATED_AT) &gt;= #{startDate}
+	  </if>
+	  <if test="endDate != null and endDate != ''">
+	    AND DATE(U_CREATED_AT) &lt;= #{endDate}
+	  </if>
+	
+	  <if test="statusFilter == null or statusFilter == ''">
+	    AND (
+	      USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	      OR EMAIL LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR PHONE LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
+	
+	  <if test="statusFilter != null and statusFilter == 'userNo'">
+	    AND USER_NO LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'email'">
+	    AND EMAIL LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'name'">
+	    AND (
+	      USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') 
+	      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	  </if>
+	  <if test="statusFilter != null and statusFilter == 'phone'">
+	    AND PHONE LIKE CONCAT('%', #{keyword}, '%') 
+	  </if>
 	</select>
 	
 	<!-- 회원관리 유저정보 수정 -->
@@ -425,123 +429,122 @@
 	
 	<!-- 고객 문의 리스트 조회 -->
 	<select id="selectInquiriesList" parameterType="map" resultType="com.example.kapture.cs.model.Cs">
-   <bind name="offset" value="(page - 1) * size"/>
-
-  SELECT
-    I.*,
-    U.USER_FIRSTNAME     AS userFirstName,
-    U.USER_LASTNAME      AS userLastName
-  FROM INQUIRIES I
-  INNER JOIN USERS U
-    ON I.USER_NO = U.USER_NO
-  <where>
-    <!-- 시작일 -->
-    <if test="startDate != null and startDate != ''">
-      AND I.INQ_CREATED_AT &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
-    </if>
-    <!-- 종료일 -->
-    <if test="endDate != null and endDate != ''">
-      AND I.INQ_CREATED_AT &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
-    </if>
-
-    <!-- 키워드·상태 필터 -->
-    <choose>
-      <when test="statusFilter == null or statusFilter == ''">
-        AND (
-          I.INQUIRY_NO     LIKE CONCAT('%', #{keyword}, '%')
-          OR U.USER_NO     LIKE CONCAT('%', #{keyword}, '%')
-          OR U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-          OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
-          OR I.CATEGORY     LIKE CONCAT('%', #{keyword}, '%')
-          OR I.QNA_TITLE    LIKE CONCAT('%', #{keyword}, '%')
-          OR I.QNA_STATUS   LIKE CONCAT('%', #{keyword}, '%')
-        )
-      </when>
-      <when test="statusFilter == 'inquiryNo'">
-        AND I.INQUIRY_NO LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'userNo'">
-        AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'name'">
-        AND (
-          U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-          OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
-        )
-      </when>
-      <when test="statusFilter == 'category'">
-        AND I.CATEGORY LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'qnaTitle'">
-        AND I.QNA_TITLE LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'qnaStatus'">
-        AND I.QNA_STATUS LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-    </choose>
-  </where>
-
-  ORDER BY I.INQ_CREATED_AT DESC
-
-  <!-- MySQL 페이징: limit size offset offset -->
-  LIMIT #{size}
-  OFFSET #{offset}
+	   <bind name="offset" value="(page - 1) * size"/>
+		  SELECT
+		    I.*,
+		    U.USER_FIRSTNAME     AS userFirstName,
+		    U.USER_LASTNAME      AS userLastName
+		  FROM INQUIRIES I
+		  INNER JOIN USERS U
+		    ON I.USER_NO = U.USER_NO
+		  <where>
+		    <!-- 시작일 -->
+		    <if test="startDate != null and startDate != ''">
+		      AND I.INQ_CREATED_AT &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+		    </if>
+		    <!-- 종료일 -->
+		    <if test="endDate != null and endDate != ''">
+		      AND I.INQ_CREATED_AT &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
+		    </if>
+		
+		    <!-- 키워드·상태 필터 -->
+		    <choose>
+		      <when test="statusFilter == null or statusFilter == ''">
+		        AND (
+		          I.INQUIRY_NO     LIKE CONCAT('%', #{keyword}, '%')
+		          OR U.USER_NO     LIKE CONCAT('%', #{keyword}, '%')
+		          OR U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+		          OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
+		          OR I.CATEGORY     LIKE CONCAT('%', #{keyword}, '%')
+		          OR I.QNA_TITLE    LIKE CONCAT('%', #{keyword}, '%')
+		          OR I.QNA_STATUS   LIKE CONCAT('%', #{keyword}, '%')
+		        )
+		      </when>
+		      <when test="statusFilter == 'inquiryNo'">
+		        AND I.INQUIRY_NO LIKE CONCAT('%', #{keyword}, '%')
+		      </when>
+		      <when test="statusFilter == 'userNo'">
+		        AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
+		      </when>
+		      <when test="statusFilter == 'name'">
+		        AND (
+		          U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+		          OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
+		        )
+		      </when>
+		      <when test="statusFilter == 'category'">
+		        AND I.CATEGORY LIKE CONCAT('%', #{keyword}, '%')
+		      </when>
+		      <when test="statusFilter == 'qnaTitle'">
+		        AND I.QNA_TITLE LIKE CONCAT('%', #{keyword}, '%')
+		      </when>
+		      <when test="statusFilter == 'qnaStatus'">
+		        AND I.QNA_STATUS LIKE CONCAT('%', #{keyword}, '%')
+		      </when>
+		    </choose>
+		  </where>
+		
+		  ORDER BY I.INQ_CREATED_AT DESC
+		
+		  <!-- MySQL 페이징: limit size offset offset -->
+		  LIMIT #{size}
+		  OFFSET #{offset}
 	</select>
 	
 	<!-- 문의조회 총 갯수 -->
 	<select id="selectInquiriesTotalCount" resultType="int">
-		SELECT COUNT(*) 
-  FROM INQUIRIES I
-  INNER JOIN USERS U 
-    ON I.USER_NO = U.USER_NO
-  WHERE 1 = 1
-
-  <!-- 시작일 -->
-  <if test="startDate != null and startDate != ''">
-    AND I.INQ_CREATED_AT >= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
-  </if>
-
-  <!-- 종료일 -->
-  <if test="endDate != null and endDate != ''">
-    AND I.INQ_CREATED_AT &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
-  </if>
-
-  <!-- 키워드·상태 필터 -->
-  <choose>
-    <!-- 상태 필터 미지정: 모든 컬럼 대상 -->
-    <when test="statusFilter == null or statusFilter == ''">
-      AND (
-        I.INQUIRY_NO      LIKE CONCAT('%', #{keyword}, '%')
-        OR U.USER_NO      LIKE CONCAT('%', #{keyword}, '%')
-        OR U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-        OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
-        OR I.CATEGORY      LIKE CONCAT('%', #{keyword}, '%')
-        OR I.QNA_TITLE     LIKE CONCAT('%', #{keyword}, '%')
-        OR I.QNA_STATUS    LIKE CONCAT('%', #{keyword}, '%')
-      )
-    </when>
-    <when test="statusFilter == 'inquiryNo'">
-      AND I.INQUIRY_NO LIKE CONCAT('%', #{keyword}, '%')
-    </when>
-    <when test="statusFilter == 'userNo'">
-      AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
-    </when>
-    <when test="statusFilter == 'name'">
-      AND (
-        U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-        OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
-      )
-    </when>
-    <when test="statusFilter == 'category'">
-      AND I.CATEGORY LIKE CONCAT('%', #{keyword}, '%')
-    </when>
-    <when test="statusFilter == 'qnaTitle'">
-      AND I.QNA_TITLE LIKE CONCAT('%', #{keyword}, '%')
-    </when>
-    <when test="statusFilter == 'qnaStatus'">
-      AND I.QNA_STATUS LIKE CONCAT('%', #{keyword}, '%')
-    </when>
-  </choose>
+	  SELECT COUNT(*) 
+	  FROM INQUIRIES I
+	  INNER JOIN USERS U 
+	    ON I.USER_NO = U.USER_NO
+	  WHERE 1 = 1
+	
+	  <!-- 시작일 -->
+	  <if test="startDate != null and startDate != ''">
+	    AND I.INQ_CREATED_AT >= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+	  </if>
+	
+	  <!-- 종료일 -->
+	  <if test="endDate != null and endDate != ''">
+	    AND I.INQ_CREATED_AT &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
+	  </if>
+	
+	  <!-- 키워드·상태 필터 -->
+	  <choose>
+	    <!-- 상태 필터 미지정: 모든 컬럼 대상 -->
+	    <when test="statusFilter == null or statusFilter == ''">
+	      AND (
+	        I.INQUIRY_NO      LIKE CONCAT('%', #{keyword}, '%')
+	        OR U.USER_NO      LIKE CONCAT('%', #{keyword}, '%')
+	        OR U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	        OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
+	        OR I.CATEGORY      LIKE CONCAT('%', #{keyword}, '%')
+	        OR I.QNA_TITLE     LIKE CONCAT('%', #{keyword}, '%')
+	        OR I.QNA_STATUS    LIKE CONCAT('%', #{keyword}, '%')
+	      )
+	    </when>
+	    <when test="statusFilter == 'inquiryNo'">
+	      AND I.INQUIRY_NO LIKE CONCAT('%', #{keyword}, '%')
+	    </when>
+	    <when test="statusFilter == 'userNo'">
+	      AND U.USER_NO LIKE CONCAT('%', #{keyword}, '%')
+	    </when>
+	    <when test="statusFilter == 'name'">
+	      AND (
+	        U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+	        OR U.USER_LASTNAME  LIKE CONCAT('%', #{keyword}, '%')
+	      )
+	    </when>
+	    <when test="statusFilter == 'category'">
+	      AND I.CATEGORY LIKE CONCAT('%', #{keyword}, '%')
+	    </when>
+	    <when test="statusFilter == 'qnaTitle'">
+	      AND I.QNA_TITLE LIKE CONCAT('%', #{keyword}, '%')
+	    </when>
+	    <when test="statusFilter == 'qnaStatus'">
+	      AND I.QNA_STATUS LIKE CONCAT('%', #{keyword}, '%')
+	    </when>
+	  </choose>
 	</select>
 	
 	<!-- 고객 문의 답변 저장 -->
@@ -566,64 +569,64 @@
 	
 	<!-- 리뷰 리스트 -->
   	<select id="selectReviewList" resultType="hashmap">
-SELECT 
-    R.REVIEW_NO            AS reviewNo,
-    U.EMAIL                AS email,
-    T.TOUR_NO              AS tourNo,
-    T.TITLE                AS title,
-    T.DURATION             AS duration,
-    U.USER_FIRSTNAME       AS userFirstName,
-    U.USER_LASTNAME        AS userLastName,
-    R.`COMMENT`            AS content,
-    R.RATING               AS rating,
-    DATE_FORMAT(R.R_CREATED_AT, '%Y-%m-%d') AS createdAt
-  FROM REVIEWS R
-  LEFT JOIN TOURS  T ON R.TOUR_NO  = T.TOUR_NO
-  LEFT JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
-  LEFT JOIN USERS  U ON G.USER_NO  = U.USER_NO
-
-  <where>
-    <!-- 검색어가 있을 때만 조건 적용 -->
-    <if test="keyword != null and keyword != ''">
-      ( T.TITLE   LIKE CONCAT('%', #{keyword}, '%')
-       OR R.`COMMENT` LIKE CONCAT('%', #{keyword}, '%')
-       OR U.EMAIL   LIKE CONCAT('%', #{keyword}, '%') )
-    </if>
-  </where>
-
-  <!-- 정렬 -->
-  <choose>
-    <when test="sort == 'rating_desc'">
-      ORDER BY R.RATING DESC
-    </when>
-    <when test="sort == 'rating_asc'">
-      ORDER BY R.RATING ASC
-    </when>
-    <otherwise>
-      ORDER BY R.R_CREATED_AT DESC
-    </otherwise>
-  </choose>
-
-  <!-- 페이징 -->
-  LIMIT #{pageSize} 
-  OFFSET #{offset}
+	  SELECT 
+	    R.REVIEW_NO            AS reviewNo,
+	    U.EMAIL                AS email,
+	    T.TOUR_NO              AS tourNo,
+	    T.TITLE                AS title,
+	    T.DURATION             AS duration,
+	    U.USER_FIRSTNAME       AS userFirstName,
+	    U.USER_LASTNAME        AS userLastName,
+	    R.`COMMENT`            AS content,
+	    R.RATING               AS rating,
+	    DATE_FORMAT(R.R_CREATED_AT, '%Y-%m-%d') AS createdAt
+	  FROM REVIEWS R
+	  LEFT JOIN TOURS  T ON R.TOUR_NO  = T.TOUR_NO
+	  LEFT JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+	  LEFT JOIN USERS  U ON G.USER_NO  = U.USER_NO
+	
+	  <where>
+	    <!-- 검색어가 있을 때만 조건 적용 -->
+	    <if test="keyword != null and keyword != ''">
+	      ( T.TITLE   LIKE CONCAT('%', #{keyword}, '%')
+	       OR R.`COMMENT` LIKE CONCAT('%', #{keyword}, '%')
+	       OR U.EMAIL   LIKE CONCAT('%', #{keyword}, '%') )
+	    </if>
+	  </where>
+	
+	  <!-- 정렬 -->
+	  <choose>
+	    <when test="sort == 'rating_desc'">
+	      ORDER BY R.RATING DESC
+	    </when>
+	    <when test="sort == 'rating_asc'">
+	      ORDER BY R.RATING ASC
+	    </when>
+	    <otherwise>
+	      ORDER BY R.R_CREATED_AT DESC
+	    </otherwise>
+	  </choose>
+	
+	  <!-- 페이징 -->
+	  LIMIT #{pageSize} 
+	  OFFSET #{offset}
 	</select>
 	
 	<!-- 리뷰 전체 수 -->
 	<select id="selectReviewCount" resultType="int">
-SELECT COUNT(*)
-  FROM REVIEWS R
-  LEFT JOIN TOURS  T ON R.TOUR_NO  = T.TOUR_NO
-  LEFT JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
-  LEFT JOIN USERS  U ON G.USER_NO  = U.USER_NO
-
-  <where>
-    <if test="keyword != null and keyword != ''">
-      ( T.TITLE     LIKE CONCAT('%', #{keyword}, '%')
-      OR R.`COMMENT` LIKE CONCAT('%', #{keyword}, '%')
-      OR U.EMAIL     LIKE CONCAT('%', #{keyword}, '%') )
-    </if>
-  </where>
+	  SELECT COUNT(*)
+	  FROM REVIEWS R
+	  LEFT JOIN TOURS  T ON R.TOUR_NO  = T.TOUR_NO
+	  LEFT JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+	  LEFT JOIN USERS  U ON G.USER_NO  = U.USER_NO
+	
+	  <where>
+	    <if test="keyword != null and keyword != ''">
+	      ( T.TITLE     LIKE CONCAT('%', #{keyword}, '%')
+	      OR R.`COMMENT` LIKE CONCAT('%', #{keyword}, '%')
+	      OR U.EMAIL     LIKE CONCAT('%', #{keyword}, '%') )
+	    </if>
+	  </where>
 	</select>
 
 	<!--리뷰 번호로 리뷰 삭제-->
@@ -655,28 +658,27 @@ SELECT COUNT(*)
 	
 	<!--년간 판매내역 조회-->
 	<select id="selectSalesByYear" resultType="hashmap">
-SELECT
-    YEAR(PAYMENT_DATE)           AS year,
-    SUM(AMOUNT)                  AS totalSales
-  FROM PAYMENTS
-  GROUP BY YEAR(PAYMENT_DATE)
-  ORDER BY year
+	  SELECT
+	    YEAR(PAYMENT_DATE)           AS year,
+	    SUM(AMOUNT)                  AS totalSales
+	  FROM PAYMENTS
+	  GROUP BY YEAR(PAYMENT_DATE)
+	  ORDER BY year
 	</select>
 
 	<!--테마별 최근 결제 5건 조회-->
 	<select id="selectThemeSummary" resultType="hashmap">
-  SELECT
-    H.THEME_NAME AS theme,
-    COUNT(*)     AS count
-  FROM TOURS T
-  INNER JOIN PAYMENTS P
-    ON T.TOUR_NO = P.TOUR_NO
-  INNER JOIN THEME H
-    ON T.THEME_NO = H.THEME_NO
-  GROUP BY H.THEME_NAME
-  ORDER BY count DESC
-  LIMIT 5
-
+	  SELECT
+	    H.THEME_NAME AS theme,
+	    COUNT(*)     AS count
+	  FROM TOURS T
+	  INNER JOIN PAYMENTS P
+	    ON T.TOUR_NO = P.TOUR_NO
+	  INNER JOIN THEME H
+	    ON T.THEME_NO = H.THEME_NO
+	  GROUP BY H.THEME_NAME
+	  ORDER BY count DESC
+	  LIMIT 5
 	</select>
 
 	<!--총 결제 건수 조회-->
@@ -687,139 +689,138 @@ SELECT
 
 	<!--쿼리 수정 필요-->
 	<select id="selectLatestReviews" resultType="hashmap">
-SELECT
-    T.TITLE             AS title,
-    T.DURATION          AS duration,
-    T.PRICE             AS price,
-    T.MAX_PEOPLE        AS maxPeople,
-    T.TOUR_DATE         AS tourDate,
-    R.`COMMENT`         AS comment,
-    R.RATING            AS rating,
-    R.R_CREATED_AT      AS createdAt,
-    U.USER_FIRSTNAME    AS userFirstName,
-    U.USER_LASTNAME     AS userLastName
-  FROM TOURS T
-  INNER JOIN REVIEWS R 
-    ON T.TOUR_NO = R.TOUR_NO
-  INNER JOIN USERS U 
-    ON R.USER_NO = U.USER_NO
-  ORDER BY R.R_CREATED_AT DESC
-  LIMIT 5
+	  SELECT
+	    T.TITLE             AS title,
+	    T.DURATION          AS duration,
+	    T.PRICE             AS price,
+	    T.MAX_PEOPLE        AS maxPeople,
+	    T.TOUR_DATE         AS tourDate,
+	    R.`COMMENT`         AS comment,
+	    R.RATING            AS rating,
+	    R.R_CREATED_AT      AS createdAt,
+	    U.USER_FIRSTNAME    AS userFirstName,
+	    U.USER_LASTNAME     AS userLastName
+	  FROM TOURS T
+	  INNER JOIN REVIEWS R 
+	    ON T.TOUR_NO = R.TOUR_NO
+	  INNER JOIN USERS U 
+	    ON R.USER_NO = U.USER_NO
+	  ORDER BY R.R_CREATED_AT DESC
+	  LIMIT 5
 	</select>
 	
 	<!-- 상품관리 조회-->
 	<select id="selectToursManagementList" parameterType="map" resultType="com.example.kapture.tours.model.Tours">
- <bind name="offset" value="(page - 1) * size"/>
-
-  SELECT
-    T.*,
-    G.*,
-    U.*,
-    R.SI_NAME,
-    TH.THEME_NAME,
-    I.IMG_PATH
-  FROM TOURS T
-  INNER JOIN GUIDES G 
-    ON T.GUIDE_NO = G.GUIDE_NO
-  INNER JOIN USERS U 
-    ON G.USER_NO = U.USER_NO
-  INNER JOIN (
-    SELECT DISTINCT SI_NO, SI_NAME
-    FROM REGION
-  ) R 
-    ON T.SI_NO = R.SI_NO
-  INNER JOIN THEME TH 
-    ON T.THEME_NO = TH.THEME_NO
-  JOIN (
-    SELECT *
-    FROM IMG
-    WHERE THUMBNAIL = 'Y'
-  ) I 
-    ON T.TOUR_NO = I.TOUR_NO
-
-  <where>
-    <if test="startDate != null and startDate != ''">
-      AND T.TOUR_DATE &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
-    </if>
-    <if test="endDate != null and endDate != ''">
-      AND T.TOUR_DATE &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
-    </if>
-
-    <choose>
-      <when test="statusFilter == null or statusFilter == ''">
-        AND (
-          T.TOUR_NO       LIKE CONCAT('%', #{keyword}, '%')
-          OR T.TITLE      LIKE CONCAT('%', #{keyword}, '%')
-          OR R.SI_NAME    LIKE CONCAT('%', #{keyword}, '%')
-          OR TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
-        )
-      </when>
-      <when test="statusFilter == 'tourNo'">
-        AND T.TOUR_NO LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'title'">
-        AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'siName'">
-        AND R.SI_NAME LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'themeName'">
-        AND TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-    </choose>
-  </where>
-
-  ORDER BY T.TOUR_DATE DESC
-
-  <!-- size 그대로 살리고, offset 계산값만 사용 -->
-  LIMIT #{size}
-  OFFSET #{offset}
+	 <bind name="offset" value="(page - 1) * size"/>
+	  SELECT
+	    T.*,
+	    G.*,
+	    U.*,
+	    R.SI_NAME,
+	    TH.THEME_NAME,
+	    I.IMG_PATH
+	  FROM TOURS T
+	  INNER JOIN GUIDES G 
+	    ON T.GUIDE_NO = G.GUIDE_NO
+	  INNER JOIN USERS U 
+	    ON G.USER_NO = U.USER_NO
+	  INNER JOIN (
+	    SELECT DISTINCT SI_NO, SI_NAME
+	    FROM REGION
+	  ) R 
+	    ON T.SI_NO = R.SI_NO
+	  INNER JOIN THEME TH 
+	    ON T.THEME_NO = TH.THEME_NO
+	  JOIN (
+	    SELECT *
+	    FROM IMG
+	    WHERE THUMBNAIL = 'Y'
+	  ) I 
+	    ON T.TOUR_NO = I.TOUR_NO
+	
+	  <where>
+	    <if test="startDate != null and startDate != ''">
+	      AND T.TOUR_DATE &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND T.TOUR_DATE &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
+	    </if>
+	
+	    <choose>
+	      <when test="statusFilter == null or statusFilter == ''">
+	        AND (
+	          T.TOUR_NO       LIKE CONCAT('%', #{keyword}, '%')
+	          OR T.TITLE      LIKE CONCAT('%', #{keyword}, '%')
+	          OR R.SI_NAME    LIKE CONCAT('%', #{keyword}, '%')
+	          OR TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
+	        )
+	      </when>
+	      <when test="statusFilter == 'tourNo'">
+	        AND T.TOUR_NO LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'title'">
+	        AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'siName'">
+	        AND R.SI_NAME LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'themeName'">
+	        AND TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	    </choose>
+	  </where>
+	
+	  ORDER BY T.TOUR_DATE DESC
+	
+	  <!-- size 그대로 살리고, offset 계산값만 사용 -->
+	  LIMIT #{size}
+	  OFFSET #{offset}
 	</select>
 	
 	<!-- 상품관리 총 갯수 -->
 	<select id="selectToursTotalCount" resultType="int">
-		  SELECT COUNT(*)
-  FROM TOURS T
-  JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
-  JOIN USERS U ON G.USER_NO = U.USER_NO
-  JOIN (
-    SELECT DISTINCT SI_NO, SI_NAME FROM REGION
-  ) R ON T.SI_NO = R.SI_NO
-  JOIN THEME TH ON T.THEME_NO = TH.THEME_NO
-  JOIN (
-    SELECT * FROM IMG WHERE THUMBNAIL = 'Y'
-  ) I ON T.TOUR_NO = I.TOUR_NO
-  <where>
-    <if test="startDate != null and startDate != ''">
-      AND T.TOUR_DATE &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
-    </if>
-    <if test="endDate != null and endDate != ''">
-      AND T.TOUR_DATE &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
-    </if>
-
-    <choose>
-      <when test="statusFilter == null or statusFilter == ''">
-        AND (
-          T.TOUR_NO      LIKE CONCAT('%', #{keyword}, '%')
-          OR T.TITLE     LIKE CONCAT('%', #{keyword}, '%')
-          OR R.SI_NAME   LIKE CONCAT('%', #{keyword}, '%')
-          OR TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
-        )
-      </when>
-      <when test="statusFilter == 'tourNo'">
-        AND T.TOUR_NO LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'title'">
-        AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'siName'">
-        AND R.SI_NAME LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-      <when test="statusFilter == 'themeName'">
-        AND TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
-      </when>
-    </choose>
-  </where>
+	  SELECT COUNT(*)
+	  FROM TOURS T
+	  JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
+	  JOIN USERS U ON G.USER_NO = U.USER_NO
+	  JOIN (
+	    SELECT DISTINCT SI_NO, SI_NAME FROM REGION
+	  ) R ON T.SI_NO = R.SI_NO
+	  JOIN THEME TH ON T.THEME_NO = TH.THEME_NO
+	  JOIN (
+	    SELECT * FROM IMG WHERE THUMBNAIL = 'Y'
+	  ) I ON T.TOUR_NO = I.TOUR_NO
+	  <where>
+	    <if test="startDate != null and startDate != ''">
+	      AND T.TOUR_DATE &gt;= STR_TO_DATE(#{startDate}, '%Y-%m-%d')
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND T.TOUR_DATE &lt;= STR_TO_DATE(#{endDate}, '%Y-%m-%d')
+	    </if>
+	
+	    <choose>
+	      <when test="statusFilter == null or statusFilter == ''">
+	        AND (
+	          T.TOUR_NO      LIKE CONCAT('%', #{keyword}, '%')
+	          OR T.TITLE     LIKE CONCAT('%', #{keyword}, '%')
+	          OR R.SI_NAME   LIKE CONCAT('%', #{keyword}, '%')
+	          OR TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
+	        )
+	      </when>
+	      <when test="statusFilter == 'tourNo'">
+	        AND T.TOUR_NO LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'title'">
+	        AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'siName'">
+	        AND R.SI_NAME LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	      <when test="statusFilter == 'themeName'">
+	        AND TH.THEME_NAME LIKE CONCAT('%', #{keyword}, '%')
+	      </when>
+	    </choose>
+	  </where>
 	</select>
 	
 	<!-- 상품관리 수정 -->
@@ -856,96 +857,98 @@ SELECT
 		
 	<!--월별 총 결제 내역 조회-->
 	<select id="selectMonthlySales" resultType="map">
-SELECT
-    DATE_FORMAT(PAYMENT_DATE, '%Y-%m') AS MONTH,
-    SUM(AMOUNT) AS TOTALSALES
-FROM PAYMENTS
-WHERE
-    PAYMENT_STATUS IN ('거래완료', '결제완료')
-    AND YEAR(PAYMENT_DATE) = YEAR(CURDATE())
-GROUP BY DATE_FORMAT(PAYMENT_DATE, '%Y-%m')
-ORDER BY MONTH ASC;
+		SELECT
+		    DATE_FORMAT(PAYMENT_DATE, '%Y-%m') AS MONTH,
+		    SUM(AMOUNT) AS TOTALSALES
+		FROM PAYMENTS
+		WHERE
+		    PAYMENT_STATUS IN ('거래완료', '결제완료')
+		    AND YEAR(PAYMENT_DATE) = YEAR(CURDATE())
+		GROUP BY DATE_FORMAT(PAYMENT_DATE, '%Y-%m')
+		ORDER BY MONTH ASC;
 	</select>
 		
 	<!--최근 판매 내역 조회 + 갯수 제한-->
 	<select id="selectLatestSales" parameterType="map" resultType="map">
-		  <bind name="offset" value="offset"/>
-          <bind name="limit" value="limit"/>
-  
-  SELECT 
-    T.TITLE,
-    DATE_FORMAT(P.PAYMENT_DATE, '%Y-%m-%d') AS PAYMENT_DATE,
-    P.AMOUNT,
-    P.NUM_PEOPLE,
-    U.USER_FIRSTNAME AS GUIDE_FIRST_NAME,
-    U.USER_LASTNAME AS GUIDE_LAST_NAME,
-    I.FILE_PATH AS IMAGE_PATH
-  FROM PAYMENTS P
-  LEFT JOIN TOURS T ON P.TOUR_NO = T.TOUR_NO
-  LEFT JOIN USERS U ON T.GUIDE_NO = U.USER_NO
-  LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND I.THUMBNAIL = 'Y'
-  WHERE P.PAYMENT_STATUS = '거래완료'
-  ORDER BY P.PAYMENT_DATE DESC
-  LIMIT #{limit}
-  OFFSET #{offset}
+	  <bind name="offset" value="offset"/>
+      <bind name="limit" value="limit"/>
+		  SELECT 
+		    T.TITLE,
+		    DATE_FORMAT(P.PAYMENT_DATE, '%Y-%m-%d') AS PAYMENT_DATE,
+		    P.AMOUNT,
+		    P.NUM_PEOPLE,
+		    U.USER_FIRSTNAME AS GUIDE_FIRST_NAME,
+		    U.USER_LASTNAME AS GUIDE_LAST_NAME,
+		    I.FILE_PATH AS IMAGE_PATH
+		  FROM PAYMENTS P
+		  LEFT JOIN TOURS T ON P.TOUR_NO = T.TOUR_NO
+		  LEFT JOIN USERS U ON T.GUIDE_NO = U.USER_NO
+		  LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND I.THUMBNAIL = 'Y'
+		  WHERE P.PAYMENT_STATUS = '거래완료'
+		  ORDER BY P.PAYMENT_DATE DESC
+		  LIMIT #{limit}
+		  OFFSET #{offset}
 	</select>
 		
 	<!-- 요청게시판 글 총 갯수-->
 	<select id="selectRequestCount" resultType="int">
-    		SELECT COUNT(*) 
-    		FROM REQUESTS 
-    		WHERE STATUS != ''
+		SELECT COUNT(*) 
+		FROM REQUESTS 
+		WHERE STATUS != ''
 	</select>
 
 	<!--최근 요청게시글 조회 + 페이징 -->
 	<select id="selectLatestRequests" parameterType="map" resultType="map">
-  SELECT
-    R.REQUEST_NO,
-    R.TITLE,
-    R.STATUS,
-    DATE_FORMAT(R.RQ_CREATED_AT, '%Y-%m-%d') AS RQ_CREATED_AT,
-    U.USER_FIRSTNAME,
-    U.USER_LASTNAME
-  FROM REQUESTS R
-  JOIN USERS U ON R.USER_NO = U.USER_NO
-  ORDER BY R.RQ_CREATED_AT DESC
-  LIMIT #{limit}
-  OFFSET #{offset}
+	  SELECT
+	    R.REQUEST_NO,
+	    R.TITLE,
+	    R.STATUS,
+	    DATE_FORMAT(R.RQ_CREATED_AT, '%Y-%m-%d') AS RQ_CREATED_AT,
+	    U.USER_FIRSTNAME,
+	    U.USER_LASTNAME
+	  FROM REQUESTS R
+	  JOIN USERS U ON R.USER_NO = U.USER_NO
+	  ORDER BY R.RQ_CREATED_AT DESC
+	  LIMIT #{limit}
+	  OFFSET #{offset}
 	</select>
+	
 	<!-- 제휴문의 관리(승인대기, 승인거부) 조회-->
 	<select id="selectWaitingPartnershipList" parameterType="map" resultType="com.example.kapture.admin.model.Partnership">
-  <bind name="offset" value="(waitingPage - 1) * size" />
-
-  SELECT *
-  FROM PARTNERSHIP
-  WHERE PS_STATUS IN ('승인대기', '승인거부')
-  ORDER BY PS_CREATED_AT DESC
-  LIMIT #{size}
-  OFFSET #{offset}
+	  <bind name="offset" value="(waitingPage - 1) * size" />
+	  SELECT *
+	  FROM PARTNERSHIP
+	  WHERE PS_STATUS IN ('승인대기', '승인거부')
+	  ORDER BY PS_CREATED_AT DESC
+	  LIMIT #{size}
+	  OFFSET #{offset}
 	</select>
+	
 	<!-- 제휴문의 관리(승인완료) 조회-->
 	<select id="selectApprovedPartnershipList" parameterType="map" resultType="com.example.kapture.admin.model.Partnership">
-  <bind name="offset" value="(approvedPage - 1) * size" />
-
-  SELECT *
-  FROM PARTNERSHIP
-  WHERE PS_STATUS = '승인완료'
-  ORDER BY PS_CREATED_AT DESC
-  LIMIT #{size}
-  OFFSET #{offset}
+	  <bind name="offset" value="(approvedPage - 1) * size" />
+	  SELECT *
+	  FROM PARTNERSHIP
+	  WHERE PS_STATUS = '승인완료'
+	  ORDER BY PS_CREATED_AT DESC
+	  LIMIT #{size}
+	  OFFSET #{offset}
 	</select>
+	
 	<!-- 제휴문의 관리(승인대기, 승인거부) 총 개수 -->
 	<select id="countWaitingPartnership" resultType="int">
 		SELECT COUNT(*)
 		FROM PARTNERSHIP		
 		WHERE PS_STATUS IN ('승인대기', '승인거부')
 	</select>
+	
 	<!-- 제휴문의 관리(승인완료) 총 개수 -->
 	<select id="countApprovedPartnership" resultType="int">
 		SELECT COUNT(*)
 		FROM PARTNERSHIP		
 		WHERE PS_STATUS = '승인완료'
 	</select>
+	
 	<!-- 제휴문의 관리 수정 -->
 	<update id="updatePartnership" parameterType="hashmap">
 		UPDATE PARTNERSHIP SET 
@@ -953,6 +956,7 @@ ORDER BY MONTH ASC;
 			PS_UPDATED_AT = SYSDATE
 		WHERE PARTNERSHIP_NO = #{partnershipNo, jdbcType=NUMERIC}
 	</update>
+	
 	<!-- 문의 답변시 알림 정보 저장 -->
 	<insert id="insertAnswerAlarm" parameterType="hashmap">
 	    INSERT INTO ALARM (
@@ -973,6 +977,7 @@ ORDER BY MONTH ASC;
 	        NOW()
 	    )
 	</insert>
+	
 	<!-- 제휴 상태 변경시 알림 정보 저장 -->
 	<insert id="insertPartnershipStatusAlarm" parameterType="hashmap">
 	    INSERT INTO ALARM (
@@ -993,4 +998,5 @@ ORDER BY MONTH ASC;
 	        NOW()
 	    )
 	</insert>
+	
 </mapper>
