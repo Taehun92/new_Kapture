@@ -188,7 +188,8 @@ public class CommonService {
 		
 		return resultMap;
 	}
-
+	
+	// 투어 상품 썸네일 가져오기
 	public HashMap<String, Object> getTourThumbnail(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -203,10 +204,12 @@ public class CommonService {
 		}
 		return resultMap;
 	}
+	
 	// 최신 10개 알람 조회
 	public List<HashMap<String, Object>> getRecentAlarms(int userNo) {
 	    return commonMapper.selectRecentAlarms(userNo);
 	}
+	
 	// 읽은 알람 상태 처리
 	public int updateAlarmStatus(Map<String, Object> map) {
 	    return commonMapper.updateAlarmStatus(map);

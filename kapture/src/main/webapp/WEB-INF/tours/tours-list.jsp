@@ -732,7 +732,7 @@
                             self.toursList = data.toursList;
                             self.regionList = data.regionList;
                             self.themeList = data.themeList;
-                            console.log(self.toursList);
+                            console.log("tourList>>>>>>>>>>>",self.toursList);
                             self.index = Math.ceil(data.count / self.pageSize); // 전체 페이지 수 계산
                             if (self.sessionId && !isNaN(self.sessionId)) {
                                 self.fnGetWishList();

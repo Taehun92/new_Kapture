@@ -105,19 +105,19 @@
                     <div class="flex gap-12">
                         <a href="/tours/list.do" class="hover:text-blue-700">Tours</a>
                         <div class="relative group">
-                            <a href="#" class="hover:text-blue-700">
-                                Board
+                            <a href="/request/list.do" class="hover:text-blue-700">
+                                Request
                             </a>
-                            <!-- 드롭다운: 가로 정렬 fix -->
+                            <!-- 드롭다운: 가로 정렬 fix
                             <div class="absolute left-[-111px] hidden group-hover:flex flex-row items-center bg-white border-t border-gray-300 z-40 px-6 py-2"
                                 style="top: 100%; margin-top: 0px;">
                                 <a href="/request/list.do"
                                     class="text-gray-800 hover:text-blue-600 font-medium text-lg mr-6 whitespace-nowrap">요청게시판</a>
-                                <a href="/freeboard/list.do"
+                                <a href=""
                                     class="text-gray-800 hover:text-blue-600 font-medium text-lg mr-6 whitespace-nowrap">자유게시판</a>
                                 <a href="/reviewboard/list.do"
                                     class="text-gray-800 hover:text-blue-600 font-medium text-lg whitespace-nowrap">후기게시판</a>
-                            </div>
+                            </div> -->
                         </div>
                         <a href="/course.do" class="hover:text-blue-700">Where to Go</a>
                     </div>
