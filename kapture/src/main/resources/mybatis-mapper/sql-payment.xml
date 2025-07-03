@@ -14,7 +14,7 @@
 	</select>
 	<insert id="insertPayment" parameterType="map">
 	    INSERT INTO PAYMENTS (PAYMENT_NO, USER_NO, AMOUNT, METHOD, MERCHANT_ID, PAYMENT_STATUS, TOUR_NO, PAYMENT_DATE, NUM_PEOPLE, BASKET_NO) 
-		VALUES (PAYMENT_SEQ.NEXTVAL, #{userNo}, #{amount}, #{method}, #{merchantId}, '결제완료', #{tourNo}, SYSDATE, #{numPeople}, #{basketNo})
+		VALUES (NULL, #{userNo}, #{amount}, #{method}, #{merchantId}, '결제완료', #{tourNo}, NOW(), #{numPeople}, #{basketNo})
 	</insert>
 	<select id="selectPayment" parameterType="String" resultType="com.example.kapture.payment.model.Payment">
 	    SELECT P.PAYMENT_NO, P.USER_NO, P.TOUR_NO, P.AMOUNT, P.PAYMENT_DATE, P.METHOD, P.NUM_PEOPLE, P.BASKET_NO,T.TITLE, T.PRICE, T.DURATION, T.TOUR_DATE
@@ -52,21 +52,21 @@
         ALARM_STATUS,
         AL_CREATED_AT
     ) VALUES (
-        ALARM_SEQ.NEXTVAL,
+        NULL,
         #{targetUserNo},
         #{referenceType},
         #{referenceId},
         #{urlParam, jdbcType=VARCHAR},
         'N',
-        SYSDATE
+        NOW()
     )
 	</insert>
 	<!-- 해당 유저의 가장 최근 결제 번호 가져오기 -->
 	<select id="selectLatestPaymentNo" parameterType="int" resultType="int">
-	    SELECT PAYMENT_NO
-	    FROM PAYMENTS
-	    WHERE USER_NO = #{userNo}
-	    ORDER BY PAYMENT_DATE DESC
-	    FETCH FIRST 1 ROWS ONLY
+  SELECT PAYMENT_NO
+  FROM PAYMENTS
+  WHERE USER_NO = #{userNo}
+  ORDER BY PAYMENT_DATE DESC
+  LIMIT 1
 	</select>
 </mapper> 
