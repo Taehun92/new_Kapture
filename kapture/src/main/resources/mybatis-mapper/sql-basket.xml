@@ -4,8 +4,8 @@
 
 <mapper namespace="com.example.kapture.basket.mapper.BasketMapper">
 	<insert id="insertBasket" parameterType="hashmap">
-		INSERT INTO BASKET (BASKET_NO, TOUR_NO, USER_NO, NUM_PEOPLE)
-		VALUES(BASKET_SEQ.NEXTVAL, #{tourNo}, #{sessionId}, #{count} ) 
+        INSERT INTO BASKET (TOUR_NO, USER_NO, NUM_PEOPLE)
+        VALUES(#{tourNo}, #{sessionId}, #{count})
 	</insert>
 
 	<select id="existsBasketItem" parameterType="hashmap" resultType="int">
@@ -49,8 +49,8 @@
 	</select>
 	
 	<update id="updateBasket" parameterType="hashmap">
-		UPDATE BASKET SET NUM_PEOPLE = #{count, jdbcType=NUMERIC}
-		WHERE BASKET_NO = #{basketNo, jdbcType=NUMERIC}
+		UPDATE BASKET SET NUM_PEOPLE = #{count}
+		WHERE BASKET_NO = #{basketNo}
 		
 	</update>
 </mapper>
