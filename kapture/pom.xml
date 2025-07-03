@@ -45,6 +45,11 @@
 		    <version>2.31.73</version>
 		    <scope>compile</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-s3</artifactId>
+		    <version>1.12.683</version>
+		</dependency>
 		<dependency> <!-- 추가 2-->
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-tomcat</artifactId>
