@@ -56,7 +56,7 @@
     CREATED_AT, UPDATED_AT, PARENT_COMMENT_NO, IS_DELETED
   )
   VALUES (
-    NULL,  -- COMMENT_NO는 AUTO_INCREMENT로 처리
+    NULL,
     #{userNo},
     #{requestNo},
     #{comments},

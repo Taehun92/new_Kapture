@@ -19,27 +19,32 @@ public class RequestService {
 
 	// 요청 글 조회 
 	public HashMap<String, Object> getRequestList(HashMap<String, Object> map) {
-        HashMap<String, Object> resultMap = new HashMap<>();
+	    HashMap<String, Object> resultMap = new HashMap<>();
 
-        try {
-            // 파라미터에서 pageSize, offset, page를 그대로 사용
-        	List<Request> requestList = requestMapper.selectRequestList(map);
-            int totalCount = requestMapper.countRequestList(map);
+	    try {
+	        // 문자열일 수 있는 값을 int로 변환해서 다시 map에 넣어줌
+	        int pageSize = Integer.parseInt(map.getOrDefault("pageSize", "10").toString());
+	        int page = Integer.parseInt(map.getOrDefault("page", "1").toString());
+	        int offset = (page - 1) * pageSize;
 
-            int pageSize = Integer.parseInt(map.getOrDefault("pageSize", "10").toString());
-            int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	        map.put("pageSize", pageSize); // 👈 반드시 숫자로 다시 넣어줘야 함
+	        map.put("offset", offset);     // 👈 이것도 마찬가지
 
-            resultMap.put("result", "success");
-            resultMap.put("requestList", requestList);
-            resultMap.put("totalPages", totalPages);
+	        List<Request> requestList = requestMapper.selectRequestList(map);
+	        int totalCount = requestMapper.countRequestList(map);
+	        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultMap.put("result", "fail");
-        }
+	        resultMap.put("result", "success");
+	        resultMap.put("requestList", requestList);
+	        resultMap.put("totalPages", totalPages);
 
-        return resultMap;
-    }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("result", "fail");
+	    }
+
+	    return resultMap;
+	}
 
 	public HashMap<String, Object> addRequest(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
