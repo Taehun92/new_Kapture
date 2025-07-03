@@ -23,16 +23,17 @@ public class RequestService {
 
         try {
             // 파라미터에서 pageSize, offset, page를 그대로 사용
-        	List<Request> requestList = requestMapper.selectRequestList(map);
-            int totalCount = requestMapper.countRequestList(map);
-
+			int page = Integer.parseInt(map.getOrDefault("page", "1").toString());
             int pageSize = Integer.parseInt(map.getOrDefault("pageSize", "10").toString());
-            int totalPages = (int) Math.ceil((double) totalCount / pageSize);
-
+			int offset = (page - 1) * pageSize;
+			map.put("offset", offset);
+			map.put("pageSize", pageSize);
+			int totalCount = requestMapper.countRequestList(map);
+			List<Request> requestList = requestMapper.selectRequestList(map);
+			int totalPages = (int) Math.ceil((double) totalCount / pageSize);
             resultMap.put("result", "success");
             resultMap.put("requestList", requestList);
             resultMap.put("totalPages", totalPages);
-
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("result", "fail");
