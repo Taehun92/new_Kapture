@@ -30,6 +30,13 @@ public class ToursService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// ✅ page, pageSize 문자열로 들어온 경우 정수로 변환
+			if (map.get("page") instanceof String) {
+			    map.put("page", Integer.parseInt(map.get("page").toString()));
+			}
+			if (map.get("pageSize") instanceof String) {
+			    map.put("pageSize", Integer.parseInt(map.get("pageSize").toString()));
+			}
 			
 			List<Tours> toursList = toursMapper.selectToursList(map); // 조건에 맞는 상품 목록 조회 
 			List<Region> regionList = commonMapper.selectRegionList(map); // 상품 검색을 위한 지역별 이름 목록

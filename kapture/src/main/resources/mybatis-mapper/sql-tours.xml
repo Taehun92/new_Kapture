@@ -61,7 +61,7 @@
 		</if>
 	
 		ORDER BY T.TOUR_DATE
-		LIMIT #{page}, #{pageSize}
+		LIMIT #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER}
 	</select>
 	
 	<!-- 기본 전체 투어 목록 조회 -->
