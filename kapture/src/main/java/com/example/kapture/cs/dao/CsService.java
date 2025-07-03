@@ -16,42 +16,54 @@ public class CsService {
 	@Autowired
 	CsMapper csMapper;
 
+	// FAQ
 	public HashMap<String, Object> csFaq(HashMap<String, Object> map) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			List<Cs> list = csMapper.faqCs(map);
-			
-			int count = csMapper.faqCsCnt(map);
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        // ✅ offset 계산
+	        int page = Integer.parseInt(map.getOrDefault("page", "1").toString());
+	        int pageSize = Integer.parseInt(map.getOrDefault("pageSize", "10").toString());
+	        int offset = Math.max(0, (page - 1) * pageSize);
+	        map.put("offset", offset);
+	        map.put("pageSize", pageSize);
 
-			resultMap.put("count", count);
-			resultMap.put("list", list);
-			resultMap.put("result", "success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			resultMap.put("result", "fail");
-		}
-		return resultMap;
-}
+	        List<Cs> list = csMapper.faqCs(map);
+	        int count = csMapper.faqCsCnt(map);
 
+	        resultMap.put("count", count);
+	        resultMap.put("list", list);
+	        resultMap.put("result", "success");
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", "fail");
+	    }
+	    return resultMap;
+	}
+	
+	// 공지사항
 	public HashMap<String, Object> csNotice(HashMap<String, Object> map) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			List<Cs> list = csMapper.csNotice(map);
-			
-			int count = csMapper.noticeCsCnt(map);
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        int page = Integer.parseInt(map.getOrDefault("page", "1").toString());
+	        int pageSize = Integer.parseInt(map.getOrDefault("pageSize", "10").toString());
+	        int offset = Math.max(0, (page - 1) * pageSize);
+	        map.put("offset", offset);
+	        map.put("pageSize", pageSize);
 
-			resultMap.put("count", count);
-			resultMap.put("list", list);
-			resultMap.put("result", "success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			resultMap.put("result", "fail");
-		}
-		return resultMap;
+	        List<Cs> list = csMapper.csNotice(map);
+	        int count = csMapper.noticeCsCnt(map);
+
+	        resultMap.put("count", count);
+	        resultMap.put("list", list);
+	        resultMap.put("result", "success");
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", "fail");
+	    }
+	    return resultMap;
 	}
 
+	// QNA 등록
 	public HashMap<String, Object> qnaAdd(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		csMapper.insertQna(map);
@@ -61,7 +73,7 @@ public class CsService {
 		return resultMap;
 	}
 
-	
+	// 검색 기능
 	public HashMap<String, Object> searchAll(HashMap<String, Object> map) {
         HashMap<String, Object> result = new HashMap<>();
         List<HashMap<String, Object>> faqList = csMapper.searchFaq(map);
@@ -72,6 +84,7 @@ public class CsService {
         return result;
     }
 
+	// 제휴문의
 	public HashMap<String, Object> savePartnership(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -86,7 +99,8 @@ public class CsService {
 		}
 		return resultMap;
 	}
-//	// 문의시 알림 정보 저장
+	
+ 	// 문의시 알림 정보 저장
 	public void registerAdminQnaAlarm(HashMap<String, Object> map) {
 		Object referenceId = map.get("referenceId");
 		if (referenceId == null) {
@@ -105,6 +119,7 @@ public class CsService {
 	        csMapper.insertQnaAlarm(alarmMap);
 	    }
 	}
+	
 	// 제휴 요청시 알림 정보 저장
 	public void registerPartnershipAlarm(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub

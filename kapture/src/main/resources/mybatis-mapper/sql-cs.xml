@@ -5,7 +5,6 @@
 <mapper namespace="com.example.kapture.cs.mapper.CsMapper">
 	
 	<select id="faqCs" parameterType="hashmap" resultType="com.example.kapture.cs.model.Cs">
-  	  <bind name="offset" value="(page - 1) * pageSize"/>
 	  SELECT *
 	  FROM FAQ
 	  WHERE 1=1
@@ -21,6 +20,9 @@
 	    <if test="searchOption != null and searchOption == 'question'">
 	      AND QUESTION LIKE CONCAT('%', #{keyword}, '%')
 	    </if>
+	    <if test="category != null and category != 'all'">
+		  AND CATEGORY = #{category}
+		</if>
 	  ORDER BY FAQ_NO DESC
 	  LIMIT #{pageSize} OFFSET #{offset}
 	</select>
@@ -44,7 +46,6 @@
 	</select>
 	
 	<select id="csNotice" parameterType="hashmap" resultType="com.example.kapture.cs.model.Cs">
-	  <bind name="offset" value="(page - 1) * pageSize"/>
 	  SELECT *
 	  FROM NOTICES
 	  WHERE 1=1
@@ -61,7 +62,7 @@
 	      AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
 	    </if>
 	
-	  ORDER BY CREATED_AT DESC
+	  ORDER BY N_CREATED_AT DESC
 	  LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	

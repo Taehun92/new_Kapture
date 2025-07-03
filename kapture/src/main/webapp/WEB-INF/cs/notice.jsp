@@ -4,8 +4,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" type="image/png" sizes="96x96" href="/img/logo/favicon-96x96.png" />
-  <link rel="shortcut icon" href="/img/logo/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
+  <link rel="shortcut icon" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
   <title>공지사항 | kapture</title>
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.min.js"></script>
@@ -101,7 +101,7 @@
             keyword: self.keyword,
             searchOption: self.searchOption,
             pageSize: self.pageSize,
-            page: (self.page - 1) * self.pageSize
+            page: self.page
           };
           $.ajax({
             url: "/cs/notice.dox",

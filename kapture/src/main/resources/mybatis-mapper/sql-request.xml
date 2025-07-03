@@ -1,130 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.kapture.board.mapper.RequestMapper">
-	<select id="selectRequestList" parameterType="hashmap" resultType="com.example.kapture.board.model.Request">
-  SELECT *
-  FROM REQUESTS R
-  INNER JOIN USERS U ON R.USER_NO = U.USER_NO
-  WHERE 1 = 1
-  <if test="keyword != null and keyword != ''">
-    AND (
-      TITLE LIKE CONCAT('%', #{keyword}, '%')
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
-  ORDER BY REQUEST_NO DESC
-  LIMIT #{pageSize} OFFSET #{offset}
-	</select>
-	<select id="countRequestList" parameterType="hashmap" resultType="int">
-         SELECT COUNT(*)
-  FROM REQUESTS R
-  INNER JOIN USERS U ON R.USER_NO = U.USER_NO
-  WHERE 1 = 1
-  <if test="keyword != null and keyword != ''">
-    AND (
-      TITLE LIKE CONCAT('%', #{keyword}, '%')
-      OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
-      OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
-    )
-  </if>
+
+    <select id="selectRequestList" parameterType="hashmap" resultType="com.example.kapture.board.model.Request">
+        SELECT *
+        FROM REQUESTS R
+        INNER JOIN USERS U ON R.USER_NO = U.USER_NO
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND (
+                TITLE LIKE CONCAT('%', #{keyword}, '%')
+                OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+                OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+        ORDER BY REQUEST_NO DESC
+        LIMIT #{pageSize} OFFSET #{offset}
     </select>
-	<select id="selectRequest" parameterType="hashmap" resultType="com.example.kapture.board.model.Request">
-		SELECT *
-		FROM REQUESTS R
-		INNER JOIN USERS U ON R.USER_NO = U.USER_NO
-		WHERE R.REQUEST_NO = #{requestNo}
-	</select>
-	<select id="selectRequestCommentList" parameterType="hashmap" resultType="com.example.kapture.board.model.Comment">
-		SELECT C1.COMMENT_NO, C1.REQUEST_NO, C1.USER_NO, C1.MESSAGE, NVL(TO_CHAR(C1.PARENT_COMMENT_NO), '0') AS PARENT_COMMENT_NO, C1.DELETEYN,  U.USER_FIRSTNAME, U.USER_LASTNAME, R.*
-		FROM REQUEST_COMMENTS C1
-		LEFT JOIN REQUEST_COMMENTS C2 ON C1.COMMENT_NO = C2.PARENT_COMMENT_NO
-		INNER JOIN REQUESTS R ON R.REQUEST_NO = C1.REQUEST_NO
-		INNER JOIN USERS U ON C1.USER_NO = U.USER_NO
-		WHERE C1.REQUEST_NO = #{requestNo}
-		ORDER BY C1.RQC_CREATED_AT DESC 
-	</select>
-	<insert id="insertRequest" parameterType="hashmap">
-		INSERT INTO REQUESTS
-		VALUES(NULL, #{userNo}, #{title}, #{region}, #{budget}, '0', NOW(), NOW(), #{contents},#{currency})
-	</insert>
-	<insert id="insertRequestComment" parameterType="hashmap">
-		 INSERT INTO REQUEST_COMMENTS (
-    COMMENT_NO, USER_NO, REQUEST_NO, COMMENTS,
-    CREATED_AT, UPDATED_AT, PARENT_COMMENT_NO, IS_DELETED
-  )
-  VALUES (
-    NULL,
-    #{userNo},
-    #{requestNo},
-    #{comments},
-    NOW(),
-    NOW(),
-    #{parentCommentNo},
-    'N'
-  )
-	</insert>
-	<select id="selectCommentDetail" parameterType="int" resultType="hashmap">
-	    SELECT C.COMMENT_NO, C.USER_NO, C.MESSAGE, C.PARENT_COMMENT_NO, C.DELETEYN, U.USER_FIRSTNAME AS userFirstName, U.USER_LASTNAME AS userLastName
-	    FROM REQUEST_COMMENTS C
-	    INNER JOIN USERS U ON C.USER_NO = U.USER_NO
-	    WHERE C.COMMENT_NO = #{commentNo}
-	</select>
-	<update id="updateRequest" parameterType="hashmap">
-		UPDATE REQUESTS
-		SET TITLE = #{title}, REGION = #{region}, BUDGET = #{budget}, RQ_UPDATED_AT = NOW(), DESCRIPTION = #{contents}, CURRENCY = #{currency}
-		WHERE REQUEST_NO = #{requestNo}
-	</update>
-	<update id="updateRequestStatus" parameterType="hashmap">
-		UPDATE REQUESTS
-		SET STATUS = '1'
-		WHERE REQUEST_NO = #{requestNo}
-	</update>
-	<update id="acceptRequestStatus">
-		UPDATE REQUESTS
-		SET STATUS = '2'
-		WHERE REQUEST_NO = #{requestNo}
-	</update>
-	<update id="updateRequestComment" parameterType="hashmap">
-		UPDATE REQUEST_COMMENTS
-		SET MESSAGE = #{comments}, RQC_UPDATED_AT = NOW()
-		WHERE COMMENT_NO = #{commentNo}
-	</update>
-	<delete id="deleteRequest" parameterType="hashmap">
-		DELETE FROM REQUESTS
-		WHERE REQUEST_NO = #{requestNo}
-	</delete>
-	<update id="deleteRequestComment" parameterType="hashmap">
-		UPDATE REQUEST_COMMENTS
-    	SET DELETEYN = 'Y', RQC_UPDATED_AT = NOW()
-    	WHERE 1=1
-    	<if test="commentNo != null">
+
+    <select id="countRequestList" parameterType="hashmap" resultType="int">
+        SELECT COUNT(*)
+        FROM REQUESTS R
+        INNER JOIN USERS U ON R.USER_NO = U.USER_NO
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND (
+                TITLE LIKE CONCAT('%', #{keyword}, '%')
+                OR USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+                OR USER_LASTNAME LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="selectRequest" parameterType="hashmap" resultType="com.example.kapture.board.model.Request">
+        SELECT *
+        FROM REQUESTS R
+        INNER JOIN USERS U ON R.USER_NO = U.USER_NO
+        WHERE R.REQUEST_NO = #{requestNo}
+    </select>
+
+    <select id="selectRequestCommentList" parameterType="hashmap" resultType="com.example.kapture.board.model.Comment">
+        SELECT 
+            C1.COMMENT_NO, 
+            C1.REQUEST_NO, 
+            C1.USER_NO, 
+            C1.MESSAGE, 
+            IFNULL(C1.PARENT_COMMENT_NO, 0) AS PARENT_COMMENT_NO, 
+            C1.DELETEYN,  
+            U.USER_FIRSTNAME, 
+            U.USER_LASTNAME, 
+            R.*
+        FROM REQUEST_COMMENTS C1
+        LEFT JOIN REQUEST_COMMENTS C2 ON C1.COMMENT_NO = C2.PARENT_COMMENT_NO
+        INNER JOIN REQUESTS R ON R.REQUEST_NO = C1.REQUEST_NO
+        INNER JOIN USERS U ON C1.USER_NO = U.USER_NO
+        WHERE C1.REQUEST_NO = #{requestNo}
+        ORDER BY C1.RQC_CREATED_AT DESC 
+    </select>
+
+    <insert id="insertRequest" parameterType="hashmap">
+        INSERT INTO REQUESTS
+        VALUES (NULL, #{userNo}, #{title}, #{region}, #{budget}, '0', NOW(), NOW(), #{contents}, #{currency})
+    </insert>
+
+    <insert id="insertRequestComment" parameterType="hashmap">
+        INSERT INTO REQUEST_COMMENTS (
+            COMMENT_NO, USER_NO, REQUEST_NO, COMMENTS,
+            CREATED_AT, UPDATED_AT, PARENT_COMMENT_NO, IS_DELETED
+        )
+        VALUES (
+            NULL,
+            #{userNo},
+            #{requestNo},
+            #{comments},
+            NOW(),
+            NOW(),
+            #{parentCommentNo},
+            'N'
+        )
+    </insert>
+
+    <select id="selectCommentDetail" parameterType="int" resultType="hashmap">
+        SELECT 
+            C.COMMENT_NO, 
+            C.USER_NO, 
+            C.MESSAGE, 
+            C.PARENT_COMMENT_NO, 
+            C.DELETEYN, 
+            U.USER_FIRSTNAME AS userFirstName, 
+            U.USER_LASTNAME AS userLastName
+        FROM REQUEST_COMMENTS C
+        INNER JOIN USERS U ON C.USER_NO = U.USER_NO
+        WHERE C.COMMENT_NO = #{commentNo}
+    </select>
+
+    <update id="updateRequest" parameterType="hashmap">
+        UPDATE REQUESTS
+        SET 
+            TITLE = #{title}, 
+            REGION = #{region}, 
+            BUDGET = #{budget}, 
+            RQ_UPDATED_AT = NOW(), 
+            DESCRIPTION = #{contents}, 
+            CURRENCY = #{currency}
+        WHERE REQUEST_NO = #{requestNo}
+    </update>
+
+    <update id="updateRequestStatus" parameterType="hashmap">
+        UPDATE REQUESTS
+        SET STATUS = '1'
+        WHERE REQUEST_NO = #{requestNo}
+    </update>
+
+    <update id="acceptRequestStatus">
+        UPDATE REQUESTS
+        SET STATUS = '2'
+        WHERE REQUEST_NO = #{requestNo}
+    </update>
+
+    <update id="updateRequestComment" parameterType="hashmap">
+        UPDATE REQUEST_COMMENTS
+        SET MESSAGE = #{comments}, RQC_UPDATED_AT = NOW()
+        WHERE COMMENT_NO = #{commentNo}
+    </update>
+
+    <delete id="deleteRequest" parameterType="hashmap">
+        DELETE FROM REQUESTS
+        WHERE REQUEST_NO = #{requestNo}
+    </delete>
+
+    <update id="deleteRequestComment" parameterType="hashmap">
+        UPDATE REQUEST_COMMENTS
+        SET DELETEYN = 'Y', RQC_UPDATED_AT = NOW()
+        WHERE 1=1
+        <if test="commentNo != null">
             AND COMMENT_NO = #{commentNo}
         </if>
         <if test="commentNo == null">
             AND REQUEST_NO = #{requestNo}
         </if>
-	</update>
-	<!-- 댓글 달리면 알림 정보 저장  -->
-	<insert id="insertAlarm" parameterType="hashmap">
-	    INSERT INTO ALARM (
-	        ALARM_NO,
-	        TARGET_USER_NO,
-	        REFERENCE_TYPE,
-	        REFERENCE_ID,
-	        URL_PARAM,
-	        ALARM_STATUS,
-	        AL_CREATED_AT
-	    ) VALUES (
-	        NULL,
-	        #{userNo, jdbcType=INTEGER},
-	        #{referenceType},
-	        #{referenceId},
-	        #{urlParam},
-	        'N',
-	        NOW()
-	    )
-	</insert>
+    </update>
+
+    <insert id="insertAlarm" parameterType="hashmap">
+        INSERT INTO ALARM (
+            ALARM_NO,
+            TARGET_USER_NO,
+            REFERENCE_TYPE,
+            REFERENCE_ID,
+            URL_PARAM,
+            ALARM_STATUS,
+            AL_CREATED_AT
+        ) VALUES (
+            NULL,
+            #{userNo, jdbcType=INTEGER},
+            #{referenceType},
+            #{referenceId},
+            #{urlParam},
+            'N',
+            NOW()
+        )
+    </insert>
+
 </mapper>

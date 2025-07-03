@@ -126,7 +126,7 @@
                             style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee; list-style: none; min-height: 70px;">
 
                             <!-- ✅ 작게 고정된 썸네일 이미지 -->
-                            <img :src="s.IMAGE_PATH || '../../img/ximage.jpg'" alt="썸네일"
+                            <img :src="s.IMAGE_PATH || 'https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/ximage.jpg'" alt="썸네일"
                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; flex-shrink: 0;" />
 
                             <!-- ✅ 텍스트 정보 -->
