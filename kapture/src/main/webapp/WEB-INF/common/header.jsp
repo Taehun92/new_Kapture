@@ -100,7 +100,7 @@
                 <!-- 🔵 왼쪽: 로고 + 메뉴 -->
                 <div class="flex items-center gap-28 font-semibold text-[35px] text-gray-800">
                     <a href="/main.do">
-                        <img src="../../img/logo/kapture_Logo.png" alt="로고" class="w-[120px] h-[96px] object-contain" />
+                        <img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/web-app-manifest-512x512.png" alt="로고" class="w-[120px] h-[96px] object-contain" />
                     </a>
                     <div class="flex gap-12">
                         <a href="/tours/list.do" class="hover:text-blue-700">Tours</a>

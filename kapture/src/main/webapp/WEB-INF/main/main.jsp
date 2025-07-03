@@ -51,13 +51,13 @@
                 <div class="swiper-container w-full h-full relative z-0">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/banner.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/banner.jpg">
                         </div>
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/han.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/han.jpg">
                         </div>
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/banner3.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/banner3.jpg">
                         </div>
                     </div>
                 </div>
