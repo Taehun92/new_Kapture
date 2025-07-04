@@ -167,6 +167,10 @@
                     showWeather: false,
                     reviewList: [],
                     showRating: false,
+                    latitude : null,
+                    longitude : null,
+                    regionName : "",
+                    regId : ""
                 };
             },
 
@@ -204,8 +208,7 @@
 
                 fnToursList() {
                     let self = this;
-                    let nparmap = {
-                    };
+                    let nparmap = {};
                     $.ajax({
                         url: "/main/getTourandRatingList.dox",
                         dataType: "json",
@@ -299,7 +302,35 @@
                             }, 500); // 또는 300ms까지도 시도
                         }
                     });
-                }
+                },
+
+                // 시 이름 추출
+                extractSiName(addressData) {
+                    if (!addressData?.response.result?.length) return null;
+
+                    const level1 = addressData.response.result[0].structure.level1; // 인천광역시
+                    return level1.replace("광역시", "").replace("특별시", "").replace("자치시", "").trim();
+                },
+                // RegId 조회
+                getRegId() {
+                    let self = this;
+                    let nparmap = {
+                        regionName: self.regionName
+                    };
+                    $.ajax({
+                        url: "/weather/getRegId.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: nparmap,
+                        success: function (data) {
+                            console.log(data.regId.regId);
+                            self.regId = data.regId.regId;
+                        }
+                    });
+                },
+
+
+
 
             },
             mounted() {
@@ -333,6 +364,63 @@
                 }, 300);
 
                 self.fnGetReviewList();
+                // 현재 위치 정보 불러오기
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        let lat = position.coords.latitude;
+                        let lon = position.coords.longitude;
+                        self.longitude = lon;
+                        self.latitude = lat;
+                        console.log(`위도: \${self.latitude}, 경도: \${self.longitude}`);
+                        // 위치 -> 주소 변환
+                        $.ajax({
+                            url: "https://api.vworld.kr/req/address?",
+                            type: "GET",
+                            dataType: "jsonp",
+                            data: {
+                                service: "address",
+                                request: "getaddress",
+                                version: "2.0",
+                                crs: "EPSG:4326",
+                                type: "BOTH",
+                                point: `\${self.longitude},\${self.latitude}`,
+                                format: "json",
+                                errorformat: "json",
+                                key: "04896F0E-6E1E-304E-B548-2F885CFA0E9E"
+                            },
+                            success: function (result) {
+                                console.log("주소 변환 결과 : ",result);
+                                console.log(self.extractSiName(result));
+                                self.regionName = self.extractSiName(result);
+                                // RegId 가져오기
+                                self.getRegId();
+
+                                var xhr = new XMLHttpRequest();
+                                var url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa'; /*URL*/
+                                var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D'; /*Service Key*/
+                                queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+                                queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+                                queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML'); /**/
+                                queryParams += '&' + encodeURIComponent('regId') + '=' + encodeURIComponent('11B10101'); /**/
+                                queryParams += '&' + encodeURIComponent('tmFc') + '=' + encodeURIComponent('201309030600'); /**/
+                                xhr.open('GET', url + queryParams);
+                                xhr.onreadystatechange = function () {
+                                    if (this.readyState == 4) {
+                                        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+                                    }
+                                };
+
+                                xhr.send('');
+                            }
+                        });
+                    },
+                    function (error) {
+                        console.error("위치 정보 가져오기 실패", error);
+                    }
+                );
+
+
+
             }
         });
 

@@ -4,13 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.kapture.common.model.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.example.kapture.common.model.Common;
-import com.example.kapture.common.model.Img;
-import com.example.kapture.common.model.Region;
-import com.example.kapture.common.model.Reviews;
-import com.example.kapture.common.model.Theme;
 
 @Mapper
 public interface CommonMapper {
@@ -58,5 +53,5 @@ public interface CommonMapper {
 	// 읽은 알람 상태 처리
 	int updateAlarmStatus(Map<String, Object> map);
 
-	
+	Weather selectRegId(HashMap<String, Object> map);
 }
