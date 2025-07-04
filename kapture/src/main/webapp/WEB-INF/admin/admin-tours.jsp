@@ -274,7 +274,7 @@
                             <tr v-for="tour in toursList">
                                 <td>{{ tour.tourNo }}</td>
                                 <td class="tour-thumbNail-wrapper">
-                                    <template v-if="tour.thumbNail === 'Y'">
+                                    <template v-if="tour.filePath">
                                         <img :src="tour.filePath" class="tour-thumbNail">
                                     </template>
                                 </td>
@@ -462,6 +462,7 @@
                         page: self.page,
                         size: self.size,
                     };
+                    console.log(">>>>>>>>>nparmap>>", nparmap);
                     $.ajax({
                         url: "/admin/toursManagement.dox",
                         dataType: "json",

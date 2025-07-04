@@ -541,6 +541,14 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// 🔧 page / size 형변환
+	        if (map.get("page") instanceof String) {
+	            map.put("page", Integer.parseInt(map.get("page").toString()));
+	        }
+	        if (map.get("size") instanceof String) {
+	            map.put("size", Integer.parseInt(map.get("size").toString()));
+	        }
+	        
 			List<Tours> toursList = adminMapper.selectToursManagementList(map);
 			// 상품관리 총 갯수
 			int totalCount = adminMapper.selectToursTotalCount(map);

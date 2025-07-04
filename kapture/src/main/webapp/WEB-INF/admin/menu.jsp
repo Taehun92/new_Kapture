@@ -72,7 +72,7 @@
     <body>
         <div class="sidebar bg-gray-800 text-white fixed top-0 left-0 w-[200px] h-screen shadow-md px-5 py-6">
             <a href="/main.do">
-                <img id="logo" src="../../img/white.png" class="w-full mb-6" />
+                <img id="logo" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/white.png" class="w-full mb-6" />
             </a>
             <ul class="space-y-2">
                 <li><a href="/admin.do" class="block px-3 py-2 rounded hover:bg-gray-700">대시보드</a></li>

@@ -46,6 +46,7 @@ public class RequestService {
 	    return resultMap;
 	}
 
+	// 요청글 등록
 	public HashMap<String, Object> addRequest(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -61,6 +62,7 @@ public class RequestService {
 		return resultMap;
 	}
 	
+	// 요청글 수정
 	public HashMap<String, Object> editRequest(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -76,8 +78,7 @@ public class RequestService {
 		return resultMap;
 	}
 	
-	
-
+	// 요청글 상세 보기
 	public HashMap<String, Object> getRequest(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -95,6 +96,7 @@ public class RequestService {
 		return resultMap;
 	}
 
+	// 요청글 댓글 등록
 	public HashMap<String, Object> addRequestComment(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -115,7 +117,8 @@ public class RequestService {
 		}
 		return resultMap;
 	}
-
+	
+	// 요청글 삭제
 	public HashMap<String, Object> removeRequest(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -134,6 +137,7 @@ public class RequestService {
 		return resultMap;
 	}
 
+	// 요청글 댓글 수정
 	public HashMap<String, Object> editRequestComment(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -149,6 +153,7 @@ public class RequestService {
 		return resultMap;
 	}
 
+	// 요청글 댓글 삭제
 	public HashMap<String, Object> removeRequestComment(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -164,6 +169,7 @@ public class RequestService {
 		return resultMap;
 	}
 
+	// 요청글 채택
 	public HashMap<String, Object> acceptRequest(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -178,6 +184,7 @@ public class RequestService {
 		}
 		return resultMap;
 	}
+	
 	// 댓글 달리면 알림 정보 저장
 	public void registerAlarm(Map<String, Object> map) throws Exception {
 		System.out.println("map=======>"+map);
