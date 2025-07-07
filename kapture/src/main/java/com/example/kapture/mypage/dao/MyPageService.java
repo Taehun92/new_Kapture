@@ -1,5 +1,7 @@
 package com.example.kapture.mypage.dao;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -208,19 +210,48 @@ public class MyPageService {
 
 	// 구매한 상품 조회
 	public HashMap<String, Object> purchaseList(HashMap<String, Object> map) {
-		// TODO Auto-generated method stub
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			List<HashMap<String, Object>> list = myPageMapper.selectPurchaseList(map);
-			int totalCount = myPageMapper.selectPurchaseListTotalCount(map);
+	    HashMap<String, Object> resultMap = new HashMap<>();
 
-			resultMap.put("list", list); // 프론트에 넘길 데이터 key
-			resultMap.put("totalCount", totalCount);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			resultMap.put("result", "queryFail");
-		}
-		return resultMap;
+	    try {
+	        // 1. page, size 파싱
+	        int page = 1;
+	        int size = 10;
+
+	        if (map.get("page") != null) {
+	            page = Integer.parseInt(map.get("page").toString());
+	        }
+	        if (map.get("size") != null) {
+	            size = Integer.parseInt(map.get("size").toString());
+	        }
+
+	        int offset = (page - 1) * size;
+	        map.put("limit", size);
+	        map.put("offset", offset);
+	        System.out.println(map);
+	        // 2. Mapper 호출
+	        List<HashMap<String, Object>> list = myPageMapper.selectPurchaseList(map);
+	        int totalCount = myPageMapper.selectPurchaseListTotalCount(map);
+	        
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+	        for (HashMap<String, Object> item : list) {
+	            if (item.get("TOUR_DATE") instanceof LocalDateTime) {
+	                item.put("TOUR_DATE", ((LocalDateTime) item.get("TOUR_DATE")).format(formatter));
+	            }
+	            if (item.get("PAYMENT_DATE") instanceof LocalDateTime) {
+	                item.put("PAYMENT_DATE", ((LocalDateTime) item.get("PAYMENT_DATE")).format(formatter));
+	            }
+	        }
+
+	        resultMap.put("list", list);
+	        resultMap.put("totalCount", totalCount);
+
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", "queryFail");
+	    }
+
+	    return resultMap;
 	}
 
 	// 리뷰 등록시 알림 저장

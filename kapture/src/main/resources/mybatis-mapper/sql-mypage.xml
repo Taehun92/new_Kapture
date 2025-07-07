@@ -405,7 +405,7 @@
 		</if>
 		
 		ORDER BY P.PAYMENT_DATE DESC
-		LIMIT #{size} OFFSET ${(page - 1) * size}
+		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 구매한 상품 개수 -->

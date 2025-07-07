@@ -282,14 +282,18 @@
                 },
                 fnGetTransactions() {
                     let self = this;
+                    let start = self.startDate ? self.startDate + " 00:00:00" : null;
+                    let end = self.endDate ? self.endDate + " 23:59:59" : null;
                     let nparmap = {
-                        startDate: self.startDate,
-                        endDate: self.endDate,
+                        startDate: start,
+                        endDate: end,
                         status: self.statusFilter,
                         keyword: self.keyword,
                         page: self.page, size: self.size,
                         userNo: self.sessionId
                     };
+                    console.log(nparmap);
+                    
                     $.ajax({
                         url: "/mypage/user-purchase-history.dox",
                         dataType: "json",
@@ -322,7 +326,8 @@
                     let minutes = ('0' + d.getMinutes()).slice(-2);
                     let seconds = ('0' + d.getSeconds()).slice(-2);
 
-                    return year + "-" + month + "-" + day + "<div>" + hours + ":" + minutes + ":" + seconds + "</div>";
+                    return year + "-" + month + "-" + day ;
+                    // + "<div>" + hours + ":" + minutes + ":" + seconds + "</div>";
                 },
                 fnRefunded(paymentNo) {
                     let self = this;

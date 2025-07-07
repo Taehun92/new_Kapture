@@ -1,5 +1,6 @@
 package com.example.kapture.admin.controller;
 
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.kapture.admin.dao.AdminService;
 import com.example.kapture.common.FileManager;
+import com.example.kapture.utils.GsonUtil;
 import com.example.kapture.mypage.dao.MyPageService;
 import com.google.gson.Gson;
 
@@ -144,7 +146,7 @@ public class AdminController {
 	@RequestMapping(value = "/admin/getTransactionList.dox", method = RequestMethod.POST)
 	@ResponseBody
 	public String getTransactionList(@RequestParam HashMap<String, Object> map) {
-	    return new Gson().toJson(adminService.getTransactionList(map));
+	    return GsonUtil.gson.toJson(adminService.getTransactionList(map));
 	}
 	// 프로필 이미지 저장
 	@RequestMapping("/admin/guide-profile.dox")
@@ -309,7 +311,7 @@ public class AdminController {
 	@ResponseBody
 	public String getLatestReviews() {
 	    HashMap<String, Object> resultMap = adminService.getLatestReviews();
-	    return new Gson().toJson(resultMap);
+	    return GsonUtil.gson.toJson(resultMap);
 	}
 	// 상품관리 조회
 	@RequestMapping(value = "/admin/toursManagement.dox", method = RequestMethod.POST)
