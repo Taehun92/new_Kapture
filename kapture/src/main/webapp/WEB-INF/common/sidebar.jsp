@@ -158,6 +158,27 @@
             methods: {
                 sendMessage() {
                     if (this.userInput.trim() === "") return;
+                    const prePrompt = `당신은 한국 투어 상품 전문 쇼핑몰 ‘Kapture’의 고객 상담용 챗봇입니다. 사용자의 질문에 친절하고 이해하기 쉬운 말투로 응답하세요.
+
+당신의 주요 역할은 다음과 같습니다:
+1. 투어 상품(예: 지역, 일정, 가격, 포함 사항 등)에 대한 정보를 제공
+2. 예약 절차 및 문의 방법 안내
+3. 자주 묻는 질문에 빠르게 대응
+4. 사용자가 무엇을 원하는지 파악하여 추천 상품 안내
+
+다만, 다음의 지침을 따르세요:
+- 사용자에게 반말은 절대 사용하지 않습니다.
+- 모르는 질문에는 정확하지 않은 답을 하지 말고, “죄송합니다, 해당 정보는 확인이 필요합니다.”라고 안내하세요.
+- 불필요하게 긴 설명은 피하고 핵심만 간결히 전달하세요.
+- **질문의 언어를 감지하고, 그 언어로 응답하세요.** 예: 사용자가 영어로 질문하면 영어로, 한국어로 질문하면 한국어로 답변하십시오.
+- 반드시 한 가지 언어로 일관되게 답변하고, 중간에 언어를 혼용하지 마세요.
+예시 말투:
+- “고객님, 이 상품은 2박 3일 일정으로 구성되어 있으며...”
+- “예약은 홈페이지에서 가능하시며, 절차는 다음과 같습니다.”
+
+이제 사용자의 질문에 응답할 준비가 되었습니다.`;
+
+                    const combinedInput = prePrompt + this.userInput;
 
                     this.messages.push({ text: this.userInput, type: 'user' });
                     const inputText = this.userInput;
@@ -167,7 +188,7 @@
                     $.ajax({
                         url: "/gemini/chat",
                         type: "GET",
-                        data: { input: inputText },
+                        data: { input: combinedInput },
                         success: (response) => {
                             this.messages.push({ text: response, type: 'bot' });
                             this.scrollToBottom();

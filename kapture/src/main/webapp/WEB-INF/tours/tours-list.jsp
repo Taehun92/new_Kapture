@@ -38,29 +38,11 @@
 
     <body class="bg-white text-gray-800">
         <jsp:include page="../common/header.jsp" />
+        <aside class="w-[250px] bg-gray-100">
+            <jsp:include page="../common/sidebar.jsp"></jsp:include>
+        </aside>
+
         <div id="app" class="max-w-7xl mx-auto py-8 px-4">
-            <div id="sidebar" class="sidebar">
-
-                <button class="open-chat-btn" v-if="!showChat" @click="showChat = true">🤖챗봇 열기</button>
-
-                <div class="modal-overlay" v-if="showChat">
-                    <div class="chat-container">
-                        <div class="chat-header">
-                            K-apture 챗봇
-                            <button class="close-btn" @click="showChat = false">✕</button>
-                        </div>
-                        <div class="chat-box" ref="chatBox">
-                            <div v-for="msg in messages" :class="['message', msg.type]">
-                                {{ msg.text }}
-                            </div>
-                        </div>
-                        <div class="chat-input">
-                            <textarea v-model="userInput" placeholder="메시지를 입력하세요..."></textarea>
-                            <button @click="sendMessage">전송</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- 지역별 배너 -->
             <div class="relative h-96 rounded-lg overflow-hidden mb-6 bg-cover bg-center"
                 :style="{ backgroundImage: 'url(' + (hoveredRegionImage || defaultHeaderImage) + ')' }">
