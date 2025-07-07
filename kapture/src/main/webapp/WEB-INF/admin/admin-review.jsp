@@ -193,7 +193,7 @@
                 <!-- ✅ 리뷰 요약 박스 -->
                 <div v-if="loaded">
                     <div class="summary-box">
-                        <div>📝 <span style="color:#34495e;">총 리뷰 수:</span> <strong>{{ summary.TOTALCOUNT }}</strong>건
+                        <div>📝 <span style="color:#34495e;">총 리뷰 수:</span> <strong>{{ summary.totalCount }}</strong>건
                         </div>
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <input type="text" v-model="keyword" placeholder="검색어 입력" @keyup.enter="onSearch"
@@ -207,7 +207,7 @@
                                 <option value="rating_asc">평점 낮은순</option>
                             </select>
                         </div>
-                        <div>⭐ <span style="color:#34495e;">평균 평점:</span> <strong>{{ summary.AVGRATING }}</strong>점
+                        <div>⭐ <span style="color:#34495e;">평균 평점:</span> <strong>{{ summary.avgRating }}</strong>점
                         </div>
 
                     </div>
@@ -215,16 +215,16 @@
                     <div class="review-list-wrapper">
                         <div v-for="review in list" class="review-box">
                             <div class="review-info">
-                                <div class="review-title"> {{ review.TITLE }}</div>
+                                <div class="review-title"> {{ review.title }}</div>
                                 <div class="review-meta">
-                                    작성자: {{ review.USERFIRSTNAME }} {{ review.USERRASTNAME }} &nbsp;|&nbsp;
-                                    평점: ⭐ {{ review.RATING }} &nbsp;|&nbsp;
-                                    상품 시간대: {{ review.DURATION }} &nbsp;|&nbsp;
-                                    작성자 이메일: {{review.EMAIL}} &nbsp;|&nbsp;
-                                    날짜: {{ review.CREATEDAT }}
+                                    작성자: {{ review.userFirstName }} {{ review.userLastName }} &nbsp;|&nbsp;
+                                    평점: ⭐ {{ review.rating }} &nbsp;|&nbsp;
+                                    상품 시간대: {{ review.duration }} &nbsp;|&nbsp;
+                                    작성자 이메일: {{review.email}} &nbsp;|&nbsp;
+                                    날짜: {{ review.createdAt }}
                                 </div>
                                 <div class="review-content">
-                                    {{ review.CONTENT }}
+                                    {{ review.content }}
                                 </div>
                             </div>
                             <div class="review-actions">
@@ -292,6 +292,8 @@
                             }
 
                             self.list = data.list;
+                            console.log("리뷰리스트>>>>>>",self.list);
+                            
                         },
                         error: function (err) {
                             console.error("리뷰 불러오기 실패", err);
@@ -306,6 +308,7 @@
                         dataType: "json",
                         success: function (data) {
                             self.summary = data;
+                            console.log("self.summary", self.summary);
                         },
                         error: function () {
                             alert("요약 정보 불러오기 실패");

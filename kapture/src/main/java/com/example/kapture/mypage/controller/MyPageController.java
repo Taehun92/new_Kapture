@@ -105,7 +105,7 @@ public class MyPageController {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			
 			resultMap = myPageService.purchaseList(map);
-			return new Gson().toJson(resultMap);
+			return new ObjectMapper().writeValueAsString(resultMap);
 		}
 		// 나의 일정 
 		@RequestMapping(value = "/mypage/user-schedule.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

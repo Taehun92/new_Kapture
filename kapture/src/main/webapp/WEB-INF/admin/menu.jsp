@@ -115,7 +115,7 @@
                     </a>
                     <ul class="submenu-items pl-4 hidden">
                         <li><a href="/admin/setting.do" class="block px-2 py-1 text-sm rounded hover:bg-gray-600">약관 내용 관리</a></li>
-                        <li><a href="/admin/badWords.do" class="block px-2 py-1 text-sm rounded hover:bg-gray-600">금칙어 관리</a></li>
+                        <!-- <li><a href="/admin/badWords.do" class="block px-2 py-1 text-sm rounded hover:bg-gray-600">금칙어 관리</a></li> -->
                     </ul>
                 </li>
             </ul>

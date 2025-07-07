@@ -55,13 +55,13 @@
     <!--년도, 월로 일 조회 -->
     <select id="getDayChartByYearMonth" parameterType="map" resultType="map">
     SELECT 
-        CONCAT(LPAD(DAY(PAYMENT_DATE), 2, '0'), '일') AS DAY,
-        SUM(AMOUNT) AS TOTAL
-    FROM PAYMENTS
-    WHERE YEAR(PAYMENT_DATE) = #{year}
-      AND MONTH(PAYMENT_DATE) = #{month}
-    GROUP BY DAY(PAYMENT_DATE)
-    ORDER BY DAY(PAYMENT_DATE)
+	  CONCAT(LPAD(DAY(PAYMENT_DATE), 2, '0'), '일') AS DAY,
+	  SUM(AMOUNT) AS TOTAL
+	FROM PAYMENTS
+	WHERE YEAR(PAYMENT_DATE) = #{year}
+	  AND MONTH(PAYMENT_DATE) = #{month}
+	GROUP BY DAY(PAYMENT_DATE)
+	ORDER BY DAY(PAYMENT_DATE)
 	</select>
 	
 	<!-- 총 거래 금액 -->
@@ -133,7 +133,7 @@
 	      )
 	    </if>
 	  ORDER BY PAYMENT_DATE DESC
-	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select> 
 
 
@@ -197,7 +197,7 @@
 	  </if>
 
 	  ORDER BY U_CREATED_AT DESC
-	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  LIMIT #{limit} OFFSET #{offset}
     </select>
     
     <!--  가이드리스트 총 인원  -->
@@ -321,7 +321,7 @@
 	  </if>
 	
 	  ORDER BY U_CREATED_AT DESC
-	  LIMIT #{size} OFFSET (#{page} - 1) * #{size}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!--  회원 총 인원  -->
@@ -429,7 +429,6 @@
 	
 	<!-- 고객 문의 리스트 조회 -->
 	<select id="selectInquiriesList" parameterType="map" resultType="com.example.kapture.cs.model.Cs">
-	   <bind name="offset" value="(page - 1) * size"/>
 		  SELECT
 		    I.*,
 		    U.USER_FIRSTNAME     AS userFirstName,
@@ -485,10 +484,7 @@
 		  </where>
 		
 		  ORDER BY I.INQ_CREATED_AT DESC
-		
-		  <!-- MySQL 페이징: limit size offset offset -->
-		  LIMIT #{size}
-		  OFFSET #{offset}
+		  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 문의조회 총 갯수 -->
@@ -608,8 +604,7 @@
 	  </choose>
 	
 	  <!-- 페이징 -->
-	  LIMIT #{pageSize} 
-	  OFFSET #{offset}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 리뷰 전체 수 -->
@@ -711,7 +706,6 @@
 	
 	<!-- 상품관리 조회-->
 	<select id="selectToursManagementList" parameterType="map" resultType="com.example.kapture.tours.model.Tours">
-	 <bind name="offset" value="(page - 1) * size"/>
 	  SELECT
 	    T.*,
 	    G.*,
@@ -773,8 +767,7 @@
 	  ORDER BY T.TOUR_DATE DESC
 	
 	  <!-- size 그대로 살리고, offset 계산값만 사용 -->
-	  LIMIT #{size}
-	  OFFSET #{offset}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 상품관리 총 갯수 -->
@@ -886,8 +879,7 @@
 		  LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND I.THUMBNAIL = 'Y'
 		  WHERE P.PAYMENT_STATUS = '거래완료'
 		  ORDER BY P.PAYMENT_DATE DESC
-		  LIMIT #{limit}
-		  OFFSET #{offset}
+		  LIMIT #{limit} OFFSET #{offset}
 	</select>
 		
 	<!-- 요청게시판 글 총 갯수-->
@@ -909,30 +901,25 @@
 	  FROM REQUESTS R
 	  JOIN USERS U ON R.USER_NO = U.USER_NO
 	  ORDER BY R.RQ_CREATED_AT DESC
-	  LIMIT #{limit}
-	  OFFSET #{offset}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 제휴문의 관리(승인대기, 승인거부) 조회-->
 	<select id="selectWaitingPartnershipList" parameterType="map" resultType="com.example.kapture.admin.model.Partnership">
-	  <bind name="offset" value="(waitingPage - 1) * size" />
 	  SELECT *
 	  FROM PARTNERSHIP
 	  WHERE PS_STATUS IN ('승인대기', '승인거부')
 	  ORDER BY PS_CREATED_AT DESC
-	  LIMIT #{size}
-	  OFFSET #{offset}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 제휴문의 관리(승인완료) 조회-->
 	<select id="selectApprovedPartnershipList" parameterType="map" resultType="com.example.kapture.admin.model.Partnership">
-	  <bind name="offset" value="(approvedPage - 1) * size" />
 	  SELECT *
 	  FROM PARTNERSHIP
 	  WHERE PS_STATUS = '승인완료'
 	  ORDER BY PS_CREATED_AT DESC
-	  LIMIT #{size}
-	  OFFSET #{offset}
+	  LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 제휴문의 관리(승인대기, 승인거부) 총 개수 -->

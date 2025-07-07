@@ -381,6 +381,8 @@
 						page: self.page,
 						size: self.size,
 					};
+					console.log(nparmap);
+					
 					$.ajax({
 						url: "/admin/users-inquiries.dox",
 						dataType: "json",
