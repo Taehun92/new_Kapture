@@ -167,10 +167,7 @@
                     showWeather: false,
                     reviewList: [],
                     showRating: false,
-                    latitude : null,
-                    longitude : null,
-                    regionName : "",
-                    regId : ""
+
                 };
             },
 
@@ -215,7 +212,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.toursList = data.list;
                         }
                     });
@@ -234,8 +230,6 @@
                         data: nparmap,
                         success: function (data) {
                             const wishTourNos = (data.list || []).map(item => +item.tourNo);
-                            console.log("찜목록 tourNo 목록: ", wishTourNos);
-
                             self.toursList = self.toursList.map(function (tour) {
                                 const tourNo = Number(tour.tourNo);
                                 return {
@@ -243,8 +237,6 @@
                                     isFavorite: wishTourNos.includes(tourNo) ? "Y" : "N"
                                 };
                             });
-
-                            console.log("최종 toursList: ", self.toursList);
                         }
                     });
                 },
@@ -262,7 +254,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 추가됨", res);
                             }
                         });
                     } else {
@@ -274,7 +265,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 제거됨", res);
                             }
                         });
                     }
@@ -295,7 +285,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log('리뷰 데이타 : ', data);
                             self.reviewList = data.reviewList;
                             setTimeout(() => {
                                 self.showRating = true;
@@ -303,36 +292,7 @@
                         }
                     });
                 },
-
-                // 시 이름 추출
-                extractSiName(addressData) {
-                    if (!addressData?.response.result?.length) return null;
-
-                    const level1 = addressData.response.result[0].structure.level1; // 인천광역시
-                    return level1.replace("광역시", "").replace("특별시", "").replace("자치시", "").trim();
-                },
-                // RegId 조회
-                getRegId() {
-                    let self = this;
-                    let nparmap = {
-                        regionName: self.regionName
-                    };
-                    $.ajax({
-                        url: "/weather/getRegId.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: nparmap,
-                        success: function (data) {
-                            console.log(data.regId.regId);
-                            self.regId = data.regId.regId;
-                        }
-                    });
-                },
-
-
-
-
-            },
+            }, // methods
             mounted() {
                 let self = this;
                 let swiper = new Swiper('.swiper-container', {
@@ -365,67 +325,9 @@
 
                 self.fnGetReviewList();
                 // 현재 위치 정보 불러오기
-                navigator.geolocation.getCurrentPosition(
-                    function (position) {
-                        let lat = position.coords.latitude;
-                        let lon = position.coords.longitude;
-                        self.longitude = lon;
-                        self.latitude = lat;
-                        console.log(`위도: \${self.latitude}, 경도: \${self.longitude}`);
-                        // 위치 -> 주소 변환
-                        $.ajax({
-                            url: "https://api.vworld.kr/req/address?",
-                            type: "GET",
-                            dataType: "jsonp",
-                            data: {
-                                service: "address",
-                                request: "getaddress",
-                                version: "2.0",
-                                crs: "EPSG:4326",
-                                type: "BOTH",
-                                point: `\${self.longitude},\${self.latitude}`,
-                                format: "json",
-                                errorformat: "json",
-                                key: "04896F0E-6E1E-304E-B548-2F885CFA0E9E"
-                            },
-                            success: function (result) {
-                                console.log("주소 변환 결과 : ",result);
-                                console.log(self.extractSiName(result));
-                                self.regionName = self.extractSiName(result);
-                                // RegId 가져오기
-                                self.getRegId();
 
-                                /*
-                                중기 예보
-                                var xhr = new XMLHttpRequest();
-                                var url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa';
-                                var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D';
-                                queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
-                                queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10');
-                                queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML');
-                                queryParams += '&' + encodeURIComponent('regId') + '=' + encodeURIComponent('11B10101');
-                                queryParams += '&' + encodeURIComponent('tmFc') + '=' + encodeURIComponent('201309030600');
-                                xhr.open('GET', url + queryParams);
-                                xhr.onreadystatechange = function () {
-                                    if (this.readyState == 4) {
-                                        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
-                                    }
-                                };
-                                xhr.send('');
-                                */
-
-                            }
-                        });
-                    },
-                    function (error) {
-                        console.error("위치 정보 가져오기 실패", error);
-                    }
-                );
-
-
-
-            }
-        });
+            } // mounted
+        }); // app
 
         app.component('star-rating', VueStarRating.default);
         app.mount('#app');

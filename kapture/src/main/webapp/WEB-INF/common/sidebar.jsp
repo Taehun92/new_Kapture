@@ -151,7 +151,13 @@
                     weatherForecast: [],
                     weatherForecastDaily: [],
                     isLoadingWeather: false,
-                    bottomOffset: 40
+                    bottomOffset: 40,
+                    latitude : null,
+                    longitude : null,
+                    regionName : "",
+                    regId : "",
+                    midForecast : [],
+                    apiKey : "O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D"
                 };
             },
 
@@ -159,24 +165,23 @@
                 sendMessage() {
                     if (this.userInput.trim() === "") return;
                     const prePrompt = `당신은 한국 투어 상품 전문 쇼핑몰 ‘Kapture’의 고객 상담용 챗봇입니다. 사용자의 질문에 친절하고 이해하기 쉬운 말투로 응답하세요.
+                        당신의 주요 역할은 다음과 같습니다:
+                        1. 투어 상품(예: 지역, 일정, 가격, 포함 사항 등)에 대한 정보를 제공
+                        2. 예약 절차 및 문의 방법 안내
+                        3. 자주 묻는 질문에 빠르게 대응
+                        4. 사용자가 무엇을 원하는지 파악하여 추천 상품 안내
 
-당신의 주요 역할은 다음과 같습니다:
-1. 투어 상품(예: 지역, 일정, 가격, 포함 사항 등)에 대한 정보를 제공
-2. 예약 절차 및 문의 방법 안내
-3. 자주 묻는 질문에 빠르게 대응
-4. 사용자가 무엇을 원하는지 파악하여 추천 상품 안내
+                        다만, 다음의 지침을 따르세요:
+                        - 사용자에게 반말은 절대 사용하지 않습니다.
+                        - 모르는 질문에는 정확하지 않은 답을 하지 말고, “죄송합니다, 해당 정보는 확인이 필요합니다.”라고 안내하세요.
+                        - 불필요하게 긴 설명은 피하고 핵심만 간결히 전달하세요.
+                        - **질문의 언어를 감지하고, 그 언어로 응답하세요.** 예: 사용자가 영어로 질문하면 영어로, 한국어로 질문하면 한국어로 답변하십시오.
+                        - 반드시 한 가지 언어로 일관되게 답변하고, 중간에 언어를 혼용하지 마세요.
+                        예시 말투:
+                        - “고객님, 이 상품은 2박 3일 일정으로 구성되어 있으며...”
+                        - “예약은 홈페이지에서 가능하시며, 절차는 다음과 같습니다.”
 
-다만, 다음의 지침을 따르세요:
-- 사용자에게 반말은 절대 사용하지 않습니다.
-- 모르는 질문에는 정확하지 않은 답을 하지 말고, “죄송합니다, 해당 정보는 확인이 필요합니다.”라고 안내하세요.
-- 불필요하게 긴 설명은 피하고 핵심만 간결히 전달하세요.
-- **질문의 언어를 감지하고, 그 언어로 응답하세요.** 예: 사용자가 영어로 질문하면 영어로, 한국어로 질문하면 한국어로 답변하십시오.
-- 반드시 한 가지 언어로 일관되게 답변하고, 중간에 언어를 혼용하지 마세요.
-예시 말투:
-- “고객님, 이 상품은 2박 3일 일정으로 구성되어 있으며...”
-- “예약은 홈페이지에서 가능하시며, 절차는 다음과 같습니다.”
-
-이제 사용자의 질문에 응답할 준비가 되었습니다.`;
+                        이제 사용자의 질문에 응답할 준비가 되었습니다.`;
 
                     const combinedInput = prePrompt + this.userInput;
 
@@ -232,32 +237,6 @@
 
                     self.scrollListenerAdded = true; // 플래그 세팅
                 },
-
-                fnGetMidForecast() {
-                    const self = this;
-
-                    const regId = '11B10101'; // 서울 (예시)
-
-                    $.ajax({
-                        url: "/weather/mid-forecast.do",
-                        type: "POST",
-                        data: { regId: regId },
-                        success: function (response) {
-                            if (response.status === "success") {
-                                console.log("🌤️ 서버 응답:", response.data);
-                                // self.weatherData = response.data
-                            } else {
-                                console.error("❌ 서버 에러:", response.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("❌ 호출 실패:", error);
-                        }
-                    });
-                },
-
-
-
                 //날씨 정보 가져오기
                 fnWeather() {
                     let self = this;
@@ -269,15 +248,15 @@
                     const baseDate = year + month + day;
                     // 날씨 정보 표시
                     let xhr = new XMLHttpRequest();
-                    let url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'; /*URL*/
-                    let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + 'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D'; /*Service Key*/
-                    queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
-                    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000'); /**/
-                    queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /**/
-                    queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(baseDate); /**/
-                    queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent('0500'); /**/
-                    queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(self.nx); /**/
-                    queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(self.ny); /**/
+                    let url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
+                    let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + 'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D';
+                    queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
+                    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000');
+                    queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON');
+                    queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(baseDate);
+                    queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent('0500');
+                    queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(self.nx);
+                    queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(self.ny);
                     xhr.open('GET', url + queryParams);
                     xhr.onreadystatechange = function () {
                         if (this.readyState == 4) {
@@ -366,7 +345,6 @@
                                     tmx: TMX + "°C"
                                 };
                             });
-
                             self.weatherForecastDaily = dailyForecast;
                             self.isLoadingWeather = false; // 로딩 완료
                         }
@@ -492,10 +470,141 @@
                     }
 
                     this.bottomOffset = newOffset;
-                }
+                },
+                fnMidWeather() {
+                    let self = this;
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const hour = String(today.getHours()).padStart(2, '0');
+
+                    // 예보 기준 시간 설정 (6시 또는 18시 기준)
+                    const tmFc = year + month + day + (hour < 18 ? "0600" : "1800");
+
+                    const landUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
+                    const taUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
+                    console.log("landUrl", landUrl);
+                    console.log("taUrl", taUrl);
+                    Promise.all([fetch(landUrl), fetch(taUrl)])
+                        .then(responses => Promise.all(responses.map(r => r.json())))
+                        .then(([landData, taData]) => {
+
+                            console.log(landData);
+                            console.log(taData);
+
+                            const midLand = landData.response.body.items.item[0];
+                            const midTa = taData.response.body.items.item[0];
+
+                            console.log(midLand);
+                            console.log(midTa);
+
+                            const midForecast = [];
+                            for (let i = 3; i <= 10; i++) {
+                                let rnStAm = "-";
+                                let rnStPm = "-";
+                                let am = "-";
+                                let pm = "-";
+
+                                if (i <= 7) {
+                                    rnStAm = midLand[`rnSt\${i}Am`] + "%";
+                                    rnStPm = midLand[`rnSt\${i}Pm`] + "%";
+                                    am = midLand[`wf\${i}Am`];
+                                    pm = midLand[`wf\${i}Pm`];
+                                } else {
+                                    // D+8 ~ D+10: 오전/오후 구분 없음
+                                    const rnSt = midLand[`rnSt\${i}`] + "%";
+                                    rnStAm = rnStPm = rnSt;
+
+                                    const wf = midLand[`wf\${i}`]; // 날씨도 Am/Pm 없이 전체
+                                    am = pm = wf;
+                                }
+
+                                midForecast.push({
+                                    d: i,
+                                    date: `D+\${i}`,
+                                    am,
+                                    pm,
+                                    taMin: midTa[`taMin\${i}`] + "°C",
+                                    taMax: midTa[`taMax\${i}`] + "°C",
+                                    rnStAm,
+                                    rnStPm
+                                });
+                            }
+
+                            self.midForecast = midForecast;
+                            console.log(self.midForecast);
+
+                        })
+                        .catch(err => {
+                            console.error("중기 예보 오류:", err);
+                        });
+                },
+
+                // 시 이름 추출
+                extractSiName(addressData) {
+                    if (!addressData?.response.result?.length) return null;
+
+                    const level1 = addressData.response.result[0].structure.level1; // 인천광역시
+                    return level1.replace("광역시", "").replace("특별시", "").replace("자치시", "").trim();
+                },
+                // RegId 조회
+                getRegId() {
+                    let self = this;
+                    let nparmap = {
+                        regionName: self.regionName
+                    };
+                    $.ajax({
+                        url: "/weather/getRegId.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: nparmap,
+                        success: function (data) {
+                            self.regId = data.regId.regId;
+                            console.log(self.regId);
+                            self.fnMidWeather();
+                        }
+                    });
+                },
+                // ✅ 위도/경도 → 기상청 격자 좌표로 변환 함수
+                dfs_xy_conv(lat, lon) {
+                    const RE = 6371.00877;
+                    const GRID = 5.0;
+                    const SLAT1 = 30.0;
+                    const SLAT2 = 60.0;
+                    const OLON = 126.0;
+                    const OLAT = 38.0;
+                    const XO = 43;
+                    const YO = 136;
+                    const DEGRAD = Math.PI / 180.0;
+                    const re = RE / GRID;
+                    const slat1 = SLAT1 * DEGRAD;
+                    const slat2 = SLAT2 * DEGRAD;
+                    const olon = OLON * DEGRAD;
+                    const olat = OLAT * DEGRAD;
+
+                    let sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+                    sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn);
+                    let sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+                    sf = Math.pow(sf, sn) * Math.cos(slat1) / sn;
+                    let ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
+                    ro = re * sf / Math.pow(ro, sn);
+
+                    let ra = Math.tan(Math.PI * 0.25 + lat * DEGRAD * 0.5);
+                    ra = re * sf / Math.pow(ra, sn);
+                    let theta = lon * DEGRAD - olon;
+                    if (theta > Math.PI) theta -= 2.0 * Math.PI;
+                    if (theta < -Math.PI) theta += 2.0 * Math.PI;
+                    theta *= sn;
+
+                    return {
+                        nx: Math.floor(ra * Math.sin(theta) + XO + 0.5),
+                        ny: Math.floor(ro - ra * Math.cos(theta) + YO + 0.5),
+                    };
+                },
 
 
-            },
+            }, // methods
 
             watch: {
                 showChat(val) {
@@ -519,6 +628,63 @@
                 this.showWeather = false;
                 this.showChat = false;
                 self.fnSelectSi(); // 페이지 로드 시 시도 목록 가져오기
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        let lat = position.coords.latitude;
+                        let lon = position.coords.longitude;
+                        self.longitude = lon;
+                        self.latitude = lat;
+                        // 위치 -> 주소 변환
+                        $.ajax({
+                            url: "https://api.vworld.kr/req/address?",
+                            type: "GET",
+                            dataType: "jsonp",
+                            data: {
+                                service: "address",
+                                request: "getaddress",
+                                version: "2.0",
+                                crs: "EPSG:4326",
+                                type: "BOTH",
+                                point: `\${self.longitude},\${self.latitude}`,
+                                format: "json",
+                                errorformat: "json",
+                                key: "04896F0E-6E1E-304E-B548-2F885CFA0E9E"
+                            },
+                            success: function (result) {
+                                self.regionName = self.extractSiName(result);
+                                // RegId 가져오기
+                                self.getRegId();
+
+                                const { nx, ny } = self.dfs_xy_conv(self.latitude, self.longitude);
+                                self.nx = nx;
+                                self.ny = ny;
+
+                                console.log("self.nx, self.ny : ", self.nx, self.ny);
+                                /*
+                                중기 예보
+                                var xhr = new XMLHttpRequest();
+                                var url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa';
+                                var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D';
+                                queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
+                                queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10');
+                                queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML');
+                                queryParams += '&' + encodeURIComponent('regId') + '=' + encodeURIComponent('11B10101');
+                                queryParams += '&' + encodeURIComponent('tmFc') + '=' + encodeURIComponent('201309030600');
+                                xhr.open('GET', url + queryParams);
+                                xhr.onreadystatechange = function () {
+                                    if (this.readyState == 4) {
+                                        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+                                    }
+                                };
+                                xhr.send('');
+                                */
+                            }
+                        });
+                    },
+                    function (error) {
+                        console.error("위치 정보 가져오기 실패", error);
+                    }
+                );
 
                 window.addEventListener("scroll", this.adjustButtonBottom);
                 this.adjustButtonBottom(); // 초기화
