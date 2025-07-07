@@ -480,7 +480,7 @@
                     const hour = String(today.getHours()).padStart(2, '0');
 
                     // 예보 기준 시간 설정 (6시 또는 18시 기준)
-                    const tmFc = year + month + day + (hour < 18 ? "0600" : "1800");
+                    const tmFc = year + month + day + "0600";
 
                     const landUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
                     const taUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
@@ -563,6 +563,7 @@
                             self.regId = data.regId.regId;
                             console.log(self.regId);
                             self.fnMidWeather();
+
                         }
                     });
                 },
@@ -660,6 +661,7 @@
                                 self.ny = ny;
 
                                 console.log("self.nx, self.ny : ", self.nx, self.ny);
+                                self.fnWeather();
                                 /*
                                 중기 예보
                                 var xhr = new XMLHttpRequest();
