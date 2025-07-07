@@ -4,8 +4,8 @@
 
     <head>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/png" sizes="96x96" href="/img/logo/favicon-96x96.png" />
-        <link rel="shortcut icon" href="/img/logo/favicon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
+        <link rel="shortcut icon" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
         <title>관광지 목록 | kapture</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.min.js"></script>
@@ -161,7 +161,7 @@
                             <button @click="fnWishListTours"
                                 class="text-sm bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors shadow-sm flex items-center gap-2">
                                 <!-- 태극 아이콘 -->
-                                <img src="../../svg/taeguk-full.svg" alt="찜" class="w-5 h-5" />
+                                <img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/svg/taeguk-full.svg" alt="찜" class="w-5 h-5" />
                                 찜 상품
                             </button>
                             <!-- 검색바 -->
@@ -529,21 +529,21 @@
                 return {
 
                     regions: [{
-                        region: "서울", siNo: 11, image: "../../img/region/서울.jpg"
+                        region: "서울", siNo: 11, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/서울.jpg"
                     }, {
-                        region: "제주", siNo: 39, image: "../../img/region/제주.jpg"
+                        region: "제주", siNo: 39, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/제주.jpg"
                     }, {
-                        region: "부산", siNo: 21, image: "../../img/region/부산.jpg"
+                        region: "부산", siNo: 21, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/부산.jpg"
                     }, {
-                        region: "전주", siNo: 35, image: "../../img/region/전주.jpg"
+                        region: "전주", siNo: 35, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/전주.jpg"
                     }, {
-                        region: "강원", siNo: 32, image: "../../img/region/속초.jpg"
+                        region: "강원", siNo: 32, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/속초.jpg"
                     }, {
-                        region: "인천", siNo: 23, image: "../../img/region/월미도.jpg"
+                        region: "인천", siNo: 23, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/월미도.jpg"
                     }, {
-                        region: "경기", siNo: 31, image: "../../img/region/용인.jpg"
+                        region: "경기", siNo: 31, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/용인.jpg"
                     }, {
-                        region: "그 외", siNo: 999, image: "../../img/region/대천.jpg"
+                        region: "그 외", siNo: 999, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/대천.jpg"
                     }],
                     languages: [{ eng: "Korean", kor: "한국어" }, { eng: "English", kor: "영어" }, { eng: "Chinese", kor: "중국어" }, { eng: "Japanese", kor: "일본어" }],
                     filters: {
@@ -574,7 +574,7 @@
                     modalAnimationClass: '',
                     minDate: new Date(),
 
-                    defaultHeaderImage: "../../img/region/default.jpg",
+                    defaultHeaderImage: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/default.jpg",
                     hoveredRegionImage: null,
                     filteredToursList: [],
                     isWishlistMode: false,
