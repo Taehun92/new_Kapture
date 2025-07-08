@@ -175,6 +175,15 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			
+			int page = Integer.parseInt(String.valueOf(map.get("page")));
+			int size = Integer.parseInt(String.valueOf(map.get("size")));
+			int offset = (page - 1) * size;
+			
+			map.put("offset", offset);
+			map.put("limit", size); 
+			
+			
 			List<Guide> guidesList = adminMapper.selectguidesList(map);
 			int totalCount = adminMapper.selectGuidesTotalCount(map);
 
@@ -235,7 +244,11 @@ public class AdminService {
 
 		int page = Integer.parseInt(String.valueOf(map.get("page")));
 		int size = Integer.parseInt(String.valueOf(map.get("size")));
-
+		int offset = (page - 1) * size;
+		
+		map.put("offset", offset);  // ✅ 추가
+		map.put("limit", size); 
+		
 		List<HashMap<String, Object>> list = adminMapper.selectTransactionList(map);
 		int totalCount = adminMapper.selectTransactionTotalCount(map);
 
@@ -357,6 +370,15 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			
+			int page = Integer.parseInt(String.valueOf(map.get("page")));
+			int size = Integer.parseInt(String.valueOf(map.get("size")));
+			int offset = (page - 1) * size;
+			
+			map.put("offset", offset);
+			map.put("limit", size); 
+			
+			
 			List<Login> usersList = adminMapper.selectUsersList(map);
 			// 회원 총 인원
 			int totalCount = adminMapper.selectUsersTotalCount(map);
@@ -376,12 +398,21 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			
+			int page = Integer.parseInt(String.valueOf(map.get("page")));
+			int size = Integer.parseInt(String.valueOf(map.get("size")));
+			int offset = (int)((page - 1) * size);
+			map.put("limit", Integer.valueOf(size));
+			map.put("offset", Integer.valueOf(offset));
+
 			List<Cs> inquiriesList = adminMapper.selectInquiriesList(map);
+			
 			// 문의조회 총 갯수
 			int totalCount = adminMapper.selectInquiriesTotalCount(map);
 			resultMap.put("totalCount", totalCount);
 			resultMap.put("inquiriesList", inquiriesList);
 			resultMap.put("result", "success");
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", e.getMessage());
@@ -445,7 +476,7 @@ public class AdminService {
 		int offset = (page - 1) * pageSize;
 
 		map.put("offset", offset);
-		map.put("pageSize", pageSize);
+		map.put("limit", pageSize);
 
 		// 리뷰 리스트 가져오기
 		List<HashMap<String, Object>> list = adminMapper.selectReviewList(map);
@@ -541,13 +572,12 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			// 🔧 page / size 형변환
-	        if (map.get("page") instanceof String) {
-	            map.put("page", Integer.parseInt(map.get("page").toString()));
-	        }
-	        if (map.get("size") instanceof String) {
-	            map.put("size", Integer.parseInt(map.get("size").toString()));
-	        }
+			
+			int page = Integer.parseInt((String) map.getOrDefault("page", "1"));
+			int pageSize = Integer.parseInt((String) map.getOrDefault("pageSize", "10"));
+			int offset = (page - 1) * pageSize;
+			map.put("offset", offset);
+			map.put("limit", pageSize); 
 	        
 			List<Tours> toursList = adminMapper.selectToursManagementList(map);
 			// 상품관리 총 갯수
@@ -674,8 +704,21 @@ public class AdminService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			
+			int waitingPage = Integer.parseInt((String) map.getOrDefault("waitingPage", "1"));
+			int size = Integer.parseInt((String) map.getOrDefault("size", "10"));
+			int w_offset = (waitingPage - 1) * size;
+			map.put("offset", w_offset);
+			map.put("limit", size); 
+			
 			List<Partnership> waitingList = adminMapper.selectWaitingPartnershipList(map);
 			int countWaiting = adminMapper.countWaitingPartnership(map);
+			
+			int approvedPage = Integer.parseInt((String) map.getOrDefault("approvedPage", "1"));
+			int a_offset = (approvedPage - 1) * size;
+			map.put("offset", a_offset);
+			map.put("limit", size); 
+
 			List<Partnership> approvedList = adminMapper.selectApprovedPartnershipList(map);
 			int countApproved = adminMapper.countApprovedPartnership(map);
 
@@ -684,6 +727,7 @@ public class AdminService {
 			resultMap.put("countWaiting", countWaiting);
 			resultMap.put("approvedList", approvedList);
 			resultMap.put("countApproved", countApproved);
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", e.getMessage());
