@@ -269,7 +269,8 @@ public class MyPageService {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		System.out.println(map);
 		myPageMapper.insertTour(map);
-		Object tourNo = map.get("tourNo");
+
+		Integer tourNo = myPageMapper.getLastInsertTourNo();
 		if (tourNo != null) {
 			resultMap.put("tourNo", tourNo); // 생성된 tourNo를 결과에 추가
 			resultMap.put("result", "success");
