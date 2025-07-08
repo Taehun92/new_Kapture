@@ -14,14 +14,14 @@
     <body class="bg-white text-gray-800 text-[16px] tracking-wide">
 
         <!-- ✅ 번역 위젯 -->
-        <div class="gtranslate-wrapper fixed left-4 z-50" style="bottom: 160px;">
+        <div class="gtranslate-wrapper fixed left-16 z-50" style="bottom: 160px;">
             <div class="gtranslate_wrapper"></div>
         </div>
 
         <!-- ✅ 헤더 시작 -->
         <div id="header" class="w-full bg-white shadow-sm border-b">
             <!-- ✅ 환율 위젯: header 내부에서 Vue로 제어 -->
-            <div v-if="showExchangeWidget" class="fixed left-4 z-40" style="top: 240px;">
+            <div v-if="showExchangeWidget" class="fixed right-16 z-40" style="top: 240px;">
                 <div
                     class="bg-blue-50 text-gray-900 w-[200px] p-3 rounded-lg border border-blue-300 shadow-lg text-xs leading-tight">
                     <div class="font-semibold text-sm mb-2 flex items-center gap-1">
