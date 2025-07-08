@@ -168,7 +168,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between" :class="{ 'opacity-50 italic': comment.deleted }">
                     <div class="flex items-center space-x-2">
                         <span v-if="parseInt(comment.parentCommentNo) !== 0" class="text-gray-400">↳</span>
-                        <span class="font-semibold text-gray-800 w-[160px] truncate">{{ comment.userFirstName }}</span>
+                        <span class="font-semibold text-gray-800 w-[400px] truncate">{{ comment.userFirstName }}</span>
                         <span class="text-gray-700" v-html="convertUrls(comment.message)"></span>
                     </div>
 
