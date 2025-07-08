@@ -76,4 +76,6 @@ public interface MyPageMapper {
 	Integer getGuideUserNoByTourNo(HashMap<String, Object> map);
 	// 리뷰 등록시 알림 저장
 	int insertReviewAlarm(HashMap<String, Object> map);
+
+	Integer getLastInsertTourNo();
 }
