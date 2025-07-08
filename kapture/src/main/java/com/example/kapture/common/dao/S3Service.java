@@ -39,20 +39,20 @@ public class S3Service {
             String originalFilename = file.getOriginalFilename();
             String extName = originalFilename.substring(originalFilename.lastIndexOf("."));
             String saveFileName = UUID.randomUUID() + extName;
-            String folder = "project-kapture/uploads";
+            String folder = "uploads";
             String s3Path = folder + "/" + saveFileName;
 
             // ✅ S3 업로드
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
-            s3Client.putObject(new PutObjectRequest(bucket, s3Path, file.getInputStream(), metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+            s3Client.putObject(new PutObjectRequest(bucket, s3Path, file.getInputStream(), metadata));
             String imageUrl = s3Client.getUrl(bucket, s3Path).toString();
 
             // ✅ DB 저장 (기존 로직 유지)
             HashMap<String, Object> map = new HashMap<>();
             map.put("filename", saveFileName);
-            map.put("path", "/uploads/" + saveFileName);  // 상대 경로로 저장
+            map.put("path", "https://project-kapture.s3.ap-northeast-2.amazonaws.com/uploads/" + saveFileName);  // 상대 경로로 저장
             map.put("originFilename", originalFilename);
             myPageService.addToursImg(map);
 
