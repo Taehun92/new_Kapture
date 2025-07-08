@@ -867,8 +867,11 @@
 	
 	<!-- 가이드 추가(유저 정보) -->
 	<insert id="insertNewUser" parameterType="hashmap" useGeneratedKeys="true" keyProperty="userNo" keyColumn="USER_NO">
-		INSERT INTO USERS
-		VALUES (NULL, #{password}, #{email}, #{phone}, 'GUIDE', #{birthday}, #{address}, #{gender}, NOW(), NOW(), #{userFirstName}, null, null, 'Y', 'N', 'N' )
+	    INSERT INTO USERS
+	    VALUES (
+	        NULL, #{password}, #{email}, #{phone}, 'GUIDE', #{birthday}, #{address}, #{gender},
+	        NOW(), NOW(), #{userFirstName}, null, null, 'Y', 'N', 'N', NOW()
+	    )
 	</insert>
 	
 	<!-- 가이드 추가(가이드 정보) -->
