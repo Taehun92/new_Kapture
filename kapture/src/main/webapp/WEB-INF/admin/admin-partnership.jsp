@@ -57,8 +57,17 @@
                 align-items: center;
             }
 
+            /* 소제목 스타일 */
+            .page-subTitle {
+                text-align: start;
+                font-size: 24px;
+                font-weight: bold;
+                padding: 10px;
+                justify-content: center;                
+            }
+
             .title-hr {
-                margin-bottom: 30px;
+                margin: 20px;
             }
 
             /* 모달 오버레이 (뒷배경) */
@@ -178,8 +187,9 @@
         <div id="app" v-cloak>
             <!-- 제목 추가 -->
             <div class="page-title">제휴문의 관리</div>
-            <hr>
+            <hr>    
             <div class="content">
+                <div class="page-subTitle">제휴 요청 목록</div>
                 <!-- 제휴문의 -->
                 <div v-if="loaded">
                     <table>
@@ -253,6 +263,7 @@
                 <p v-else style="text-align:center;">데이터를 불러오는 중입니다...</p>
                 <hr class="title-hr">
                 <!-- 제휴 중 -->
+                <div class="page-subTitle">제휴 중</div>
                 <div v-if="loaded">
                     <table>
                         <thead>
