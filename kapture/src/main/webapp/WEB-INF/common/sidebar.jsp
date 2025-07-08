@@ -44,70 +44,36 @@
 
             <div class="weather-overlay" v-if="showWeather"
                 :style="{ bottom: bottomOffset + 'px', top : '400px', right: '20px', position: 'fixed', zIndex: 9999 }">
-                <div class="weather-container bg-white shadow-lg rounded-xl p-4 w-64">
+                <div class="weather-container bg-white shadow-lg rounded-xl p-4 w-100">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-semibold text-gray-800">날씨 정보</h2>
+                        <h2 class="text-lg font-semibold text-gray-800"> {{ regionName }} {{ regionDetailName }} 날씨 정보</h2>
                         <button class="text-gray-400 hover:text-gray-600" @click="showWeather = false">✕</button>
                     </div>
                     <div class="weather-box">
                         <div>
                             <div class="">
-                                <div>
-                                    <label class="block font-semibold mb-1">시</label>
-                                    <select @change="fnSelectGu()" v-model="si" class="w-full border px-3 py-2 rounded">
-                                        <option value="">:: 선택 ::</option>
-                                        <template v-for="item in siList">
-                                            <option :value="item.si">{{item.si}}</option>
-                                        </template>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold mb-1">구</label>
-                                    <select @change="fnSelectDong()" v-model="gu"
-                                        class="w-full border px-3 py-2 rounded">
-                                        <option value="">:: 선택 ::</option>
-                                        <template v-for="item in guList">
-                                            <option :value="item.gu">{{item.gu}}</option>
-                                        </template>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold mb-1">동</label>
-                                    <select @change="fnSetArea()" v-model="dong"
-                                        class="w-full border px-3 py-2 rounded">
-                                        <option value="">:: 선택 ::</option>
-                                        <template v-for="item in dongList">
-                                            <option :value="item.dong">{{item.dong}}</option>
-                                        </template>
-                                    </select>
-                                </div>
                                 <div v-if="isLoadingWeather" class="text-center py-4">
                                     <span class="text-blue-600 font-semibold animate-pulse">날씨 정보를 불러오는 중...</span>
                                 </div>
-                                <div v-if="weatherForecastDaily.length">
-
-                                    <table
-                                        class="table-auto border-collapse border border-gray-300 text-center text-xs">
+                                <div v-if="mergedForecast.length">
+                                    <table class="table-auto border-collapse border border-gray-300 text-center text-xs w-full">
                                         <thead class="bg-gray-100">
-                                            <tr>
-                                                <th class="border p-1">날짜</th>
-                                                <th class="border p-1">기온</th>
-                                                <th class="border p-1">하늘</th>
-                                                <th class="border p-1">강수</th>
-                                                <th class="border p-1">최저</th>
-                                                <th class="border p-1">최고</th>
-                                            </tr>
+                                        <tr>
+                                            <th class="border p-1">날짜</th>
+                                            <th class="border p-1">하늘</th>
+                                            <th class="border p-1">강수</th>
+                                            <th class="border p-1">최저</th>
+                                            <th class="border p-1">최고</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(day, index) in weatherForecastDaily" :key="index">
-                                                <td class="border p-1">{{ day.date.slice(0,4) }}-{{ day.date.slice(4,6)
-                                                    }}-{{ day.date.slice(6,8) }}</td>
-                                                <td class="border p-1">{{ day.tmp }}</td>
-                                                <td class="border p-1">{{ day.sky }}</td>
-                                                <td class="border p-1">{{ day.pty }}</td>
-                                                <td class="border p-1">{{ day.tmn }}</td>
-                                                <td class="border p-1">{{ day.tmx }}</td>
-                                            </tr>
+                                        <tr v-for="(day, index) in mergedForecast" :key="index">
+                                            <td class="border p-1">{{ day.date }}</td>
+                                            <td class="border p-1">{{ day.sky }}</td>
+                                            <td class="border p-1">{{ day.pty }}</td>
+                                            <td class="border p-1">{{ day.tmn }}</td>
+                                            <td class="border p-1">{{ day.tmx }}</td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -115,9 +81,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </body>
 
@@ -133,12 +97,6 @@
                     showWeather: true,
                     temp: "",
                     cloud: "",
-                    si: "",
-                    siList: [],
-                    gu: "",
-                    guList: [],
-                    dong: "",
-                    dongList: [],
                     nx: "",
                     ny: "",
                     weatherInfo: {
@@ -157,7 +115,9 @@
                     regionName : "",
                     regId : "",
                     midForecast : [],
-                    apiKey : "O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D"
+                    regionDetailName: "",
+                    apiKey : "O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D",
+                    mergedForecast : []
                 };
             },
 
@@ -242,6 +202,7 @@
                     let self = this;
                     self.isLoadingWeather = true;
                     const today = new Date();
+                    today.setDate(today.getDate() - 1);
                     const year = today.getFullYear();
                     const month = String(today.getMonth() + 1).padStart(2, '0');
                     const day = String(today.getDate()).padStart(2, '0');
@@ -254,10 +215,11 @@
                     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000');
                     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON');
                     queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(baseDate);
-                    queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent('0500');
+                    queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent('2300');
                     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(self.nx);
                     queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(self.ny);
                     xhr.open('GET', url + queryParams);
+                    console.log(url + queryParams);
                     xhr.onreadystatechange = function () {
                         if (this.readyState == 4) {
                             console.log('Status: ' + this.status + 'nHeaders: ' + JSON.stringify(this.getAllResponseHeaders()) + 'nBody: ' + this.responseText);
@@ -273,14 +235,24 @@
                             console.log("날씨 항목 리스트:", items);
                             const hours = String(today.getHours()).padStart(2, '0');
                             const minutes = today.getMinutes();
+                            const timeSlots = [0, 3, 6, 9, 12, 15, 18, 21];
 
-                            // 30분 이전이면 한 시간 전 값 사용 (예보 데이터는 보통 매시마다 업데이트되니까)
-                            const forecastHour = minutes < 30 ? String(today.getHours() - 1).padStart(2, '0') : hours;
+                            // 현재 시각 기준으로 가장 가까운 timeSlot 찾기
+                            let nearestHour = timeSlots.reduce((prev, curr) => {
+                                return Math.abs(curr - hours) < Math.abs(prev - hours) ? curr : prev;
+                            }, timeSlots[0]);
 
-                            // 현재 시각에 맞는 예보 시간
-                            const currentFcstTime = forecastHour + "00";
+                            // 30분 이전이면 한 단계 전으로
+                            if (minutes < 30) {
+                                const index = timeSlots.indexOf(nearestHour);
+                                nearestHour = index > 0 ? timeSlots[index - 1] : timeSlots[timeSlots.length - 1]; // 0시에서 뒤로 가면 21시
+                            }
 
-                            const filteredItems = items.filter(item => item.fcstTime === currentFcstTime);
+                            // fcstTime 형식으로 변환
+                            const forecastHour = String(nearestHour).padStart(2, '0') + '00';
+                            console.log("현재 예보 시간:", forecastHour);
+
+                            const filteredItems = items.filter(item => item.fcstTime === forecastHour);
                             console.log("현재 시간에 해당하는 항목:", filteredItems);
 
                             const TMPList = filteredItems.filter(i => i.category === 'TMP');
@@ -328,11 +300,11 @@
                             });
 
                             // 3일치만 뽑아서 정보 구성
-                            const dailyForecast = Object.keys(groupByDate).sort().slice(0, 3).map(date => {
+                            const dailyForecast = Object.keys(groupByDate).sort().slice(0, 4).map(date => {
                                 const dayItems = groupByDate[date];
-                                const TMP = dayItems.find(i => i.category === 'TMP' && i.fcstTime === '1100')?.fcstValue || '-';
-                                const SKY = dayItems.find(i => i.category === 'SKY' && i.fcstTime === '1100')?.fcstValue || '-';
-                                const PTY = dayItems.find(i => i.category === 'PTY' && i.fcstTime === '1100')?.fcstValue || '-';
+                                const TMP = dayItems.find(i => i.category === 'TMP')?.fcstValue || '-';
+                                const SKY = dayItems.find(i => i.category === 'SKY')?.fcstValue || '-';
+                                const PTY = dayItems.find(i => i.category === 'PTY')?.fcstValue || '-';
                                 const TMN = dayItems.find(i => i.category === 'TMN')?.fcstValue || '-';
                                 const TMX = dayItems.find(i => i.category === 'TMX')?.fcstValue || '-';
 
@@ -346,84 +318,22 @@
                                 };
                             });
                             self.weatherForecastDaily = dailyForecast;
+                            self.weatherForecastDaily.forEach(d => {
+                                self.mergedForecast.push({
+                                    date: `\${d.date.slice(0,4)}-\${d.date.slice(4,6)}-\${d.date.slice(6,8)}`,
+                                    sky: d.sky,
+                                    pty: d.pty,
+                                    tmn: d.tmn,
+                                    tmx: d.tmx
+                                });
+                                self.mergedForecast.sort((a, b) => {
+                                    return new Date(a.date) - new Date(b.date);
+                                });
+                            });
                             self.isLoadingWeather = false; // 로딩 완료
                         }
                     };
-                },
 
-                fnSelectSi() {
-                    let self = this;
-                    let nparmap = {
-
-                    }
-                    $.ajax({
-                        url: "/common/selectSi.dox",
-                        type: "POST",
-                        dataType: "json",
-                        data: nparmap,
-                        success: function (data) {
-                            console.log(data);
-                            self.siList = data.si;
-                        },
-                    });
-
-                },
-
-                fnSelectGu() {
-                    let self = this;
-                    let nparmap = {
-                        si: self.si
-                    }
-                    $.ajax({
-                        url: "/common/selectGu.dox",
-                        type: "POST",
-                        dataType: "json",
-                        data: nparmap,
-                        success: function (data) {
-                            console.log(data);
-                            self.guList = data.gu;
-                        },
-                    });
-
-                },
-
-                fnSelectDong() {
-                    let self = this;
-                    let nparmap = {
-                        si: self.si,
-                        gu: self.gu
-                    }
-                    $.ajax({
-                        url: "/common/selectDong.dox",
-                        type: "POST",
-                        dataType: "json",
-                        data: nparmap,
-                        success: function (data) {
-                            console.log(data);
-                            self.dongList = data.dong;
-                        },
-                    });
-
-                },
-
-                fnSetArea() {
-                    let self = this;
-                    let nparmap = {
-                        si: self.si,
-                        gu: self.gu,
-                        dong: self.dong
-                    }
-                    $.ajax({
-                        url: "/common/selectXY.dox",
-                        type: "POST",
-                        dataType: "json",
-                        data: nparmap,
-                        success: function (data) {
-                            self.nx = data.xy.nx;
-                            self.ny = data.xy.ny;
-                            self.fnWeather(); // 날씨 정보 가져오기
-                        },
-                    });
                 },
 
                 mapSky(code) {
@@ -500,7 +410,7 @@
                             console.log(midTa);
 
                             const midForecast = [];
-                            for (let i = 3; i <= 10; i++) {
+                            for (let i = 4; i <= 10; i++) {
                                 let rnStAm = "-";
                                 let rnStPm = "-";
                                 let am = "-";
@@ -521,10 +431,6 @@
                                 }
 
                                 midForecast.push({
-                                    d: i,
-                                    date: `D+\${i}`,
-                                    am,
-                                    pm,
                                     taMin: midTa[`taMin\${i}`] + "°C",
                                     taMax: midTa[`taMax\${i}`] + "°C",
                                     rnStAm,
@@ -534,19 +440,63 @@
 
                             self.midForecast = midForecast;
                             console.log(self.midForecast);
+                            for (let i = 0; i < self.midForecast.length; i++) {
+                                const dPlus = i + 4;
+                                const date = self.formatMidDate(dPlus);
+
+                                const rnStAmValue = parseInt(self.midForecast[i].rnStAm.replace('%', '')) || 0;
+                                const rnStPmValue = parseInt(self.midForecast[i].rnStPm.replace('%', '')) || 0;
+
+                                // SKY 코드 결정
+                                let skyCode = '0';
+                                if (rnStAmValue >= 60) {
+                                    skyCode = '10'; // 흐림 + 비 느낌
+                                } else if (rnStAmValue >= 50) {
+                                    skyCode = '9'; // 흐림
+                                } else if (rnStAmValue >= 30) {
+                                    skyCode = '7'; // 구름 많음
+                                }
+
+                                // PTY 코드 결정
+                                let ptyCode = '0';
+                                if (rnStPmValue >= 60) {
+                                    ptyCode = '1'; // 비
+                                }
+
+                                self.mergedForecast.push({
+                                    date,
+                                    sky: self.mapSky(skyCode),
+                                    pty: self.mapPty(ptyCode),
+                                    tmn: self.midForecast[i].taMin,
+                                    tmx: self.midForecast[i].taMax
+                                });
+                            }
+                            self.mergedForecast.sort((a, b) => {
+                                return new Date(a.date) - new Date(b.date);
+                            });
+
 
                         })
                         .catch(err => {
                             console.error("중기 예보 오류:", err);
                         });
+
                 },
 
                 // 시 이름 추출
                 extractSiName(addressData) {
                     if (!addressData?.response.result?.length) return null;
+                    const level1 = addressData.response.result[0].structure.level1;  // 예: 인천광역시
+                    const level2 = addressData.response.result[0].structure.level2;  // 예: 부평구
 
-                    const level1 = addressData.response.result[0].structure.level1; // 인천광역시
-                    return level1.replace("광역시", "").replace("특별시", "").replace("자치시", "").trim();
+                    // 시(광역시, 특별시 제거) + 구
+                    const si = level1.replace(/광역시|특별시|자치시/, '').trim();
+                    const gu = level2.trim();
+
+                    this.regionName = si;              // 예: 인천
+                    this.regionDetailName = gu;        // 예: 부평구
+
+                    return `\${si} \${gu}`;
                 },
                 // RegId 조회
                 getRegId() {
@@ -603,6 +553,14 @@
                         ny: Math.floor(ro - ra * Math.cos(theta) + YO + 0.5),
                     };
                 },
+                formatMidDate(dPlus) {
+                    const today = new Date();
+                    today.setDate(today.getDate() + dPlus);
+                    const year = today.getFullYear();
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const day = String(today.getDate()).padStart(2, '0');
+                    return `\${year}-\${month}-\${day}`;
+                },
 
 
             }, // methods
@@ -628,7 +586,6 @@
                 let self = this;
                 this.showWeather = false;
                 this.showChat = false;
-                self.fnSelectSi(); // 페이지 로드 시 시도 목록 가져오기
                 navigator.geolocation.getCurrentPosition(
                     function (position) {
                         let lat = position.coords.latitude;
@@ -652,7 +609,7 @@
                                 key: "04896F0E-6E1E-304E-B548-2F885CFA0E9E"
                             },
                             success: function (result) {
-                                self.regionName = self.extractSiName(result);
+                                self.extractSiName(result);
                                 // RegId 가져오기
                                 self.getRegId();
 
