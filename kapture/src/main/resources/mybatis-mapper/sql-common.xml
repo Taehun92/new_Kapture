@@ -138,6 +138,10 @@
 	    SET ALARM_STATUS = 'Y'
 	    WHERE ALARM_NO = #{alarmNo}
 	</update>
+	<!--날씨 정보-->
+	<select id="selectRegId" parameterType="hashmap" resultType="com.example.kapture.common.model.Weather">
+		SELECT REG_ID FROM REGID WHERE REGION_NAME = #{regionName}
+	</select>
 </mapper>
 
 

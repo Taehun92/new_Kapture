@@ -10,5 +10,5 @@ public class Weather {
 	private String guName;
 	private String guNo;
 	private String siId;
-	
+	private String regId;
 }

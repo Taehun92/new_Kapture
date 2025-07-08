@@ -11,4 +11,5 @@ public interface WeatherMapper {
 	
 	Weather selectWeather(HashMap<String, Object> map);
 
+
 }

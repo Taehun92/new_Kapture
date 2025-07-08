@@ -10,7 +10,7 @@
 	</select>
 	<insert id="insertWishList" parameterType="hashmap">
 		INSERT INTO WISHLIST
-		VALUES(#{tourNo},#{guideNo},#{userNo},SYSDATE)
+		VALUES(#{tourNo},#{guideNo},#{userNo},NOW())
 	</insert>
 	<delete id="deleteWishList" parameterType="hashmap">
 		DELETE FROM WISHLIST
