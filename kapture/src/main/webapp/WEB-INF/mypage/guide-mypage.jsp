@@ -297,7 +297,7 @@
                             success: function (data) {
                                 console.log("불러온 데이터", data);
                                 if (data.result == "success") {
-                                    console.log(data);
+                                    console.log("가이드 정보>>>>>>>>",data);
                                     self.userInfo = data.userInfo;
                                 } else {
                                     alert("정보를 가지고 오는데 실패했습니다.");
@@ -394,6 +394,9 @@
                                     // 서버가 새 파일 경로를 반환한다고 가정: data.newFilePath
                                     self.userInfo.P_FILE_PATH = data.newFilePath;
                                     self.userInfo.pFileNo = data.pFileNo;
+
+                                    console.log("self.userInfo",self.userInfo);
+
                                 } else {
                                     alert('이미지 업로드에 실패했습니다.');
                                 }

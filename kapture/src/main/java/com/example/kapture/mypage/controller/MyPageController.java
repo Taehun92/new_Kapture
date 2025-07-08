@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.kapture.mypage.dao.MyPageService;
+import com.example.kapture.utils.GsonUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -232,7 +233,7 @@ public class MyPageController {
 		@ResponseBody
 		public String getGuideInfo(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		    HashMap<String, Object> resultMap = myPageService.getGuideInfo(map);
-		    return new Gson().toJson(resultMap);
+		    return GsonUtil.gson.toJson(resultMap);
 		}
 		//가이드 정보수정 
 		@RequestMapping(value = "/mypage/guide-info-edit.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
