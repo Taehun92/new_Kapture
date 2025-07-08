@@ -5,6 +5,31 @@
 <mapper namespace="com.example.kapture.admin.mapper.AdminMapper">
 	
  	<!-- 📅 월별 매출 -->
+ 	<!--<select id="getMonthChartByYear" parameterType="hashmap" resultType="map">
+	    SELECT '01월' AS LABEL, IFNULL(SUM(AMOUNT), 0) AS TOTAL FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 1
+	    UNION ALL
+	    SELECT '02월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 2
+	    UNION ALL
+	    SELECT '03월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 3
+	    UNION ALL
+	    SELECT '04월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 4
+	    UNION ALL
+	    SELECT '05월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 5
+	    UNION ALL
+	    SELECT '06월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 6
+	    UNION ALL
+	    SELECT '07월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 7
+	    UNION ALL
+	    SELECT '08월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 8
+	    UNION ALL
+	    SELECT '09월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 9
+	    UNION ALL
+	    SELECT '10월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 10
+	    UNION ALL
+	    SELECT '11월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 11
+	    UNION ALL
+	    SELECT '12월', IFNULL(SUM(AMOUNT), 0) FROM PAYMENTS WHERE YEAR(PAYMENT_DATE) = #{year} AND MONTH(PAYMENT_DATE) = 12
+	</select>-->
     <select id="getMonthChartByYear" parameterType="hashmap" resultType="map">
 	  SELECT
 	    IFNULL(SUM(CASE WHEN MONTH(PAYMENT_DATE) = 1 THEN AMOUNT ELSE 0 END), 0) AS `01월`,
@@ -54,14 +79,14 @@
     
     <!--년도, 월로 일 조회 -->
     <select id="getDayChartByYearMonth" parameterType="map" resultType="map">
-    SELECT 
-	  CONCAT(LPAD(DAY(PAYMENT_DATE), 2, '0'), '일') AS DAY,
-	  SUM(AMOUNT) AS TOTAL
-	FROM PAYMENTS
-	WHERE YEAR(PAYMENT_DATE) = #{year}
-	  AND MONTH(PAYMENT_DATE) = #{month}
-	GROUP BY DAY(PAYMENT_DATE)
-	ORDER BY DAY(PAYMENT_DATE)
+	    SELECT 
+	        LPAD(DAY(PAYMENT_DATE), 2, '0') AS LABEL,
+	        SUM(AMOUNT) AS TOTAL
+	    FROM PAYMENTS
+	    WHERE YEAR(PAYMENT_DATE) = #{year}
+	      AND MONTH(PAYMENT_DATE) = #{month}
+	    GROUP BY LPAD(DAY(PAYMENT_DATE), 2, '0')
+	    ORDER BY LABEL
 	</select>
 	
 	<!-- 총 거래 금액 -->
@@ -432,7 +457,9 @@
 		  SELECT
 		    I.*,
 		    U.USER_FIRSTNAME     AS userFirstName,
-		    U.USER_LASTNAME      AS userLastName
+		    U.USER_LASTNAME      AS userLastName,
+		    U.EMAIL      AS email,
+		    U.PHONE      AS phone
 		  FROM INQUIRIES I
 		  INNER JOIN USERS U
 		    ON I.USER_NO = U.USER_NO

@@ -349,7 +349,11 @@
 								<!-- 가이드번호-->
 								<td>{{ guide.guideNo }}</td>
 								<!-- 닉네임 -->
-								<td>{{ guide.userLastName }}{{ guide.userFirstName }}</td>
+								<td>
+									<template v-if="guide.userLastName || guide.userFirstName">
+										{{ guide.userLastName || '' }}{{ guide.userFirstName || '' }}
+									</template>
+								</td>
 								<!-- 성별 -->
 								<td>{{ guide.gender }}</td>
 								<!-- 연락처 -->

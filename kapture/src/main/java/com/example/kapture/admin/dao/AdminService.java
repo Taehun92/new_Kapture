@@ -34,111 +34,110 @@ public class AdminService {
 	public HashMap<String, Object> getChartByTypeAndYear(HashMap<String, Object> map) {
 		String type = (String) map.get("type");
 		String year = (String) map.get("year");
-
-		if (type == null || year == null) {
-			throw new RuntimeException("type 또는 year 누락됨");
-		}
-
-		HashMap<String, Object> result = new HashMap<>();
-
-		// 📅 월별 매출
-		if ("month".equals(type)) {
-			Map<String, Object> raw = adminMapper.getMonthChartByYear(map);
-
-			String[] months = { "01월", "02월", "03월", "04월", "05월", "06월", "07월", "08월", "09월", "10월", "11월", "12월" };
-
-			List<Map<String, Object>> list = new ArrayList<>();
-			for (String month : months) {
-				Map<String, Object> row = new HashMap<>();
-				row.put("LABEL", month);
-				row.put("TOTAL", raw.getOrDefault(month, 0));
-				list.add(row);
+			if (type == null || year == null) {
+				throw new RuntimeException("type 또는 year 누락됨");
 			}
-
-			result.put("list", list);
-		}
-
-		// 지역 + 테마별 + 타이틀
-		else if ("themeByRegion".equals(type)) {
-			List<Map<String, Object>> raw = adminMapper.getThemeSalesByRegion(map);
-
-			Set<String> regions = new LinkedHashSet<>();
-			Set<String> themes = new LinkedHashSet<>();
-			Map<String, Map<String, Integer>> grouped = new LinkedHashMap<>();
-
-			for (Map<String, Object> row : raw) {
-				String region = (String) row.get("REGION");
-				String theme = (String) row.get("THEME");
-				int total = ((Number) row.get("TOTAL")).intValue();
-
-				if (region == null || theme == null)
-					continue;
-
-				regions.add(region);
-				themes.add(theme);
-
-				grouped.putIfAbsent(theme, new HashMap<>());
-				grouped.get(theme).put(region, total);
-			}
-
-			List<Map<String, Object>> series = new ArrayList<>();
-			for (String theme : themes) {
-				Map<String, Object> data = new HashMap<>();
-				data.put("name", theme);
-
-				List<Integer> values = new ArrayList<>();
-				for (String region : regions) {
-					values.add(grouped.get(theme).getOrDefault(region, 0));
+	
+			HashMap<String, Object> result = new HashMap<>();
+	
+			// 📅 월별 매출
+			if ("month".equals(type)) {
+				Map<String, Object> raw = adminMapper.getMonthChartByYear(map);
+	
+				String[] months = { "01월", "02월", "03월", "04월", "05월", "06월", "07월", "08월", "09월", "10월", "11월", "12월" };
+	
+				List<Map<String, Object>> list = new ArrayList<>();
+				for (String month : months) {
+					Map<String, Object> row = new HashMap<>();
+					row.put("LABEL", month);
+					row.put("TOTAL", raw.getOrDefault(month, 0));
+					list.add(row);
 				}
-
-				data.put("data", values);
-				series.add(data);
+	
+				result.put("list", list);
 			}
-
-			result.put("series", series); // ✅ stacked chart용
-			result.put("categories", new ArrayList<>(regions)); // ✅ x축 지역
-		}
-
-		// 📆 일별 매출
-		else if ("day".equals(type)) {
-			List<Map<String, Object>> raw = adminMapper.getDayChartByYearMonth(map);
-
-			String selectedYear = map.get("year").toString();
-			String selectedMonth = map.get("month").toString();
-
-			int lastDay = getLastDayOfMonth(Integer.parseInt(selectedYear), Integer.parseInt(selectedMonth));
-
-			// 1~마지막 일까지 0으로 초기화
-			Map<String, Integer> chartMap = new LinkedHashMap<>();
-			for (int i = 1; i <= lastDay; i++) {
-				String dayLabel = String.format("%02d일", i);
-				chartMap.put(dayLabel, 0);
+	
+			// 지역 + 테마별 + 타이틀
+			else if ("themeByRegion".equals(type)) {
+				List<Map<String, Object>> raw = adminMapper.getThemeSalesByRegion(map);
+	
+				Set<String> regions = new LinkedHashSet<>();
+				Set<String> themes = new LinkedHashSet<>();
+				Map<String, Map<String, Integer>> grouped = new LinkedHashMap<>();
+	
+				for (Map<String, Object> row : raw) {
+					String region = (String) row.get("REGION");
+					String theme = (String) row.get("THEME");
+					int total = ((Number) row.get("TOTAL")).intValue();
+	
+					if (region == null || theme == null)
+						continue;
+	
+					regions.add(region);
+					themes.add(theme);
+	
+					grouped.putIfAbsent(theme, new HashMap<>());
+					grouped.get(theme).put(region, total);
+				}
+	
+				List<Map<String, Object>> series = new ArrayList<>();
+				for (String theme : themes) {
+					Map<String, Object> data = new HashMap<>();
+					data.put("name", theme);
+	
+					List<Integer> values = new ArrayList<>();
+					for (String region : regions) {
+						values.add(grouped.get(theme).getOrDefault(region, 0));
+					}
+	
+					data.put("data", values);
+					series.add(data);
+				}
+	
+				result.put("series", series); // ✅ stacked chart용
+				result.put("categories", new ArrayList<>(regions)); // ✅ x축 지역
 			}
-
-			// DB 데이터로 갱신
-			for (Map<String, Object> row : raw) {
-				String day = (String) row.get("DAY");
-				// 👇 포맷 통일: "1일" → "01일"
-				String formattedDay = String.format("%02d일", Integer.parseInt(day.replace("일", "")));
-				int total = ((Number) row.get("TOTAL")).intValue();
-				chartMap.put(formattedDay, total);
-			}
-
-			List<Map<String, Object>> list = new ArrayList<>();
-			for (Map.Entry<String, Integer> entry : chartMap.entrySet()) {
-				Map<String, Object> item = new HashMap<>();
-				item.put("LABEL", entry.getKey());
-				item.put("TOTAL", entry.getValue());
-				list.add(item);
-			}
-
-			result.put("list", list);
-		}
-
-		else {
-			result.put("list", Collections.emptyList());
-		}
-
+	
+			// 📆 일별 매출
+			else if ("day".equals(type)) {
+				List<Map<String, Object>> raw = adminMapper.getDayChartByYearMonth(map);
+	
+				String selectedYear = map.get("year").toString();
+				String selectedMonth = map.get("month").toString();
+	
+				int lastDay = getLastDayOfMonth(Integer.parseInt(selectedYear), Integer.parseInt(selectedMonth));
+	
+				// 1~마지막 일까지 0으로 초기화
+				Map<String, Integer> chartMap = new LinkedHashMap<>();
+				for (int i = 1; i <= lastDay; i++) {
+					String dayLabel = String.format("%02d일", i);
+					chartMap.put(dayLabel, 0);
+				}
+	
+				// DB 데이터로 갱신
+				for (Map<String, Object> row : raw) {
+					String label = (String) row.get("LABEL");
+					// 👇 포맷 통일: "1일" → "01일"
+					String formattedDay = String.format("%02d일", Integer.parseInt(label.replace("일", "")));
+					int total = ((Number) row.get("TOTAL")).intValue();
+					chartMap.put(formattedDay, total);
+				}
+	
+				List<Map<String, Object>> list = new ArrayList<>();
+				for (Map.Entry<String, Integer> entry : chartMap.entrySet()) {
+					Map<String, Object> item = new HashMap<>();
+					item.put("LABEL", entry.getKey());
+					item.put("TOTAL", entry.getValue());
+					list.add(item);
+				}
+	
+				result.put("list", list);
+			} 
+	
+			else {
+				result.put("list", Collections.emptyList());
+			} 
+		
 		return result;
 	}
 

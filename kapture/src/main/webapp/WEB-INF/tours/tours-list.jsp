@@ -694,8 +694,22 @@
                 },
                 fnToursList(keyword) {
                     const self = this;
+
+                    let startDate = null;
+                    let endDate = null;
+
+                    if (this.selectedDates.length === 1) {
+                        startDate = this.formatDate(this.selectedDates[0]);
+                        endDate = this.formatDate(this.selectedDates[0]);
+                    } else if (this.selectedDates.length === 2) {
+                        startDate = this.formatDate(this.selectedDates[0]);
+                        endDate = this.formatDate(this.selectedDates[1]);
+                    }
+
                     const nparmap = {
-                        selectedDates: JSON.stringify(self.selectedDates),
+                        startDate: startDate,
+                        endDate: endDate,
+                        // selectedDates: JSON.stringify(self.selectedDates),
                         selectedRegions: JSON.stringify(self.selectedRegions),
                         selectedLanguages: JSON.stringify(self.selectedLanguages),
                         selectedThemes: JSON.stringify(self.selectedThemes),

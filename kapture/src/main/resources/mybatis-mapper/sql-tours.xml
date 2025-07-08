@@ -33,12 +33,8 @@
 		<if test="keyword != null">
 			AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
 		</if>
-		<if test="selectedDates != null and selectedDates.size() > 0">
-	    	AND (
-		        <foreach collection="selectedDates" item="item" separator=" OR ">
-		            DATE(T.TOUR_DATE) = #{item}
-		        </foreach>
-		    )
+		<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+		    AND T.TOUR_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="selectedThemes != null and selectedThemes.size() > 0">
 	    	AND T.THEME_NO IN
