@@ -219,7 +219,6 @@
                     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(self.nx);
                     queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(self.ny);
                     xhr.open('GET', url + queryParams);
-                    console.log(url + queryParams);
                     xhr.onreadystatechange = function () {
                         if (this.readyState == 4) {
                             console.log('Status: ' + this.status + 'nHeaders: ' + JSON.stringify(this.getAllResponseHeaders()) + 'nBody: ' + this.responseText);
@@ -232,7 +231,6 @@
                             const response = JSON.parse(this.responseText);
                             const items = response.response.body.items.item; // ✅ 여기에 item 리스트 있음
 
-                            console.log("날씨 항목 리스트:", items);
                             const hours = String(today.getHours()).padStart(2, '0');
                             const minutes = today.getMinutes();
                             const timeSlots = [0, 3, 6, 9, 12, 15, 18, 21];
@@ -250,25 +248,13 @@
 
                             // fcstTime 형식으로 변환
                             const forecastHour = String(nearestHour).padStart(2, '0') + '00';
-                            console.log("현재 예보 시간:", forecastHour);
 
                             const filteredItems = items.filter(item => item.fcstTime === forecastHour);
-                            console.log("현재 시간에 해당하는 항목:", filteredItems);
-
                             const TMPList = filteredItems.filter(i => i.category === 'TMP');
-                            console.log("기온 정보만:", TMPList);
-
                             const SKYList = filteredItems.filter(i => i.category === 'SKY');
-                            console.log("하늘 상태:", SKYList);
-
                             const PTYList = filteredItems.filter(i => i.category === 'PTY');
-                            console.log("강수형태:", PTYList);
-
                             const tmnList = items.filter(i => i.category === 'TMN');
-                            console.log("최저 정보만:", tmnList);
-
                             const tmxList = items.filter(i => i.category === 'TMX');
-                            console.log("최대 정보만:", tmxList);
 
                             const TMP = filteredItems.find(i => i.category === 'TMP')?.fcstValue || '-';
                             const SKY = filteredItems.find(i => i.category === 'SKY')?.fcstValue || '-';
@@ -394,20 +380,11 @@
 
                     const landUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
                     const taUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=\${self.apiKey}&pageNo=1&numOfRows=10&dataType=JSON&regId=\${self.regId}&tmFc=\${tmFc}`;
-                    console.log("landUrl", landUrl);
-                    console.log("taUrl", taUrl);
                     Promise.all([fetch(landUrl), fetch(taUrl)])
                         .then(responses => Promise.all(responses.map(r => r.json())))
                         .then(([landData, taData]) => {
-
-                            console.log(landData);
-                            console.log(taData);
-
                             const midLand = landData.response.body.items.item[0];
                             const midTa = taData.response.body.items.item[0];
-
-                            console.log(midLand);
-                            console.log(midTa);
 
                             const midForecast = [];
                             for (let i = 4; i <= 10; i++) {
@@ -439,7 +416,6 @@
                             }
 
                             self.midForecast = midForecast;
-                            console.log(self.midForecast);
                             for (let i = 0; i < self.midForecast.length; i++) {
                                 const dPlus = i + 4;
                                 const date = self.formatMidDate(dPlus);
@@ -511,7 +487,6 @@
                         data: nparmap,
                         success: function (data) {
                             self.regId = data.regId.regId;
-                            console.log(self.regId);
                             self.fnMidWeather();
 
                         }
@@ -617,26 +592,7 @@
                                 self.nx = nx;
                                 self.ny = ny;
 
-                                console.log("self.nx, self.ny : ", self.nx, self.ny);
                                 self.fnWeather();
-                                /*
-                                중기 예보
-                                var xhr = new XMLHttpRequest();
-                                var url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa';
-                                var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'O5%2BkPtLkpnsqZVmVJiYW7JDeWEX4mC9Vx3mq4%2FGJs%2Fejvz1ceLY%2B0XySUsy15P%2BhpAdHcZHXHhdn4htsTUuvpA%3D%3D';
-                                queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
-                                queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10');
-                                queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML');
-                                queryParams += '&' + encodeURIComponent('regId') + '=' + encodeURIComponent('11B10101');
-                                queryParams += '&' + encodeURIComponent('tmFc') + '=' + encodeURIComponent('201309030600');
-                                xhr.open('GET', url + queryParams);
-                                xhr.onreadystatechange = function () {
-                                    if (this.readyState == 4) {
-                                        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
-                                    }
-                                };
-                                xhr.send('');
-                                */
                             }
                         });
                     },
