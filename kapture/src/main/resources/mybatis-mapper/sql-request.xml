@@ -67,8 +67,8 @@
 
     <insert id="insertRequestComment" parameterType="hashmap">
         INSERT INTO REQUEST_COMMENTS (
-            COMMENT_NO, USER_NO, REQUEST_NO, COMMENTS,
-            CREATED_AT, UPDATED_AT, PARENT_COMMENT_NO, IS_DELETED
+            COMMENT_NO, USER_NO, REQUEST_NO, MESSAGE,
+            RQC_CREATED_AT, RQC_UPDATED_AT, PARENT_COMMENT_NO, DELETEYN
         )
         VALUES (
             NULL,
