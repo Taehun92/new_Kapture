@@ -389,7 +389,7 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
+							console.log("inquiriesList================",data);
 							if (data.result === "success") {
 								self.inquiriesList = data.inquiriesList;
 								self.totalCount = data.totalCount;

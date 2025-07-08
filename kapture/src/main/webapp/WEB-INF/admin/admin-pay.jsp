@@ -273,8 +273,9 @@
             </div> -->
             <div class="chart-grid">
                 <div class="chart-card">
-                    <div id="chart4"></div>
-                </div>
+  <h3>년도별 매출</h3>
+  <div id="chart4" style="height: 300px;"></div>
+</div>
                 <div class="chart-card">
                     <h3>월별 매출</h3>
                     <select v-model="selectedYear" @change="loadChart1">
@@ -502,9 +503,8 @@
                             type: "POST",
                             dataType: "json",
                             success: function (res) {
-                                console.log(res);
-                                const chart4Years = res.salesList.map(item => item.YEAR);
-                                const totals = res.salesList.map(item => item.TOTALSALES);
+                                const chart4Years = res.salesList.map(item => item.year);
+                                const totals = res.salesList.map(item => item.totalSales);
 
                                 const options = {
                                     series: [{ name: '년도별 매출', data: totals }],
@@ -558,6 +558,7 @@
                             type: "POST",
                             dataType: "json",
                             success: function (res) {
+                                // console.log("5번차트=========",res);
                                 if (!res.themeList || res.themeList.length === 0) {
                                     $("#chart5").html("<p style='text-align:center;'>데이터가 없습니다</p>");
                                     return;
@@ -565,8 +566,8 @@
 
                                 const total = res.totalCount;
                                 const top5 = res.themeList.slice(0, 5);
-                                const labels = top5.map(item => item.THEME);
-                                const counts = top5.map(item => item.COUNT);
+                                const labels = top5.map(item => item.theme);
+                                const counts = top5.map(item => item.count);
 
                                 const options = {
                                     series: counts,
