@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.kapture.admin.dao.AdminService;
 import com.example.kapture.common.FileManager;
 import com.example.kapture.utils.GsonUtil;
 import com.example.kapture.mypage.dao.MyPageService;
 import com.google.gson.Gson;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +33,12 @@ public class AdminController {
 	
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	private AmazonS3 amazonS3;
+
+	private final String bucket = "project-kapture";
+	
 	
 	// 관리자 페이지 메인
 	@RequestMapping("/admin.do")
@@ -151,47 +161,48 @@ public class AdminController {
 	// 프로필 이미지 저장
 	@RequestMapping("/admin/guide-profile.dox")
 	@ResponseBody
-	public String result(@RequestParam("profile") List<MultipartFile> profile,  HttpServletRequest request,HttpServletResponse response, Model model)
-	{
-		HashMap<String, Object> resultMap = new HashMap<>();
-		try {
-			System.out.println("=======================");
-			for(MultipartFile file : profile) {			
-				String originFilename = file.getOriginalFilename();
-				String extName = originFilename.substring(originFilename.lastIndexOf("."),originFilename.length());
-				long size = file.getSize();
-				String saveFileName = FileManager.genSaveFileName(extName);
-				String fileType = file.getContentType();
-				
-				String path2 = System.getProperty("user.dir");
-				if(!profile.isEmpty())
-				{	
-					
-					File imgfile = new File(path2 + "\\src\\main\\webapp\\img", saveFileName);
-					file.transferTo(imgfile);
-					
-					
-					HashMap<String, Object> map = new HashMap<String, Object>();
-//					map.put("guideNo", guideNo);
-					map.put("pFilePath", "../img/" + saveFileName);
-					map.put("pFileName", saveFileName);
-					map.put("pFileOrgName", originFilename);
-					map.put("pFileType", fileType);
-					map.put("pFileSize", size);
-					map.put("pFileExtension", extName);
-					
-					// insert 쿼리 실행
-					resultMap = adminService.addGuideProfile(map);
-					resultMap.put("newFilePath", "../img/" + saveFileName);	
-				}	
-				
-			}
-		}catch(Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		System.out.println("=======================");
-		return new Gson().toJson(resultMap);
+	public String result(@RequestParam("profile") List<MultipartFile> profile,
+	                     HttpServletRequest request, HttpServletResponse response, Model model) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    try {
+	        for (MultipartFile file : profile) {
+	            if (!file.isEmpty()) {
+	                String originFilename = file.getOriginalFilename();
+	                String extName = originFilename.substring(originFilename.lastIndexOf("."));
+	                long size = file.getSize();
+	                String saveFileName = FileManager.genSaveFileName(extName);
+	                String fileType = file.getContentType();
+
+	                // S3 업로드 처리
+	                ObjectMetadata metadata = new ObjectMetadata();
+	                metadata.setContentLength(size);
+	                metadata.setContentType(fileType);
+
+	                amazonS3.putObject(new PutObjectRequest(
+	                        bucket,
+	                        "img/" + saveFileName,
+	                        file.getInputStream(),
+	                        metadata
+	                ));
+
+	                String fileUrl = "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/img/" + saveFileName;
+
+	                HashMap<String, Object> map = new HashMap<>();
+	                map.put("pFilePath", fileUrl);
+	                map.put("pFileName", saveFileName);
+	                map.put("pFileOrgName", originFilename);
+	                map.put("pFileType", fileType);
+	                map.put("pFileSize", size);
+	                map.put("pFileExtension", extName);
+
+	                resultMap = adminService.addGuideProfile(map);
+	                resultMap.put("newFilePath", fileUrl);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return new Gson().toJson(resultMap);
 	}
 
 	// 회원 리스트 조회

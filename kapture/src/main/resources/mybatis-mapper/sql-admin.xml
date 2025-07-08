@@ -297,12 +297,14 @@
 	
 	<!-- 프로필 수정 후 이전 프로필 삭제 -->
 	<delete id="deleteBeforeGuideImg" parameterType="hashmap">
-		DELETE FROM GUIDE_IMG
-		WHERE P_FILE_NO = (
-	        SELECT MIN(P_FILE_NO)
-	        FROM GUIDE_IMG
-	        WHERE P_GUIDE_NO = #{guideNo}
-	    )
+		DELETE gi
+		FROM GUIDE_IMG gi
+		JOIN (
+		    SELECT MIN(P_FILE_NO) AS fileNo
+		    FROM GUIDE_IMG
+		    WHERE P_GUIDE_NO = #{guideNo}
+		) sub
+		ON gi.P_FILE_NO = sub.fileNo
 	</delete>
 	
 	<!-- 회원관리 유저정보 조회 -->
