@@ -56,7 +56,7 @@
                                     <span class="text-blue-600 font-semibold animate-pulse">날씨 정보를 불러오는 중...</span>
                                 </div>
                                 <div v-if="mergedForecast.length">
-                                    <table class="table-auto border-collapse border border-gray-300 text-center text-xs w-full">
+                                    <table class="table-auto border-collapse border border-gray-300 text-center text-sm w-full">
                                         <thead class="bg-gray-100">
                                         <tr>
                                             <th class="border p-1">날짜</th>
@@ -294,13 +294,16 @@
                                 const TMN = dayItems.find(i => i.category === 'TMN')?.fcstValue || '-';
                                 const TMX = dayItems.find(i => i.category === 'TMX')?.fcstValue || '-';
 
+                                const TMN_INT = TMN !== '-' ? parseInt(TMN) : '-';
+                                const TMX_INT = TMX !== '-' ? parseInt(TMX) : '-';
+
                                 return {
                                     date: date,
                                     tmp: TMP + "°C",
                                     sky: self.mapSky(SKY),
                                     pty: self.mapPty(PTY),
-                                    tmn: TMN + "°C",
-                                    tmx: TMX + "°C"
+                                    tmn: TMN_INT + "°C",
+                                    tmx: TMX_INT + "°C"
                                 };
                             });
                             self.weatherForecastDaily = dailyForecast;
