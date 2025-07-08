@@ -396,7 +396,7 @@
 			<if test="password != null and password !=''">PASSWORD = #{password},</if>
 			<if test="gender != null">GENDER = #{gender},</if>
 			<if test="phone != null">PHONE = #{phone},</if>
-			<if test="birthday != null">BIRTHDAY = #{birthday},</if>
+			<if test="birthday != null and birthday != ''">BIRTHDAY = #{birthday},</if>
 			<if test="address != null">ADDRESS = #{address},</if>
 			<if test="socialType != null">SOCIAL_TYPE = #{socialType},</if>
 			ISFOREIGNER = #{isForeigner},
@@ -967,7 +967,7 @@
 	<update id="updatePartnership" parameterType="hashmap">
 		UPDATE PARTNERSHIP SET 
 			PS_STATUS = #{psStatus, jdbcType=VARCHAR}, 
-			PS_UPDATED_AT = SYSDATE
+			PS_UPDATED_AT = NOW()
 		WHERE PARTNERSHIP_NO = #{partnershipNo, jdbcType=NUMERIC}
 	</update>
 	

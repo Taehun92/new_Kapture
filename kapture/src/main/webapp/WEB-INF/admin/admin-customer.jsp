@@ -579,6 +579,9 @@
 				// 모달에서 '저장하기' 클릭 시: 수정 API 호출
 				fnSaveUser(userNo) {
 					let self = this;
+					if (this.editUser.birthday === '') {
+						this.editUser.birthday = null;
+					}
 					// 수정된 정보 전송
 					let nparmap = {
 						userNo: userNo,
