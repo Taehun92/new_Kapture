@@ -168,7 +168,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between" :class="{ 'opacity-50 italic': comment.deleted }">
                     <div class="flex items-center space-x-2">
                         <span v-if="parseInt(comment.parentCommentNo) !== 0" class="text-gray-400">↳</span>
-                        <span class="font-semibold text-gray-800 w-[80px] truncate">{{ comment.userFirstName }}</span>
+                        <span class="font-semibold text-gray-800 w-[400px] truncate">{{ comment.userFirstName }}</span>
                         <span class="text-gray-700" v-html="convertUrls(comment.message)"></span>
                     </div>
 
@@ -652,4 +652,31 @@
         });
         app.component('comment-item', commentItem);
         app.mount('#app');
+    </script>
+    <script>
+        window.addEventListener("load", function () {
+            window.addEventListener("scroll", function () {
+                const footer = document.querySelector("#footer");
+                const gtranslate = document.querySelector("#gt_float_wrapper");
+
+                if (!footer) return;
+
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const footerTop = footer.getBoundingClientRect().top + scrollY;
+                const baseOffset = 40;
+                const buffer = 20;
+                const scrollBottom = scrollY + windowHeight;
+
+                let newOffset = baseOffset;
+                if (scrollBottom >= footerTop + buffer) {
+                    const overlap = scrollBottom - (footerTop + buffer);
+                    newOffset = baseOffset + overlap;
+                }
+
+                if (gtranslate) {
+                    gtranslate.style.setProperty("bottom", newOffset + "px", "important");
+                }
+            }, { passive: true });
+        });
     </script>

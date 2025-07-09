@@ -175,6 +175,7 @@ public class CommonController {
 		resultMap = commonService.getTourThumbnail(map);
 		return new Gson().toJson(resultMap);
 	}
+	
 	// 최신 알림 10개 조회
 	@RequestMapping(value = "/common/alarms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -185,6 +186,7 @@ public class CommonController {
 	    result.put("list", list);
 	    return result;
 	}
+	
 	// 읽은 알림 상태 처리
 	@RequestMapping(value = "/common/read-alarm.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody

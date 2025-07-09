@@ -868,6 +868,11 @@
 							console.log(data);
 							self.cartList = data.basketList;
 
+							// ✅ 장바구니가 비어있다면 오늘 날짜로 minDate 초기화
+							if (self.cartList.length === 0) {
+								self.minDate = new Date();
+								console.log("✅ 장바구니 비었으므로 minDate = 오늘", self.minDate);
+							}
 						}
 					});
 				},
@@ -1070,14 +1075,7 @@
 				const params = new URLSearchParams(window.location.search);
 				self.tourNo = params.get("tourNo") || "";
 				
-				self.fnGetBasketList();
-
-				setTimeout(() => {
-					if (self.cartList.length === 0 && self.tourInfo?.tourDate) {
-						self.minDate = new Date(self.tourInfo.tourDate);
-					}
-				}, 300);
-				
+				self.fnGetBasketList();				
 				self.fnTourInfo();
 				self.fnGetCart();
 				self.fnGetBasket();
@@ -1090,3 +1088,30 @@
 		app.component('star-rating', VueStarRating.default)
 		app.mount('#app');
 	</script>
+	<script>
+        window.addEventListener("load", function () {
+            window.addEventListener("scroll", function () {
+                const footer = document.querySelector("#footer");
+                const gtranslate = document.querySelector("#gt_float_wrapper");
+
+                if (!footer) return;
+
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const footerTop = footer.getBoundingClientRect().top + scrollY;
+                const baseOffset = 40;
+                const buffer = 20;
+                const scrollBottom = scrollY + windowHeight;
+
+                let newOffset = baseOffset;
+                if (scrollBottom >= footerTop + buffer) {
+                    const overlap = scrollBottom - (footerTop + buffer);
+                    newOffset = baseOffset + overlap;
+                }
+
+                if (gtranslate) {
+                    gtranslate.style.setProperty("bottom", newOffset + "px", "important");
+                }
+            }, { passive: true });
+        });
+    </script>

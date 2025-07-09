@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.kapture.common.mapper.CommonMapper;
+import com.example.kapture.common.model.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,9 @@ public class WeatherService {
 	
 	@Autowired
 	WeatherMapper weatherMapper;
-	
+    @Autowired
+    CommonMapper commonMapper;
+
 	@Value("${weather.api.key}")
     private String weatherApiKey;
 
@@ -65,7 +69,14 @@ public class WeatherService {
 
         return result;
     }
-	
-	
 
+
+    public HashMap<String, Object> getRegId(HashMap<String, Object> map) {
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+
+        Weather regId = commonMapper.selectRegId(map);
+        resultMap.put("regId", regId);
+        return resultMap;
+    }
 }

@@ -279,7 +279,6 @@
 						}
 					});
 				},
-
 				fnSelectSi() {
 					let self = this;
 					let nparmap = {
@@ -298,7 +297,6 @@
 						}
 					});
 				},
-
 				fnSelectGu() {
 					let self = this;
 					// if(){}
@@ -316,7 +314,6 @@
 						}
 					});
 				},
-
 				fnGetThemeParentList() {
 					let self = this;
 					let nparmap = {
@@ -333,7 +330,6 @@
 						}
 					});
 				},
-
 				fnSelectTheme() {
 					let self = this;
 					let nparmap = {
@@ -350,7 +346,6 @@
 						}
 					});
 				},
-
 				fnUpdateImgList(tourNo) {
 					let self = this;
 					let imageUrls = self.imgList.map(img => img.url);
@@ -358,8 +353,6 @@
 						tourNo: tourNo,
 						imgList: JSON.stringify(imageUrls), // URL만 전송
 						thumbnailList: JSON.stringify(self.imgList) // 전체 데이터도 전송 (썸네일 구분용)
-
-
 					};
 					console.log('imgList : ', self.imgList);
 					$.ajax({
@@ -376,9 +369,6 @@
 						}
 					})
 				},
-
-
-
 			},
 			mounted() {
 				if (!this.sessionId || this.sessionRole === 'TOURIST') {

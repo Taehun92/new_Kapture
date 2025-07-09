@@ -9,8 +9,8 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../../css/kapture-style.css">
-  <link rel="icon" type="image/png" sizes="96x96" href="/img/logo/favicon-96x96.png" />
-  <link rel="shortcut icon" href="/img/logo/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
+  <link rel="shortcut icon" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
   <title>자주 묻는 질문 | kapture</title>
 </head>
 
@@ -57,7 +57,7 @@
       <div class="flex gap-4 border-b pb-3 mb-6 font-bold text-gray-800">
         <span v-for="cat in categories" :key="cat.value"
           :class="['cursor-pointer px-3 py-1 rounded', selectedCategory === cat.value ? 'text-red-600 border-b-2 border-red-600' : 'hover:text-blue-700']"
-          @click="page = 1; fnMain(cat.value)">
+          @click="changeCategory(cat.value)">
           {{ cat.label }}
         </span>
       </div>
@@ -102,8 +102,9 @@
           selectedCategory: "all",
           categories: [
             { label: "전체", value: "all" },
-            { label: "국내패키지", value: "국내패키지" },
+            { label: "상품관련", value: "상품관련" },
             { label: "예약/결제", value: "예약/결제" },
+            { label: "회원안내", value: "회원안내" },
           ]
         };
       },
@@ -114,7 +115,8 @@
             keyword: self.keyword,
             searchOption: self.searchOption,
             pageSize: self.pageSize,
-            page: (self.page - 1) * self.pageSize
+            page: self.page,
+            category: self.selectedCategory
           };
           $.ajax({
             url: "/cs/faq.dox",
@@ -163,11 +165,15 @@
             window.location.href = '/cs/partnership.do';
           }
         },
+        changeCategory(cat) {
+          this.page = 1;
+          this.selectedCategory = cat;
+          this.fnMain(cat);
+        },
         filterByCategory(category) {
           let self = this;
           self.selectedCategory = category;
           if (category === "all") {
-            
             self.filteredList = self.list;
           } else {
             

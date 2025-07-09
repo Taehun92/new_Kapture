@@ -3,37 +3,38 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.kapture.basket.mapper.BasketMapper">
+	<!--장바구니 담기 -->
 	<insert id="insertBasket" parameterType="hashmap">
-		INSERT INTO BASKET (BASKET_NO, TOUR_NO, USER_NO, NUM_PEOPLE)
-		VALUES(BASKET_SEQ.NEXTVAL, #{tourNo}, #{sessionId}, #{count} ) 
+        INSERT INTO BASKET (TOUR_NO, USER_NO, NUM_PEOPLE)
+        VALUES(#{tourNo}, #{sessionId}, #{count})
 	</insert>
-
+	<!--장바구니에 중복 상품 있는지 조회 -->
 	<select id="existsBasketItem" parameterType="hashmap" resultType="int">
     	SELECT COUNT(*) FROM BASKET WHERE TOUR_NO = #{tourNo} AND USER_NO = #{sessionId}
 	</select>
-	
+	<!--장바구니 갯수 조회-->
 	<select id="selectCount" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*) FROM BASKET WHERE USER_NO = #{sessionId}
 	</select>
-	
+	<!--장바구니 상품의 최소 날짜 조회-->
 	<select id="selectMinTourDate" parameterType="hashmap" resultType="java.sql.Date">
 		SELECT MIN(TOUR_DATE) FROM BASKET B
 		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
 		WHERE USER_NO = #{sessionId}
 	</select>
-	
+	<!--장바구니 상품의 최대 날짜 조회 -->
 	<select id="selectMaxTourDate" parameterType="hashmap" resultType="java.sql.Date">
 		SELECT MAX(TOUR_DATE) FROM BASKET B
 		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
 		WHERE USER_NO = #{sessionId}
 	</select>
-	
+	<!--상품 날짜 조회-->
 	<select id="selectTourDateList" parameterType="hashmap" resultType="java.sql.Date">
 		SELECT TOUR_DATE FROM BASKET B
 		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
 		WHERE USER_NO = #{sessionId}
 	</select>
-	
+	<!--장바구니 리스트 조회-->
 	<select id='selectBasketList' parameterType="hashmap" resultType="com.example.kapture.basket.model.Basket">
 		SELECT *
 		FROM BASKET B
@@ -41,16 +42,17 @@
 		ON B.TOUR_NO = T.TOUR_NO
 		WHERE USER_NO = #{sessionId}
 	</select>
+	<!--장바구니 상품 정보 조회-->
 	<select id="selectBasketByNo" parameterType="int">
 		SELECT *
 		FROM BASKET B
 		INNER JOIN TOURS T ON B.TOUR_NO = T.TOUR_NO
 		WHERE B.BASKET_NO = #{barsketNo}
 	</select>
-	
+	<!--장바구니 상품 인원수 수정-->
 	<update id="updateBasket" parameterType="hashmap">
-		UPDATE BASKET SET NUM_PEOPLE = #{count, jdbcType=NUMERIC}
-		WHERE BASKET_NO = #{basketNo, jdbcType=NUMERIC}
+		UPDATE BASKET SET NUM_PEOPLE = #{count}
+		WHERE BASKET_NO = #{basketNo}
 		
 	</update>
 </mapper>

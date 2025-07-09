@@ -126,7 +126,7 @@
                             style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee; list-style: none; min-height: 70px;">
 
                             <!-- ✅ 작게 고정된 썸네일 이미지 -->
-                            <img :src="s.IMAGE_PATH || '../../img/ximage.jpg'" alt="썸네일"
+                            <img :src="s.IMAGE_PATH || 'https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/ximage.jpg'" alt="썸네일"
                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; flex-shrink: 0;" />
 
                             <!-- ✅ 텍스트 정보 -->
@@ -148,9 +148,9 @@
 
                     <ul style="margin-top: 10px;">
                         <li v-for="r in reviewList" :key="r.TOUR_NO" style="margin-bottom: 12px;">
-                            <strong>{{ r.TITLE }}</strong> ({{ r.RATING }}⭐)<br />
-                            <span style="color:gray;">"{{ r.COMMENT }}"</span><br />
-                            <small style="color: #888;">작성자: {{ r.USERFIRSTNAME }} {{ r.USERLASTNAME }}</small>
+                            <strong>{{ r.tile }}</strong> ({{ r.rating }}⭐)<br />
+                            <span style="color:gray;">"{{ r.comment }}"</span><br />
+                            <small style="color: #888;">작성자: {{ r.userFirstName }} {{ r.userLastName }}</small>
                         </li>
                     </ul>
                 </div>
@@ -194,8 +194,8 @@
                         type: "POST",
                         dataType: "json",
                         success: function (res) {
-                            const years = res.salesList.map(item => item.YEAR);
-                            const totals = res.salesList.map(item => item.TOTALSALES);
+                            const years = res.salesList.map(item => item.year);
+                            const totals = res.salesList.map(item => item.totalSales);
 
                             const options = {
                                 series: [{ name: '년도별 매출', data: totals }],
@@ -242,8 +242,8 @@
 
                             const total = res.totalCount;
                             const top5 = res.themeList.slice(0, 5);
-                            const labels = top5.map(item => item.THEME);
-                            const counts = top5.map(item => item.COUNT);
+                            const labels = top5.map(item => item.theme);
+                            const counts = top5.map(item => item.count);
 
                             const options = {
                                 series: counts,

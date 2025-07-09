@@ -19,7 +19,7 @@
 		<div id="app" class="flex justify-center items-center min-h-screen px-4">
 			<div class="w-[70%] max-w-2xl bg-white rounded-2xl shadow-lg p-12">
 				<div class="flex justify-center mb-8">
-					<img src="../../img/logo/kapture_Logo(2).png" alt="Kapture Logo" class="h-16" />
+					<img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/kapture_Logo(2).png" alt="Kapture Logo" class="h-16" />
 				</div>
 
 				<h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Login to Kapture</h2>
@@ -42,19 +42,19 @@
 					<!-- Google -->
 					<a :href="googleLoginUrl"
 						class="w-14 h-14 rounded-full bg-white shadow flex justify-center items-center">
-						<img src="../../img/google.png" alt="Google 로그인" class="w-14 h-14 rounded-full" />
+						<img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/google.png" alt="Google 로그인" class="w-14 h-14 rounded-full" />
 					</a>
 
 					<!-- Twitter (X) -->
 					<button @click="getTwitAuthCodeUrl"
 						class="w-14 h-14 rounded-full bg-black shadow flex justify-center items-center">
-						<img src="../../img/x.jpg" alt="X 로그인" class="w-14 h-14 rounded-full" />
+						<img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/x.jpg" alt="X 로그인" class="w-14 h-14 rounded-full" />
 					</button>
 
 					<!-- Facebook -->
 					<button @click="getFacebookAuthUrl"
 						class="w-14 h-14 rounded-full bg-white shadow flex justify-center items-center">
-						<img src="../../img/facebook.png" alt="Facebook 로그인" class="w-14 h-14 rounded-full" />
+						<img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/facebook.png" alt="Facebook 로그인" class="w-14 h-14 rounded-full" />
 					</button>
 				</div>
 

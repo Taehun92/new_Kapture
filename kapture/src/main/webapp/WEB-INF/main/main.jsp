@@ -51,13 +51,13 @@
                 <div class="swiper-container w-full h-full relative z-0">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/banner.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/banner.jpg">
                         </div>
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/han.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/han.jpg">
                         </div>
                         <div class="swiper-slide">
-                            <img class="w-full h-full object-cover" src="../../img/banner3.jpg">
+                            <img class="w-full h-full object-cover" src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/banner3.jpg">
                         </div>
                     </div>
                 </div>
@@ -167,6 +167,7 @@
                     showWeather: false,
                     reviewList: [],
                     showRating: false,
+
                 };
             },
 
@@ -204,15 +205,13 @@
 
                 fnToursList() {
                     let self = this;
-                    let nparmap = {
-                    };
+                    let nparmap = {};
                     $.ajax({
                         url: "/main/getTourandRatingList.dox",
                         dataType: "json",
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.toursList = data.list;
                         }
                     });
@@ -231,8 +230,6 @@
                         data: nparmap,
                         success: function (data) {
                             const wishTourNos = (data.list || []).map(item => +item.tourNo);
-                            console.log("찜목록 tourNo 목록: ", wishTourNos);
-
                             self.toursList = self.toursList.map(function (tour) {
                                 const tourNo = Number(tour.tourNo);
                                 return {
@@ -240,8 +237,6 @@
                                     isFavorite: wishTourNos.includes(tourNo) ? "Y" : "N"
                                 };
                             });
-
-                            console.log("최종 toursList: ", self.toursList);
                         }
                     });
                 },
@@ -259,7 +254,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 추가됨", res);
                             }
                         });
                     } else {
@@ -271,7 +265,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 제거됨", res);
                             }
                         });
                     }
@@ -292,16 +285,14 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log('리뷰 데이타 : ', data);
                             self.reviewList = data.reviewList;
                             setTimeout(() => {
                                 self.showRating = true;
                             }, 500); // 또는 300ms까지도 시도
                         }
                     });
-                }
-
-            },
+                },
+            }, // methods
             mounted() {
                 let self = this;
                 let swiper = new Swiper('.swiper-container', {
@@ -333,8 +324,10 @@
                 }, 300);
 
                 self.fnGetReviewList();
-            }
-        });
+                // 현재 위치 정보 불러오기
+
+            } // mounted
+        }); // app
 
         app.component('star-rating', VueStarRating.default);
         app.mount('#app');

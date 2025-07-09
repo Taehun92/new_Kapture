@@ -3,8 +3,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" sizes="96x96" href="/img/logo/favicon-96x96.png" />
-    <link rel="shortcut icon" href="/img/logo/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
+    <link rel="shortcut icon" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
     <title>약관 및 정책 | kapture</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>

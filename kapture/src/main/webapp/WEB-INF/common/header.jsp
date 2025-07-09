@@ -13,16 +13,51 @@
 
     <body class="bg-white text-gray-800 text-[16px] tracking-wide">
 
-        <!-- 번역 위젯 -->
-        <div class="gtranslate-wrapper fixed left-4 z-50" style="bottom: 80px;">
+        <!-- ✅ 번역 위젯 -->
+        <div class="gtranslate-wrapper fixed left-16 z-50" style="bottom: 160px;">
             <div class="gtranslate_wrapper"></div>
         </div>
 
         <!-- ✅ 헤더 시작 -->
         <div id="header" class="w-full bg-white shadow-sm border-b">
-            <div class="w-[70%] h-[150px] mx-auto relative flex justify-between items-center px-4">
+            <!-- ✅ 환율 위젯: header 내부에서 Vue로 제어 -->
+            <div v-if="showExchangeWidget" class="fixed right-16 z-40" style="top: 200px;">
+                <div
+                    class="bg-blue-50 text-gray-900 w-[200px] p-3 rounded-lg border border-blue-300 shadow-lg text-xs leading-tight">
+                    <div class="font-semibold text-sm mb-2 flex items-center gap-1">
+                        💱 현재 환율 (₩ 기준)
+                    </div>
+                    <!-- 환율 정보 (1000원 기준)
+                    <ul>
+                        <li v-for="(rate, currency) in exchangeRates" :key="currency">
+                            {{ currency }}: {{ (1000 / rate).toFixed(2) }}
+                        </li>
+                    </ul> -->
 
-                <!-- 🔹 우측 상단 작은 텍스트 -->
+                    <!-- 입력 박스 -->
+                    <div class="mt-3">
+                        <input type="number" v-model.number="inputWon" placeholder="금액 (₩)"
+                            class="w-full text-[15px] px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                    </div>
+
+                    <!-- 계산 결과 -->
+                    <div class="mt-2 text-[15px] text-gray-700">
+                        <div v-for="(rate, currency) in exchangeRates" :key="currency">
+                            {{ inputWon.toLocaleString() }}원 → 
+                            {{ (inputWon / rate).toLocaleString(undefined, { maximumFractionDigits: 2 }) }} {{ currency }}
+                        </div>
+                    </div>
+
+                    <!-- 업데이트 날짜 -->
+                    <div class="text-[10px] text-gray-500 mt-2">
+                        기준: {{ exchangeUpdatedAt }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ 헤더 컨텐츠 -->
+            <div class="w-[70%] h-[150px] mx-auto relative flex justify-between items-center px-4">
+                <!-- 🔹 우측 로그인/알림/장바구니 영역 -->
                 <div class="absolute top-4 right-4 flex gap-3 text-[15px] text-gray-600 items-center">
                     <a href="/cs/faq.do" class="hover:text-blue-700">FAQ</a>
                     <a href="/cs/main.do" class="hover:text-blue-700">고객센터</a>
@@ -36,19 +71,15 @@
                         </a>
                     </template>
 
-                    <template v-if="sessionId != ''">
-
-                        <!-- 장바구니 아이콘 + 수량 표시 -->
+                    <template v-else>
                         <a href="/payment.do" class="relative hover:text-blue-700">
                             <i class="fa-solid fa-cart-shopping text-[20px]"></i>
-
-                            <!-- 수량 배지 -->
                             <span v-if="basketCount > 0"
                                 class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] px-[5px] py-[1px] rounded-full leading-none">
                                 {{ basketCount }}
                             </span>
                         </a>
-                        <!-- 알림 아이콘 + 모달 wrapper -->
+
                         <div class="relative alarm-box">
                             <button @click="fnToggleAlarm" class="relative hover:text-blue-700">
                                 <i class="fa-solid fa-bell text-[20px]"></i>
@@ -58,7 +89,7 @@
                                 </span>
                             </button>
 
-                            <!-- 🔽 알림 모달 -->
+                            <!-- 알림 모달 -->
                             <div v-if="showAlarmModal"
                                 class="absolute right-0 mt-2 w-60 bg-white border rounded shadow-md z-50 text-sm">
                                 <div class="p-3 border-b font-semibold text-gray-700">새 알림</div>
@@ -75,17 +106,12 @@
                             </div>
                         </div>
 
-                        <!-- 관리자 -->
                         <a v-if="sessionRole == 'ADMIN'" href="/admin.do" class="hover:text-blue-700">
                             <i class="fa-solid fa-user-group text-[20px]"></i>
                         </a>
-
-                        <!-- 일반 사용자 (투어리스트) -->
                         <a v-if="sessionRole == 'TOURIST'" href="/mypage/user-mypage.do" class="hover:text-blue-700">
                             <i class="fa-solid fa-user text-[20px]"></i>
                         </a>
-
-                        <!-- 가이드 -->
                         <a v-if="sessionRole == 'GUIDE'" href="/mypage/guide-schedule.do" class="hover:text-blue-700">
                             <i class="fa-solid fa-user-tie text-[20px]"></i>
                         </a>
@@ -97,35 +123,22 @@
                     </template>
                 </div>
 
-                <!-- 🔵 왼쪽: 로고 + 메뉴 -->
+                <!-- 🔵 로고 & 메뉴 -->
                 <div class="flex items-center gap-28 font-semibold text-[35px] text-gray-800">
                     <a href="/main.do">
-                        <img src="../../img/logo/kapture_Logo.png" alt="로고" class="w-[120px] h-[96px] object-contain" />
+                        <img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/web-app-manifest-512x512.png"
+                            alt="로고" class="w-[120px] h-[96px] object-contain" />
                     </a>
                     <div class="flex gap-12">
                         <a href="/tours/list.do" class="hover:text-blue-700">Tours</a>
-                        <div class="relative group">
-                            <a href="#" class="hover:text-blue-700">
-                                Board
-                            </a>
-                            <!-- 드롭다운: 가로 정렬 fix -->
-                            <div class="absolute left-[-111px] hidden group-hover:flex flex-row items-center bg-white border-t border-gray-300 z-40 px-6 py-2"
-                                style="top: 100%; margin-top: 0px;">
-                                <a href="/request/list.do"
-                                    class="text-gray-800 hover:text-blue-600 font-medium text-lg mr-6 whitespace-nowrap">요청게시판</a>
-                                <a href="/freeboard/list.do"
-                                    class="text-gray-800 hover:text-blue-600 font-medium text-lg mr-6 whitespace-nowrap">자유게시판</a>
-                                <a href="/reviewboard/list.do"
-                                    class="text-gray-800 hover:text-blue-600 font-medium text-lg whitespace-nowrap">후기게시판</a>
-                            </div>
-                        </div>
+                        <a href="/request/list.do" class="hover:text-blue-700">Request</a>
                         <a href="/course.do" class="hover:text-blue-700">Where to Go</a>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ✅ 헤더 끝 -->
 
+        <!-- ✅ Vue 스크립트 -->
         <script>
             window.gtranslateSettings = {
                 default_language: "ko",
@@ -146,163 +159,116 @@
                         sessionId: "${sessionId}",
                         sessionRole: "${sessionRole}",
                         basketCount: 0,
-                        alarmList: [],              // 전체 알림 10개
-                        unreadAlarmCount: 0,        // 읽지 않은 알림 수
-                        unreadAlarms: [],           // 알림에 content, formattedDate 포함
-                        showAlarmModal: false       // 모달 토글
+                        alarmList: [],
+                        unreadAlarmCount: 0,
+                        showAlarmModal: false,
+                        showExchangeWidget: false,
+                        exchangeRates: {},
+                        exchangeUpdatedAt: '',
+                        inputWon: 1000
                     };
                 },
                 methods: {
-                    fnGetAlarms() {
-                        let self = this;
-
-                        if (!self.sessionId) {
-                            console.warn("⚠️ 로그인되지 않음: 알림 조회 생략");
-                            return;
-                        }
-
-                        $.ajax({
-                            url: "/common/alarms.dox",  // 이 엔드포인트는 모든 알림 반환하도록 백엔드도 조정 필요
-                            type: "POST",
-                            data: { sessionId: self.sessionId },
-                            dataType: "json",
-                            success: function (data) {
-                                console.log("alarmdata===>", data);
-                                self.alarmList = data.list.map(item => {
-                                    let content = "";
-                                    if (item.referenceType === "PAYMENT") {
-                                        content = "예약이 확정되었습니다.";
-                                    } if (item.referenceType === 'COMMENT') {
-                                        content = "내 요청글에 새로운 댓글이 달렸습니다.";
-                                    } else if (item.referenceType === 'ACCEPT') {
-                                        content = "내 댓글이 채택되었습니다!";
-                                    } else if (item.referenceType === "TOUR") {
-                                        content = "리뷰를 남겨주세요!";
-                                    } else if (item.referenceType === "REVIEW") {
-                                        content = "새로운 리뷰가 등록되었습니다.";
-                                    } else if (item.referenceType === "QNA") {
-                                        content = "새로운 문의가 등록되었습니다.";
-                                    } else if (item.referenceType === "ANSWER") {
-                                        content = "문의하신 내용에 답변이 등록되었습니다.";
-                                    } else if (item.referenceType === "PARTNERSHIP") {
-                                        content = "새로운 제휴 문의가 등록되었습니다.";
-                                    } else if (item.referenceType === "PARTNERSHIP_STATUS") {
-                                        if (item.urlParam === "승인완료") {
-                                            content = "제휴 요청이 승인되었습니다.";
-                                        } else if (item.urlParam === "승인거부") {
-                                            content = "제휴 요청이 거부되었습니다.";
-                                        } else {
-                                            content = "제휴 요청 상태가 변경되었습니다.";
-                                        }
-                                    }
-
-                                    let formattedDate = item.alCreatedAt?.substring(2, 10).replace(/-/g, '.');
-
-                                    return {
-                                        ...item,
-                                        content: content,
-                                        formattedDate: formattedDate
-                                    };
-                                });
-                                // 안읽은 알림 수 (카운트용)
-                                self.unreadAlarmCount = data.list.filter(item => item.alarmStatus === 'N').length;
-                            }
-                        });
-                    },
-                    fnReadAlarm(alarm) {
-                        let self = this;
-                        $.ajax({
-                            url: "/common/read-alarm.dox",
-                            type: "POST",
-                            data: { alarmNo: alarm.alarmNo },
-                            dataType: "json",
-                            success: function (data) {
-                                if (data.result === "success") {
-                                    // URL 이동 처리
-                                    let url = "";
-                                    if (alarm.referenceType === "TOUR") {
-                                        url = "/mypage/user-reviews.do";
-                                    } else if (alarm.referenceType === "COMMENT") {
-                                        url = "/request/view.do?requestNo=" + alarm.urlParam;
-                                    } else if (alarm.referenceType === "ACCEPT") {
-                                        url = "/request/view.do?requestNo=" + alarm.urlParam;
-                                    } else if (alarm.referenceType === "PAYMENT") {
-                                        url = "/mypage/user-purchase-history.do";
-                                    } else if (alarm.referenceType === "REVIEW") {
-                                        url = "/tours/tour-info.do?tourNo=" + alarm.urlParam;
-                                    } else if (alarm.referenceType === "QNA") {
-                                        url = "/admin/customer-inquiry.do";
-                                    } else if (alarm.referenceType === "ANSWER") {
-                                        url = "/mypage/user-qna.do";
-                                    } else if (alarm.referenceType === "PARTNERSHIP") {
-                                        url = "/admin/partnership.do";
-                                    } else if (alarm.referenceType === "PARTNERSHIP_STATUS") {
-                                        url = "/main.do";
-                                    }
-
-                                    location.href = url;
-                                } else {
-                                    alert("알림 상태 업데이트에 실패했습니다.");
-                                }
-                            },
-                            error: function () {
-                                alert("서버 오류가 발생했습니다.");
-                            }
-                        });
-                    },
                     fnLogout() {
-                        var self = this;
-                        $.ajax({
-                            url: "/logout.dox",
-                            type: "POST",
-                            dataType: "json",
-                            success: function (data) {
-                                if (data.result === "success") {
-                                    alert("로그아웃 되었습니다.");
-                                    location.href = "/main.do";
-                                }
+                        $.post("/logout.dox", {}, function (data) {
+                            if (data.result === "success") {
+                                alert("로그아웃 되었습니다.");
+                                location.href = "/main.do";
                             }
-                        });
+                        }, "json");
                     },
-                    fnGetBasket() {
-                        let self = this;
-                        $.ajax({
-                            url: "/basket/getCount.dox",
-                            type: "POST",
-                            data: { sessionId: self.sessionId },
-                            dataType: "json",
-                            success: function (data) {
-                                self.basketCount = data.count;
-                            }
-                        });
-                    },
-
                     fnToggleAlarm() {
                         this.showAlarmModal = !this.showAlarmModal;
                     },
-
                     fnCloseAlarmOutside(e) {
-                        // 알림 영역 DOM 찾기
                         const alarmBox = document.querySelector('.alarm-box');
                         if (alarmBox && !alarmBox.contains(e.target)) {
                             this.showAlarmModal = false;
                         }
+                    },
+                    fnGetBasket() {
+                        if (!this.sessionId) return;
+                        $.post("/basket/getCount.dox", { sessionId: this.sessionId }, (data) => {
+                            this.basketCount = data.count;
+                        }, "json");
+                    },
+                    fnGetAlarms() {
+                        if (!this.sessionId) return;
+                        $.post("/common/alarms.dox", { sessionId: this.sessionId }, (data) => {
+                            this.alarmList = data.list.map(item => ({
+                                ...item,
+                                content: this.mapAlarmContent(item),
+                                formattedDate: item.alCreatedAt?.substring(2, 10).replace(/-/g, '.')
+                            }));
+                            this.unreadAlarmCount = this.alarmList.filter(i => i.alarmStatus === 'N').length;
+                        }, "json");
+                    },
+                    fnReadAlarm(alarm) {
+                        $.post("/common/read-alarm.dox", { alarmNo: alarm.alarmNo }, (data) => {
+                            if (data.result === "success") {
+                                const urlMap = {
+                                    PAYMENT: "/mypage/user-purchase-history.do",
+                                    COMMENT: "/request/view.do?requestNo=" + alarm.urlParam,
+                                    ACCEPT: "/request/view.do?requestNo=" + alarm.urlParam,
+                                    TOUR: "/mypage/user-reviews.do",
+                                    REVIEW: "/tours/tour-info.do?tourNo=" + alarm.urlParam,
+                                    QNA: "/admin/customer-inquiry.do",
+                                    ANSWER: "/mypage/user-qna.do",
+                                    PARTNERSHIP: "/admin/partnership.do",
+                                    PARTNERSHIP_STATUS: "/main.do"
+                                };
+                                location.href = urlMap[alarm.referenceType] || "/main.do";
+                            }
+                        }, "json");
+                    },
+                    mapAlarmContent(item) {
+                        const map = {
+                            PAYMENT: "예약이 확정되었습니다.",
+                            COMMENT: "내 요청글에 새로운 댓글이 달렸습니다.",
+                            ACCEPT: "내 댓글이 채택되었습니다!",
+                            TOUR: "리뷰를 남겨주세요!",
+                            REVIEW: "새로운 리뷰가 등록되었습니다.",
+                            QNA: "새로운 문의가 등록되었습니다.",
+                            ANSWER: "문의하신 내용에 답변이 등록되었습니다.",
+                            PARTNERSHIP: "새로운 제휴 문의가 등록되었습니다."
+                        };
+                        if (item.referenceType === "PARTNERSHIP_STATUS") {
+                            return item.urlParam === "승인완료"
+                                ? "제휴 요청이 승인되었습니다."
+                                : item.urlParam === "승인거부"
+                                    ? "제휴 요청이 거부되었습니다."
+                                    : "제휴 요청 상태가 변경되었습니다.";
+                        }
+                        return map[item.referenceType] || "새로운 알림이 있습니다.";
+                    },
+                    fnGetExchangeRates() {
+                        $.get("/exchangeRate/all", (data) => {
+                            console.log("응답 전체 >>>>", data);
+
+                            // 환율 데이터 전체가 바로 data로 들어오므로 그대로 사용
+                            this.exchangeRates = data;
+                            this.exchangeUpdatedAt = new Date().toISOString().substring(0, 10); // or 서버에서 updatedAt 따로 내려줄 수도 있음
+
+                            console.log("exchangeRates>>>>", this.exchangeRates);
+                        }, "json");
                     }
                 },
                 mounted() {
-                    if (this.sessionId != '') {
-                        this.fnGetBasket();
-                    }
-                    const self = this;
+                    if (this.sessionId) this.fnGetBasket();
+                    this.fnGetAlarms();
+
+                    // 페이지 경로 체크
+                    const path = window.location.pathname;
+                    const showOnPages = ["/tours/list.do", "/tours/tour-info.do"];
+                    this.showExchangeWidget = showOnPages.includes(path);
+
+                    if (this.showExchangeWidget) this.fnGetExchangeRates();
+
                     window.header = this;
-                    self.fnGetAlarms();
-                    window.addEventListener("storage", function (e) {
-                        if (e.key === "basketChanged") {
-                            self.fnGetBasket();
-                        }
-                    });
-                    // 🔔 외부 클릭 감지 등록
                     document.addEventListener("click", this.fnCloseAlarmOutside);
+                    window.addEventListener("storage", (e) => {
+                        if (e.key === "basketChanged") this.fnGetBasket();
+                    });
                 },
                 beforeUnmount() {
                     document.removeEventListener("click", this.fnCloseAlarmOutside);
@@ -311,7 +277,6 @@
 
             header.mount('#header');
         </script>
-
     </body>
 
     </html>

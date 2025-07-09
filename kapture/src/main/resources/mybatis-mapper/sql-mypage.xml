@@ -3,32 +3,50 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.kapture.mypage.mapper.MyPageMapper">
+	<!-- 로그인 유저 정보 조회 -->
 	<select id="selectUser" parameterType="hashmap" resultType="com.example.kapture.login.model.Login">
-		SELECT USER_NO, PASSWORD, EMAIL, PHONE, ROLE, TO_CHAR(BIRTHDAY, 'YYYY-MM-DD') AS BIRTHDAY, ADDRESS, GENDER, U_CREATED_AT, U_UPDATED_AT, USER_FIRSTNAME, USER_LASTNAME, SOCIAL_TYPE, ISFOREIGNER, PUSHYN
+		SELECT 
+			USER_NO,
+			PASSWORD,
+			EMAIL,
+			PHONE,
+			ROLE,
+			DATE_FORMAT(BIRTHDAY, '%Y-%m-%d') AS BIRTHDAY,
+			ADDRESS,
+			GENDER,
+			U_CREATED_AT,
+			U_UPDATED_AT,
+			USER_FIRSTNAME,
+			USER_LASTNAME,
+			SOCIAL_TYPE,
+			ISFOREIGNER,
+			PUSHYN
 		FROM USERS
 		WHERE USER_NO = #{sessionId}
 	</select>
 	
+	<!-- 사용자(회원)의 마이페이지 정보 수정 기능 -->
 	<update id="userInfoUpdate" parameterType="hashmap">
-		  UPDATE USERS
-		  <set>
-		    PHONE = #{phone},
-		    PUSHYN = #{pushYN},
-		    GENDER = #{gender},
-			    <if test="address != null and address != ''">
-			      ADDRESS = #{address},
-			    </if>
-			    U_UPDATED_AT = SYSDATE,
-			    <if test="birthday != null and birthday != ''">
-			      BIRTHDAY = #{birthday},
-			    </if>
-			    <if test="userLastName != null and userLastName != ''">
-			      USER_LASTNAME = #{userLastName}
-			    </if>
-		  </set>
-		  		WHERE USER_NO = #{sessionId}
+	  UPDATE USERS
+	  <set>
+	    PHONE = #{phone},
+	    PUSHYN = #{pushYN},
+	    GENDER = #{gender},
+	    <if test="address != null and address != ''">
+	      ADDRESS = #{address},
+	    </if>
+	    U_UPDATED_AT = NOW(),
+	    <if test="birthday != null and birthday != ''">
+	      BIRTHDAY = #{birthday},
+	    </if>
+	    <if test="userLastName != null and userLastName != ''">
+	      USER_LASTNAME = #{userLastName}
+	    </if>
+	  </set>
+	  WHERE USER_NO = #{sessionId}
 	</update>
-
+	
+	<!-- 특정 유저의 가이드 상세 정보를 조회 -->
 	<select id="selectGuideInfo" parameterType="hashmap">
 		SELECT 
 			U.USER_NO, 
@@ -37,7 +55,7 @@
 			U.EMAIL, 
 			U.PHONE, 
 			U.ROLE, 
-			TO_CHAR(U.BIRTHDAY, 'YYYY-MM-DD') AS BIRTHDAY, 
+			DATE_FORMAT(U.BIRTHDAY, '%Y-%m-%d') AS BIRTHDAY, 
 			U.ADDRESS, 
 			U.GENDER, 
 			U.U_CREATED_AT, 
@@ -54,7 +72,7 @@
 				SELECT P_FILE_PATH 
 				FROM GUIDE_IMG 
 				WHERE P_GUIDE_NO = G.GUIDE_NO
-				AND ROWNUM = 1
+				LIMIT 1
 			) AS P_FILE_PATH
 		FROM USERS U
 		INNER JOIN GUIDES G ON U.USER_NO = G.USER_NO
@@ -63,7 +81,7 @@
 
 
 	
-	<update id="updateGuideInfo" parameterType="hashmap">
+	<!--<update id="updateGuideInfo" parameterType="hashmap">
 	    UPDATE GUIDES
 	    SET 
 	    	<if	test= "experience != null and experience != '' ">
@@ -74,30 +92,44 @@
 	        	LANGUAGE = #{language}
 	        </if>
 	    WHERE USER_NO = #{sessionId}
+	</update>-->
+	<!-- 프로필 정보 중 일부 항목(경력, 언어 능력)을 수정 -->
+	<update id="updateGuideInfo" parameterType="hashmap">
+	    UPDATE GUIDES
+	    <set>
+	        <if test="experience != null and experience != ''">
+	            EXPERIENCE = #{experience},
+	        </if>
+	        <if test="language != null and language != ''">
+	            LANGUAGE = #{language}
+	        </if>
+	    </set>
+	    WHERE USER_NO = #{sessionId}
 	</update>
-
+	
+	<!-- 가이드 정보 + 가장 최신의 가이드 이미지 1개 -->
 	<select id="getGuideInfo" resultType="hashmap">
-	   SELECT *
-			FROM USERS U
-				INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
-				LEFT JOIN(
-			SELECT GI.*
-			FROM GUIDE_IMG GI
-				INNER JOIN (
-				SELECT P_GUIDE_NO, MAX(P_FILE_NO) AS MAX_FILE_NO
-				FROM GUIDE_IMG
-				GROUP BY P_GUIDE_NO
-			) LATEST ON GI.P_GUIDE_NO = LATEST.P_GUIDE_NO AND GI.P_FILE_NO = LATEST.MAX_FILE_NO
-			) GI ON GI.P_GUIDE_NO = G.GUIDE_NO
-			WHERE U.USER_NO = #{sessionId};
+	    SELECT *
+		FROM USERS U
+			INNER JOIN GUIDES G ON G.USER_NO = U.USER_NO
+			LEFT JOIN(
+		SELECT GI.*
+		FROM GUIDE_IMG GI
+			INNER JOIN (
+			SELECT P_GUIDE_NO, MAX(P_FILE_NO) AS MAX_FILE_NO
+			FROM GUIDE_IMG
+			GROUP BY P_GUIDE_NO
+		) LATEST ON GI.P_GUIDE_NO = LATEST.P_GUIDE_NO AND GI.P_FILE_NO = LATEST.MAX_FILE_NO
+		) GI ON GI.P_GUIDE_NO = G.GUIDE_NO
+		WHERE U.USER_NO = #{sessionId}
 	</select>
 		
-	
+	<!-- 가이드 이미지 존재 여부 확인 -->
 	<select id="checkGuideImageExists" resultType="int">
 	    SELECT COUNT(*) FROM GUIDE_IMG WHERE P_GUIDE_NO = #{P_GUIDE_NO}
 	</select>
 
-	
+	<!-- 사용자(USER_NO)가 결제한 투어 정보 리스트 조회 -->
 	<select id="selectPayList" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Payments">
 		SELECT P.*, TITLE, DURATION, TOUR_DATE
 		FROM PAYMENTS P
@@ -105,6 +137,7 @@
 		WHERE USER_NO = #{userNo}
 	</select>	
 	
+	<!-- 거래완료인 상품에 리뷰 조회 -->
 	<select id="selectUserReviewsList" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Payments">
 		SELECT P.*, T.TITLE, T.DURATION, T.TOUR_DATE, U.USER_FIRSTNAME, U.USER_LASTNAME, R.*, I.*
 		FROM PAYMENTS P
@@ -116,78 +149,117 @@
         ORDER BY T.TOUR_DATE
 	</select>
 	
-	<insert id="insertUserReview" parameterType="hashmap"  useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
-		INSERT INTO REVIEWS (REVIEW_NO, TOUR_NO, USER_NO, RATING, "COMMENT", R_UPDATED_AT)
-		VALUES (REVIEWS_SEQ.NEXTVAL, #{tourNo}, #{userNo}, #{rating}, #{comment}, SYSDATE)
+	<!-- 리뷰 등록 -->
+	<insert id="insertUserReview" parameterType="hashmap" useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
+		INSERT INTO REVIEWS (
+			TOUR_NO,
+			USER_NO,
+			RATING,
+			`COMMENT`,
+			R_UPDATED_AT
+		)
+		VALUES (
+			#{tourNo},
+			#{userNo},
+			#{rating},
+			#{comment},
+			NOW()
+		)
 	</insert>
 	
+	<!-- 리뷰 수정 -->
 	<update id="updateUserReview" parameterType="hashmap">
 		UPDATE REVIEWS
-	    SET "COMMENT" = #{comment},
-	    	RATING = #{rating},
-	    	R_UPDATED_AT = SYSDATE
-	    WHERE REVIEW_NO = #{reviewNo}
+		SET 
+			`COMMENT` = #{comment},
+			RATING = #{rating},
+			R_UPDATED_AT = NOW()
+		WHERE REVIEW_NO = #{reviewNo}
 	</update>
 	
+	<!-- 리뷰 삭제 -->
 	<delete id="deleteUserReview" parameterType="hashmap">
 		DELETE FROM REVIEWS
 		WHERE REVIEW_NO = #{reviewNo}
 	</delete>
 	
+	<!-- 회원 탈퇴(비활성화) -->
 	<update id="unregisterUser" parameterType="hashmap">
 		UPDATE USERS
 		SET UNREGISTERYN = 'Y'
 		WHERE USER_NO = #{sessionId}
 	</update>
 
+	<!-- 가이드가 등록한 모든 투어 일정 조회 -->
 	<select id="selectGuideSchedule" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Guide">
-	SELECT TITLE,DURATION,DELETEYN,TOUR_DATE,TOUR_NO
+		SELECT TITLE,DURATION,DELETEYN,TOUR_DATE,TOUR_NO
 		FROM 
 		    USERS U
 		INNER JOIN GUIDES G ON U.USER_NO = G.USER_NO
 		INNER JOIN TOURS T ON G.GUIDE_NO = T.GUIDE_NO
-                WHERE G.USER_NO = #{userNo}
+        WHERE G.USER_NO = #{userNo}
 	</select>
 	
+	<!-- 비밀번호 변경 -->
 	<update id="updatePassword" parameterType="hashmap">
 		UPDATE USERS
 		SET PASSWORD = #{password}
 		WHERE USER_NO = #{sessionId}
 	</update>
 	
+	<!-- 새 투어 상품 등록 -->
 	<insert id="insertTour" parameterType="hashmap" useGeneratedKeys="true" keyProperty="tourNo" keyColumn="TOUR_NO">
-
-	<selectKey keyProperty="tourNo" resultType="long" order="BEFORE">
-        SELECT TOUR_SEQ.NEXTVAL FROM DUAL
-    </selectKey>
-    	INSERT INTO TOURS (TOUR_NO, GUIDE_NO, TITLE, DURATION, PRICE, MAX_PEOPLE, TOUR_DATE, DELETEYN, SI_NO, GU_NO, THEME_NO, DESCRIPTION ,VEHICLE)
-    	SELECT #{tourNo}, G.GUIDE_NO, #{title}, #{duration}, #{price}, '4', #{tourDate}, 'N', R.SI_NO, R.GU_NO, T.THEME_NO, #{description},#{vehicle}
-    	FROM GUIDES G
-    	JOIN REGION R ON R.SI_NAME = #{siName} AND R.GU_NAME = #{guName}
-    	JOIN THEME T ON T.THEME_NAME = #{themeName}
-    	WHERE G.USER_NO = #{sessionId}
-    	
+		INSERT INTO TOURS (
+			GUIDE_NO, TITLE, DURATION, PRICE, MAX_PEOPLE, TOUR_DATE,
+			DELETEYN, SI_NO, GU_NO, THEME_NO, DESCRIPTION, VEHICLE
+		)
+		SELECT 
+			G.GUIDE_NO,
+			#{title},
+			#{duration},
+			#{price},
+			4,
+			#{tourDate},
+			'N',
+			R.SI_NO,
+			R.GU_NO,
+			T.THEME_NO,
+			#{description},
+			#{vehicle}
+		FROM GUIDES G
+		JOIN REGION R ON R.SI_NAME = #{siName} AND R.GU_NAME = #{guName}
+		JOIN THEME T ON T.THEME_NAME = #{themeName}
+		WHERE G.USER_NO = #{sessionId}
 	</insert>
 
-	<insert id="insertToursFile" parameterType="hashmap">
-    	INSERT INTO IMG (FILE_NO, FILE_PATH, FILE_NAME, FILE_ORG_NAME)
-    	VALUES (FILE_SEQ.NEXTVAL,  #{path}, #{filename}, #{originFilename})
+	<select id="getLastInsertTourNo" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+
+	<!-- 상품에 업로드한 이미지 정보 IMG에 저장 -->
+	<insert id="insertToursFile" parameterType="hashmap" useGeneratedKeys="true" keyProperty="fileNo" keyColumn="FILE_NO">
+		INSERT INTO IMG (FILE_PATH, FILE_NAME, FILE_ORG_NAME)
+		VALUES (#{path}, #{filename}, #{originFilename})
 	</insert>
 	
+	<!-- 여러 이미지를 한 번에 업데이트하면서 썸네일 지정 여부 처리 -->
 	<update id="updateToursFile" parameterType="hashmap">
-    	UPDATE IMG
-    	SET TOUR_NO = #{tourNo},
-        THUMBNAIL = CASE 
-            <foreach collection="thumbnailList" item="img" index="index">
-                WHEN FILE_PATH = #{img.url} THEN #{img.thumbnail}
-            </foreach>
-        	END
-    	WHERE FILE_PATH IN
-    	<foreach collection="list" item="imageUrl" open="(" separator="," close=")">
-        	#{imageUrl}
-    	</foreach>
+		UPDATE IMG
+		SET 
+			TOUR_NO = #{tourNo},
+			THUMBNAIL = CASE 
+				<foreach collection="thumbnailList" item="img" separator=" ">
+					WHEN FILE_PATH = #{img.url} THEN #{img.thumbnail}
+				</foreach>
+			END
+		WHERE FILE_PATH IN 
+		<foreach collection="list" item="imageUrl" open="(" separator="," close=")">
+			#{imageUrl}
+		</foreach>
 	</update>
-	<select id="selectTransactionList" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Guide">	
+	
+	<!-- 가이드 판매 내역 조회 -->
+	<select id="selectTransactionList" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Guide">
 		SELECT *
 		FROM GUIDES G
 		INNER JOIN TOURS T ON T.GUIDE_NO = G.GUIDE_NO
@@ -199,16 +271,17 @@
 		WHERE G.USER_NO = #{sessionId}
 		<if test="keyword != null and keyword != ''">
 		    AND (
-		        MEMBER_USER.USER_FIRSTNAME LIKE '%' || #{keyword} || '%' OR 
-		        T.TITLE LIKE '%' || #{keyword} || '%'
+		        U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%') OR 
+		        T.TITLE LIKE CONCAT('%', #{keyword}, '%')
 		    )
 		</if>
 		ORDER BY T.TOUR_DATE DESC
-		OFFSET ((#{page} - 1) * #{size}) ROWS FETCH NEXT #{size} ROWS ONLY
+		LIMIT #{size} OFFSET ${(page - 1) * size}
 	</select>
+	
 	<!--가이드 판매내역 페이징처리-->
-<select id="selectTransactionTotalCount" parameterType="hashmap" resultType="int">
-	    SELECT COUNT(*)
+	<select id="selectTransactionTotalCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
 		FROM GUIDES G
 		INNER JOIN TOURS T ON T.GUIDE_NO = G.GUIDE_NO
 		INNER JOIN USERS U ON G.USER_NO = U.USER_NO
@@ -217,136 +290,164 @@
 		LEFT JOIN PAYMENTS P ON P.TOUR_NO = T.TOUR_NO 
 		LEFT JOIN IMG I ON T.TOUR_NO = I.TOUR_NO AND I.THUMBNAIL = 'Y'
 		WHERE G.USER_NO = #{sessionId}
-	    	<if test="keyword != null and keyword != ''">
-	        	AND (
-	            	USER_FIRSTNAME LIKE '%' || #{keyword} || '%'
-	                OR TITLE LIKE '%' || #{keyword} || '%'
-	            )
-	        </if>
-</select> 
+		<if test="keyword != null and keyword != ''">
+			AND (
+				U.USER_FIRSTNAME LIKE CONCAT('%', #{keyword}, '%')
+				OR T.TITLE LIKE CONCAT('%', #{keyword}, '%')
+			)
+		</if>
+	</select>
 
-	
+	<!-- 투어 수정 -->
 	<update id="updateTour" parameterType="hashmap">
-		UPDATE TOURS SET 
+		UPDATE TOURS
+		SET 
 			TITLE = #{title}, 
 			DURATION = #{duration},
 			PRICE = #{price},
 			TOUR_DATE = #{tourDate},
-			SI_NO = (SELECT DISTINCT SI_NO FROM REGION WHERE SI_NAME=#{siName}),
-			GU_NO = (SELECT DISTINCT GU_NO FROM REGION WHERE SI_NAME=#{siName} AND GU_NAME=#{guName}),
-			THEME_NO = (SELECT THEME_NO FROM THEME WHERE THEME_NAME =#{themeName}), 
+			SI_NO = (
+				SELECT SI_NO 
+				FROM REGION 
+				WHERE SI_NAME = #{siName} 
+				LIMIT 1
+			),
+			GU_NO = (
+				SELECT GU_NO 
+				FROM REGION 
+				WHERE SI_NAME = #{siName} AND GU_NAME = #{guName}
+				LIMIT 1
+			),
+			THEME_NO = (
+				SELECT THEME_NO 
+				FROM THEME 
+				WHERE THEME_NAME = #{themeName} 
+				LIMIT 1
+			),
 			DESCRIPTION = #{description}
 		WHERE TOUR_NO = #{tourNo}
 	</update>
 	
+	<!-- 투어 완전 삭제 -->
 	<delete id="deleteTour" parameterType="hashmap">
 		DELETE FROM TOURS
 		WHERE TOUR_NO = #{tourNo}
 	</delete>
 	
+	<!-- 해당 투어의 이미지 정보 삭제 -->
 	<delete id="deleteTourImg" parameterType="hashmap">
 		DELETE FROM IMG
 		WHERE TOUR_NO = #{tourNo}
 	</delete>
 	
-	
+	<!-- 해당 투어 모든 이미지 썸네일 값('N') 초기화 -->
 	<update id="resetThumbnail" parameterType="hashmap">
 	 	UPDATE IMG SET THUMBNAIL = 'N'
 	 	WHERE TOUR_NO = #{tourNo}
 	</update>
 	
-
+	<!-- 해당 투어 특정 이미지 썸네일로 설정 -->
 	<update id="setThumbnail" parameterType="hashmap">
 		UPDATE IMG SET THUMBNAIL = 'Y'
 		WHERE FILE_PATH = #{thumbnail}
 	</update>
 	
+	<!-- 문의 내역 조회 -->
 	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.kapture.mypage.model.Inquiry">
 	    SELECT *
 	    FROM INQUIRIES
 	    WHERE USER_NO = #{userNo}
 	    ORDER BY INQ_CREATED_AT DESC
 	</select>
+	
 	<!-- 구매한 상품 조회 -->
 	<select id="selectPurchaseList" resultType="hashmap">
-		SELECT * FROM (
-			SELECT ROWNUM AS RNUM, DATA.* FROM (
-				SELECT PAYMENT_NO,PAYMENT_DATE, AMOUNT,PAYMENT_STATUS, NUM_PEOPLE, ETC, 
-        			p.USER_NO, USER_FIRSTNAME, USER_LASTNAME,
-        			PHONE, EMAIL, ISFOREIGNER,
-        			T.TOUR_NO, TOUR_DATE, DURATION, TITLE
-				FROM PAYMENTS p
-      			JOIN USERS u ON p.USER_NO = u.USER_NO
-      			JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
-      			WHERE 1 = 1 AND p.USER_NO = #{userNo} 
-      			<if test="startDate != null and startDate != ''">
-          			AND PAYMENT_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-      			</if>
-      			<if test="endDate != null and endDate != ''">
-          			AND PAYMENT_DATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-      			</if>
-      			<if test="status != null and status != ''">
-          			AND PAYMENT_STATUS = #{status}
-      			</if>
-      			<if test="keyword != null and keyword != ''">
-          			AND (
-              			TITLE LIKE '%' || #{keyword} || '%'
-          				)
-      			</if>
-      			ORDER BY PAYMENT_DATE DESC
-	  		) DATA
-	    	WHERE ROWNUM &lt;= #{page} * #{size}
-		)
-		WHERE RNUM &gt; (#{page} - 1) * #{size}
+		SELECT 
+			P.PAYMENT_NO,
+			P.PAYMENT_DATE,
+			P.AMOUNT,
+			P.PAYMENT_STATUS,
+			P.NUM_PEOPLE,
+			P.ETC,
+			P.USER_NO,
+			U.USER_FIRSTNAME,
+			U.USER_LASTNAME,
+			U.PHONE,
+			U.EMAIL,
+			U.ISFOREIGNER,
+			T.TOUR_NO,
+			T.TOUR_DATE,
+			T.DURATION,
+			T.TITLE
+		FROM PAYMENTS P
+		JOIN USERS U ON P.USER_NO = U.USER_NO
+		JOIN TOURS T ON P.TOUR_NO = T.TOUR_NO
+		WHERE P.USER_NO = #{userNo}
+		
+		<if test="startDate != null and startDate != ''">
+			AND P.PAYMENT_DATE &gt;= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND P.PAYMENT_DATE &lt;= #{endDate}
+		</if>
+		<if test="status != null and status != ''">
+			AND P.PAYMENT_STATUS = #{status}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		
+		ORDER BY P.PAYMENT_DATE DESC
+		LIMIT #{limit} OFFSET #{offset}
 	</select>
+	
 	<!-- 구매한 상품 개수 -->
 	<select id="selectPurchaseListTotalCount" resultType="int">
 		SELECT COUNT(*)
-	  	FROM PAYMENTS p
-	  	JOIN USERS u ON p.USER_NO = u.USER_NO
-	  	JOIN TOURS t ON p.TOUR_NO = t.TOUR_NO
-	  	WHERE 1 = 1 AND p.USER_NO = #{userNo} 
-	  	<if test="startDate != null and startDate != ''">
-	    	AND PAYMENT_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-	  	</if>
-	  	<if test="endDate != null and endDate != ''">
-	    	AND PAYMENT_DATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-	  	</if>
-	  	<if test="status != null and status != ''">
-	    	AND PAYMENT_STATUS = #{status}
-	  	</if>
-	  	<if test="keyword != null and keyword != ''">
-		    AND (
-	      		TITLE LIKE '%' || #{keyword} || '%'
-	    		)
-	  	</if>
+		FROM PAYMENTS P
+		JOIN USERS U ON P.USER_NO = U.USER_NO
+		JOIN TOURS T ON P.TOUR_NO = T.TOUR_NO
+		WHERE P.USER_NO = #{userNo}
+		
+		<if test="startDate != null and startDate != ''">
+			AND P.PAYMENT_DATE &gt;= #{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND P.PAYMENT_DATE &lt;= #{endDate}
+		</if>
+		<if test="status != null and status != ''">
+			AND P.PAYMENT_STATUS = #{status}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND T.TITLE LIKE CONCAT('%', #{keyword}, '%')
+		</if>
 	</select>
-	<!-- 가이드의 USER_NO 조회 -->
+	
+	<!-- 해당 투어 등록한 가이드의 USER_NO 조회 -->
 	<select id="getGuideUserNoByTourNo" resultType="int" parameterType="hashmap">
 	    SELECT G.USER_NO
 	    FROM TOURS T
 	    JOIN GUIDES G ON T.GUIDE_NO = G.GUIDE_NO
 	    WHERE T.TOUR_NO = #{urlParam}
 	</select>
+	
 	<!-- 리뷰 등록시 알림 저장 -->
-	<insert id="insertReviewAlarm" parameterType="hashmap">
-	    INSERT INTO ALARM (
-	        ALARM_NO,
-	        TARGET_USER_NO,
-	        REFERENCE_TYPE,
-	        REFERENCE_ID,
-	        URL_PARAM,
-	        ALARM_STATUS,
-	        AL_CREATED_AT
-	    ) VALUES (
-	        ALARM_SEQ.NEXTVAL,
-	        #{targetUserNo},
-	        #{referenceType},
-	        #{referenceId},
-	        #{urlParam},
-	        'N',
-	        SYSDATE
-	    )
+	<insert id="insertReviewAlarm" parameterType="hashmap" useGeneratedKeys="true" keyProperty="alarmNo" keyColumn="ALARM_NO">
+		INSERT INTO ALARM (
+			TARGET_USER_NO,
+			REFERENCE_TYPE,
+			REFERENCE_ID,
+			URL_PARAM,
+			ALARM_STATUS,
+			AL_CREATED_AT
+		) VALUES (
+			#{targetUserNo},
+			#{referenceType},
+			#{referenceId},
+			#{urlParam},
+			'N',
+			NOW()
+		)
 	</insert>
 </mapper>
 

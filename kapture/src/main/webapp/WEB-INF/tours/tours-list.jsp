@@ -4,8 +4,8 @@
 
     <head>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/png" sizes="96x96" href="/img/logo/favicon-96x96.png" />
-        <link rel="shortcut icon" href="/img/logo/favicon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
+        <link rel="shortcut icon" href="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/logo/favicon-96x96.png" />
         <title>관광지 목록 | kapture</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.min.js"></script>
@@ -38,29 +38,11 @@
 
     <body class="bg-white text-gray-800">
         <jsp:include page="../common/header.jsp" />
+        <aside class="w-[250px] bg-gray-100">
+            <jsp:include page="../common/sidebar.jsp"></jsp:include>
+        </aside>
+
         <div id="app" class="max-w-7xl mx-auto py-8 px-4">
-            <div id="sidebar" class="sidebar">
-
-                <button class="open-chat-btn" v-if="!showChat" @click="showChat = true">🤖챗봇 열기</button>
-
-                <div class="modal-overlay" v-if="showChat">
-                    <div class="chat-container">
-                        <div class="chat-header">
-                            K-apture 챗봇
-                            <button class="close-btn" @click="showChat = false">✕</button>
-                        </div>
-                        <div class="chat-box" ref="chatBox">
-                            <div v-for="msg in messages" :class="['message', msg.type]">
-                                {{ msg.text }}
-                            </div>
-                        </div>
-                        <div class="chat-input">
-                            <textarea v-model="userInput" placeholder="메시지를 입력하세요..."></textarea>
-                            <button @click="sendMessage">전송</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- 지역별 배너 -->
             <div class="relative h-96 rounded-lg overflow-hidden mb-6 bg-cover bg-center"
                 :style="{ backgroundImage: 'url(' + (hoveredRegionImage || defaultHeaderImage) + ')' }">
@@ -179,7 +161,7 @@
                             <button @click="fnWishListTours"
                                 class="text-sm bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors shadow-sm flex items-center gap-2">
                                 <!-- 태극 아이콘 -->
-                                <img src="../../svg/taeguk-full.svg" alt="찜" class="w-5 h-5" />
+                                <img src="https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/svg/taeguk-full.svg" alt="찜" class="w-5 h-5" />
                                 찜 상품
                             </button>
                             <!-- 검색바 -->
@@ -547,21 +529,21 @@
                 return {
 
                     regions: [{
-                        region: "서울", siNo: 11, image: "../../img/region/서울.jpg"
+                        region: "서울", siNo: 11, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/서울.jpg"
                     }, {
-                        region: "제주", siNo: 39, image: "../../img/region/제주.jpg"
+                        region: "제주", siNo: 39, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/제주.jpg"
                     }, {
-                        region: "부산", siNo: 21, image: "../../img/region/부산.jpg"
+                        region: "부산", siNo: 21, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/부산.jpg"
                     }, {
-                        region: "전주", siNo: 35, image: "../../img/region/전주.jpg"
+                        region: "전주", siNo: 35, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/전주.jpg"
                     }, {
-                        region: "강원", siNo: 32, image: "../../img/region/속초.jpg"
+                        region: "강원", siNo: 32, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/속초.jpg"
                     }, {
-                        region: "인천", siNo: 23, image: "../../img/region/월미도.jpg"
+                        region: "인천", siNo: 23, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/월미도.jpg"
                     }, {
-                        region: "경기", siNo: 31, image: "../../img/region/용인.jpg"
+                        region: "경기", siNo: 31, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/용인.jpg"
                     }, {
-                        region: "그 외", siNo: 999, image: "../../img/region/대천.jpg"
+                        region: "그 외", siNo: 999, image: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/대천.jpg"
                     }],
                     languages: [{ eng: "Korean", kor: "한국어" }, { eng: "English", kor: "영어" }, { eng: "Chinese", kor: "중국어" }, { eng: "Japanese", kor: "일본어" }],
                     filters: {
@@ -592,7 +574,7 @@
                     modalAnimationClass: '',
                     minDate: new Date(),
 
-                    defaultHeaderImage: "../../img/region/default.jpg",
+                    defaultHeaderImage: "https://project-kapture.s3.ap-northeast-2.amazonaws.com/img/region/default.jpg",
                     hoveredRegionImage: null,
                     filteredToursList: [],
                     isWishlistMode: false,
@@ -712,8 +694,22 @@
                 },
                 fnToursList(keyword) {
                     const self = this;
+
+                    let startDate = null;
+                    let endDate = null;
+
+                    if (this.selectedDates.length === 1) {
+                        startDate = this.formatDate(this.selectedDates[0]);
+                        endDate = this.formatDate(this.selectedDates[0]);
+                    } else if (this.selectedDates.length === 2) {
+                        startDate = this.formatDate(this.selectedDates[0]);
+                        endDate = this.formatDate(this.selectedDates[1]);
+                    }
+
                     const nparmap = {
-                        selectedDates: JSON.stringify(self.selectedDates),
+                        startDate: startDate,
+                        endDate: endDate,
+                        // selectedDates: JSON.stringify(self.selectedDates),
                         selectedRegions: JSON.stringify(self.selectedRegions),
                         selectedLanguages: JSON.stringify(self.selectedLanguages),
                         selectedThemes: JSON.stringify(self.selectedThemes),
@@ -722,7 +718,7 @@
                         page: (self.page - 1) * self.pageSize,
                         pageSize: self.pageSize,
                     };
-                    console.log(">>>>>>>>>nparmap>>" + nparmap);
+                    console.log(">>>>>>>>>nparmap>>", nparmap);
                     $.ajax({
                         url: "/tours/list.dox",
                         dataType: "json",
@@ -732,7 +728,7 @@
                             self.toursList = data.toursList;
                             self.regionList = data.regionList;
                             self.themeList = data.themeList;
-                            console.log(self.toursList);
+                            console.log("tourList>>>>>>>>>>>",self.toursList);
                             self.index = Math.ceil(data.count / self.pageSize); // 전체 페이지 수 계산
                             if (self.sessionId && !isNaN(self.sessionId)) {
                                 self.fnGetWishList();
@@ -1141,4 +1137,31 @@
         });
 
         app.mount('#app');
+    </script>
+    <script>
+        window.addEventListener("load", function () {
+            window.addEventListener("scroll", function () {
+                const footer = document.querySelector("#footer");
+                const gtranslate = document.querySelector("#gt_float_wrapper");
+
+                if (!footer) return;
+
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const footerTop = footer.getBoundingClientRect().top + scrollY;
+                const baseOffset = 40;
+                const buffer = 20;
+                const scrollBottom = scrollY + windowHeight;
+
+                let newOffset = baseOffset;
+                if (scrollBottom >= footerTop + buffer) {
+                    const overlap = scrollBottom - (footerTop + buffer);
+                    newOffset = baseOffset + overlap;
+                }
+
+                if (gtranslate) {
+                    gtranslate.style.setProperty("bottom", newOffset + "px", "important");
+                }
+            }, { passive: true });
+        });
     </script>
