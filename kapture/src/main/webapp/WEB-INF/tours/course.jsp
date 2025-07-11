@@ -167,8 +167,6 @@ createApp({
         self.courses = allCourses.filter(course => course.firstimage && course.firstimage.trim() !== '' && course.title && course.title.trim() !== '');
         self.filteredCourses = self.courses;
         self.currentPage = 1;
-        console.log('URL:', url);
-        console.log(allCourses);
       } catch (error) {
         console.error('API 호출 오류:', error);
       }

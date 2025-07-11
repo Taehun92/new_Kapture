@@ -264,10 +264,6 @@
 						data: nparmap,
 						success: function (data) {
 							if (data.result == 'success') {
-								console.log('data : ', data);
-								console.log(self.sessionId);
-								console.log(self.siName);
-								console.log(self.guName);
 								alert("등록되었습니다.");
 
 								if (self.imgList.length > 0) {
@@ -291,7 +287,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.siList = data.siList;
 
 						}
@@ -309,7 +304,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.guList = data.guList;
 						}
 					});
@@ -324,7 +318,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.themeParentList = data.themeParentList;
 
 						}
@@ -341,7 +334,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.themeNameList = data.themeNameList;
 						}
 					});
@@ -354,7 +346,6 @@
 						imgList: JSON.stringify(imageUrls), // URL만 전송
 						thumbnailList: JSON.stringify(self.imgList) // 전체 데이터도 전송 (썸네일 구분용)
 					};
-					console.log('imgList : ', self.imgList);
 					$.ajax({
 						url: "/mypage/updateImg.dox",
 						dataType: "json",
@@ -362,7 +353,6 @@
 						data: nparmap,
 						success: function (data) {
 							if (data.result == 'success') {
-								console.log('data : ', data);
 								alert("이미지 등록되었습니다.");
 								location.href = "/tours/list.do";
 							}

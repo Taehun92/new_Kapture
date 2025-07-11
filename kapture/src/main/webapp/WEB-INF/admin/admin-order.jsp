@@ -399,7 +399,6 @@
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log(data);
                                 self.transactions = data.list;
                                 self.totalCount = data.totalCount;
                                 self.totalPages = Math.ceil(data.totalCount / self.size);
@@ -439,7 +438,6 @@
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log(data);
                                 if (data.result === "success") {
                                     alert("환불되었습니다.");
                                     self.fnGetTransactions();
@@ -478,7 +476,6 @@
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log(data);
                                 if (data.result === "success") {
                                     alert("수정되었습니다.");
                                     self.showEditModal = false;
@@ -508,7 +505,6 @@
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log(data);
                                 if (data.result === "success") {
                                     alert("삭제되었습니다.");
                                     location.reload();

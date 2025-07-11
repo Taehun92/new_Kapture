@@ -114,7 +114,6 @@
                             offset: offset
                         },
                         success: function (data) {
-                            console.log(data);
                             self.list = data.requestList;
                             self.totalPages = data.totalPages || 1;
                         }

@@ -170,22 +170,16 @@
 							type: "POST",
 							data: nparmap,
 							success: function (data) {
-								console.log(data);
 								self.tourInfo = data.tourInfo;
-								console.log('tourInfo 출력 : ',self.tourInfo);
 								self.reviewsList = data.reviewsList;
-								console.log(self.reviewsList);
-								console.log('투어 날짜 : ', self.tourInfo.tourDate);
 							}
 						});
 					},
 					increase() {
 						if (this.count < 4) this.count++;
-						console.log('인원수 : ' , this.count);
 					},
 					decrease() {
 						if (this.count > 0) this.count--;
-						console.log('인원수 : ' , this.count);
 					},
 					toggleWishlist() {
 						this.isWishlisted = !this.isWishlisted;
@@ -266,8 +260,6 @@
 							self.formatDate(new Date(item.tourDate)) === self.formatDate(new Date(self.tourInfo.tourDate)) &&
 							item.duration === self.tourInfo.duration
 					  	);
-
-					  	console.log('existingItem : ', existingItem);
 					
 
 					  	if(existingItem) {
@@ -303,7 +295,6 @@
 							type: "POST",
 							data: nparmap,
 							success: function (data) {
-								console.log(data);
 								if (data.result == "success") {
 									alert("장바구니에 담겼습니다.");
 									self.fnGetCart();
@@ -414,9 +405,7 @@
 							type: "POST",
 							data: nparmap,
 							success: function (data) {
-								console.log(data);
 								self.dateList = data.dateList;
-								console.log(self.dateList);
 							}
 						});
 					},
@@ -445,7 +434,6 @@
 							type: "POST",
 							data: nparmap,
 							success: function (data) {
-								console.log(data);
 								self.cartList = data.basketList;
 								
 							}
@@ -475,7 +463,6 @@
 							data: nparmap,
 							dataType: "json",
 							success: function(data) {
-								console.log(data);
 								if(data.count > 0) {
 									self.showCartButton = true;
 								}

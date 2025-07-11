@@ -272,7 +272,6 @@
 
                     let nparmap = {};
                     if (!self.initFlg) {
-                        console.log("siNo" + self.siNo);
                         nparmap = { siNo: self.siNo }
                         self.initFlg = true;
                     } else {
@@ -290,7 +289,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log("DATA", data);
                             self.toursList = data.toursList;
                             self.regionList = data.regionList;
                             self.themeList = data.themeList;

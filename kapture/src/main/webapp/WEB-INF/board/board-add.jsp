@@ -46,7 +46,6 @@
 					type : "POST", 
 					data : nparmap,
 					success : function(data) { 
-						console.log(data);
                         if(data.result=="success"){
                             alert("입력되었습니다.");
                             location.href="/board/list.do";

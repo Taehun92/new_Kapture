@@ -135,7 +135,6 @@
               dataType: "json",
               data: param,
               success: function (data) {
-                console.log("data=========>",data);
                 if (data.result === 'success') {
                   self.fnRegisterPartnershipAlarm(data.partnershipNo);
                   alert("제휴 문의가 정상적으로 등록되었습니다.");

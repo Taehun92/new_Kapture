@@ -132,7 +132,6 @@
                     data: { merchantId: merchantId },
                     dataType: "json",
                     success: (res) => {
-                        console.log("응답 객체:", res);
                         self.payments = res.paymentList.map(item => ({
                             ...item, requestMessage: ""
                         }));

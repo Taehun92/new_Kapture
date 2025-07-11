@@ -692,7 +692,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result === "success") {
 								for (let i = 0; i < data.guidesList.length; i++) {
 									if (data.guidesList[i].birthday && typeof data.guidesList[i].birthday === 'string') {
@@ -721,7 +720,6 @@
 				fnGuideEdit(guide) {
 					let self = this;
 					self.editGuide = guide;
-					console.log(guide);
 					// 모달 열기
 					self.showEditModal = true;
 				},
@@ -844,7 +842,6 @@
 						data: { userNo: userNo },
 						success: function (data) {
 							if (data.result === "success") {
-								console.log(data);
 								self.schedule = data.schedule;
 							} else {
 								console.error("스케줄 데이터 로드 실패");
@@ -913,14 +910,10 @@
 						contentType: false,   // 필수: multipart/form-data로 전송
 						dataType: 'json',
 						success: function (data) {
-							console.log("프로필 이미지 저장:");
-							console.log(data);
 							if (data.result === 'success') {
 								// 서버가 새 파일 경로를 반환한다고 가정: data.newFilePath
 								self.editGuide.pFilePath = data.newFilePath;
 								self.editGuide.pFileNo = data.pFileNo;
-								console.log("파일넘버 : ");
-								console.log(self.editGuide.pFileNo);
 
 							} else {
 								alert('이미지 업로드에 실패했습니다.');

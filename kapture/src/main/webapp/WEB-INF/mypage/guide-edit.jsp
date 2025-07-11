@@ -162,12 +162,8 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.tourInfo = data.tourInfo;
-						console.log('tourInfo : ',self.tourInfo);
 						self.reviewsList = data.reviewsList;
-						console.log(self.reviewsList);
-						console.log('투어 날짜 : ', self.tourInfo.tourDate);
 
 						self.title = data.tourInfo.title;
 						self.duration = data.tourInfo.duration;
@@ -185,9 +181,7 @@
 						self.fnGetThemeParent();
 						self.fnGetThemeName();
 						self.tourDate = self.tourDate.split(" ")[0];
-						console.log('투어 내용 : ',self.description);
 						self.fnQuill();
-						console.log('투어 내용 : ',self.description);
 					}
 				});
 			},
@@ -276,12 +270,7 @@
 					data : nparmap,
 					success : function(data) {
 						if(data.result == 'success'){
-							console.log('data : ', data);
-							console.log(self.sessionId);
-							console.log(self.siName);
-							console.log(self.guName);
-							console.log(self.imgList);
-							console.log(self.description);
+
 							alert("수정되었습니다.");
 
 							if (self.imgList.length > 0) {
@@ -290,11 +279,9 @@
 								// 이미지 추가 없을 경우
 								if(self.thumbnail != "") {
 									// 본문에 이미지 존재 
-									console.log('본문에 이미지 존재');
 									self.fnSetThumbnail();
 								} else {
 									// 썸네일 초기화
-									console.log('본문에 이미지 없음');
 									self.fnResetThumbnail();
 								}
 							}
@@ -315,7 +302,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.siList = data.siList;
 						
 					}
@@ -334,7 +320,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.guList = data.guList;
 					}
 				});
@@ -350,7 +335,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.themeParentList = data.themeParentList;
 						
 					}
@@ -368,7 +352,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.themeNameList = data.themeNameList;
 						self.fnGetThemeName();
 					}
@@ -385,7 +368,6 @@
 
 
 				};
-				console.log('imgList : ', self.imgList);
 				$.ajax({
 					url: "/mypage/updateImg.dox",
 					dataType: "json",
@@ -393,7 +375,6 @@
 					data: nparmap,
 					success: function (data) {
 						if (data.result == 'success') {
-							console.log('data : ', data);
 							alert("이미지 추가되었습니다.");
 							location.href = "/tours/tour-info.do?tourNo=" + self.tourNo;
 						}
@@ -412,11 +393,9 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.siName = data.si.siName;
 						self.fnSelectGu();
 						self.fnGetGu();
-						console.log('siName : ',self.siName);
 					}
 				});
 				
@@ -435,9 +414,7 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						self.guName = data.gu.guName;
-						console.log('guName : ',self.guName);
 					}
 				});
 			},
@@ -453,7 +430,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log('ThemeParentName : ', data);
 						self.themeParent = data.themeParent.themeName;
 						self.fnSelectTheme();
 					}
@@ -471,7 +447,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log('ThemeName : ', data);
 						self.themeName = data.themeName.themeName;
 					}
 				});
@@ -552,7 +527,6 @@
 					} else {
 						self.thumbnail = ""; // 이미지가 없을 경우 썸네일 초기화
 					}
-					console.log('썸네일 : ', self.thumbnail);
 				});
 			},
 
@@ -576,7 +550,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						location.href = "/tours/tour-info.do?tourNo=" + self.tourNo;
 					}
 				});
@@ -595,7 +568,6 @@
 					type: "POST",
 					data: nparmap,
 					success: function (data) {
-						console.log(data);
 						location.href = "/tours/tour-info.do?tourNo=" + self.tourNo;
 					}
 				});

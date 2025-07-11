@@ -431,7 +431,6 @@
               return;
             }
 
-            console.log("전송 전 birthday:", this.user.birthday);
 
             if (!self.terms.marketing) {
               self.user.pushYn = 'N'
@@ -472,7 +471,6 @@
               type: "POST",
               data: nparmap,
               success: function (data) {
-                console.log("✅ 응답 확인:", data); // ← 실제 응답 구조 확인용
 
                 if (data.result === "success") {
                   alert("✅ " + data.message);

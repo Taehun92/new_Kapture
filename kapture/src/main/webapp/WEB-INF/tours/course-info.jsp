@@ -60,12 +60,10 @@
             + self.contentId
             +'&MobileOS=ETC&MobileApp=AppTest&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&_type=json'
 
-            console.log('url' , url);
             try {
               const response = await fetch(url);
               const data = await response.json();
               this.place = data.response.body.items.item[0];
-              console.log(this.place);
             } catch (error) {
               console.error('API 호출 오류:', error);
             }

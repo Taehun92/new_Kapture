@@ -281,8 +281,6 @@
                             self.totalCount = data.totalCount;
                             self.totalPages = Math.max(1, Math.ceil(data.totalCount / self.pageSize));
                             self.loaded = true;
-                            console.log("현재 page:", self.page);
-                            console.log("totalPages:", self.totalPages);
                             if (self.page > self.totalPages) {
                                 self.page = self.totalPages;
                                 setTimeout(() => {
@@ -292,7 +290,6 @@
                             }
 
                             self.list = data.list;
-                            console.log("리뷰리스트>>>>>>",self.list);
                             
                         },
                         error: function (err) {
@@ -308,7 +305,6 @@
                         dataType: "json",
                         success: function (data) {
                             self.summary = data;
-                            console.log("self.summary", self.summary);
                         },
                         error: function () {
                             alert("요약 정보 불러오기 실패");

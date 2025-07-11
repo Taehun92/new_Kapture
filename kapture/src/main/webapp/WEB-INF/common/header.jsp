@@ -243,13 +243,11 @@
                     },
                     fnGetExchangeRates() {
                         $.get("/exchangeRate/all", (data) => {
-                            console.log("응답 전체 >>>>", data);
 
                             // 환율 데이터 전체가 바로 data로 들어오므로 그대로 사용
                             this.exchangeRates = data;
                             this.exchangeUpdatedAt = new Date().toISOString().substring(0, 10); // or 서버에서 updatedAt 따로 내려줄 수도 있음
 
-                            console.log("exchangeRates>>>>", this.exchangeRates);
                         }, "json");
                     }
                 },

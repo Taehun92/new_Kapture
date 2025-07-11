@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>kapture</name>
 	<description>Demo project for Spring Boot</description>
-	<packaging>war</packaging> <!-- 추가 1-->
+	<packaging>war</packaging>
 	<url/>
 	<licenses>
 		<license/>
@@ -50,7 +50,7 @@
 		    <artifactId>aws-java-sdk-s3</artifactId>
 		    <version>1.12.683</version>
 		</dependency>
-		<dependency> <!-- 추가 2-->
+		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-tomcat</artifactId>
 		    <scope>provided</scope>
@@ -177,7 +177,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<executable>false</executable>  <!-- 추가 3-->
+					<executable>false</executable>
 				</configuration>
 			</plugin>
 		</plugins>

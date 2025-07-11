@@ -381,7 +381,6 @@
 						page: self.page,
 						size: self.size,
 					};
-					console.log(nparmap);
 					
 					$.ajax({
 						url: "/admin/users-inquiries.dox",
@@ -389,7 +388,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log("inquiriesList================",data);
 							if (data.result === "success") {
 								self.inquiriesList = data.inquiriesList;
 								self.totalCount = data.totalCount;
@@ -445,7 +443,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result === "success") {
 								alert("답변이 저장되었습니다.");
 								self.showAnswerModal = false;
@@ -473,7 +470,6 @@
 						type: "POST",
 						data: { inquiryNo: inquiryNo },
 						success: function (data) {
-							console.log(data);
 							if (data.result === "success") {
 								alert("삭제되었습니다.");
 								// 재조회 or 페이지 리로드

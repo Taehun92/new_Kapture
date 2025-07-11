@@ -295,15 +295,12 @@
                 },
                 getNestedComments(parentNo) {
                     if (!Array.isArray(this.commentList)) return [];
-                    console.log("부모번호>>>" + parentNo);
                     const result = this.commentList.filter(function (item) {
                         const itemParent = item.parentCommentNo != null ? String(item.parentCommentNo) : "0";
                         const match = String(itemParent) === String(parentNo); // ← 숫자 기준 비교로 고정
-                        console.log("[getNestedComments] match check ➜ item:", item, "itemParent:", itemParent, "parentNo:", parentNo, "match:", match);
                         return match;
                     });
 
-                    console.log("[getNestedComments] parentNo:", parentNo, "result:", result);
                     return result;
                 },
 
@@ -324,7 +321,6 @@
                         success: function (data) {
                             self.info = data.info;
                             self.commentList = buildTree(data.commentList); // 🌳 트리 구조로 변환!
-                            console.log("[fnview] 트리 구조 댓글:", JSON.stringify(self.commentList, null, 2));
                         }
                     });
                 },
@@ -364,8 +360,6 @@
                     this.replyFlg = true;
                 },
                 fnRegisterCommentAlarm(commentNo, targetUserNo) {
-                    console.log("commentNo============>", commentNo);
-                    console.log("commentNo============>", targetUserNo);
                     const self = this;
                     $.ajax({
                         url: "/request/registerCommentAlarm.dox",
@@ -415,7 +409,6 @@
                             comments: message
                         },
                         success: function (data) {
-                            console.log("data.comment===>", data.COMMENT_NO);
                             if (data.num > 0 && data.comment) {
                                 if (parentCommentNo === "0") {
                                     self.commentList.push(data.comment);
@@ -608,7 +601,6 @@
                         type: "GET",
                         dataType: "json",
                         success(data) {
-                            console.log(data);
                             self.exchangeRateMap.USD = data.USD;
                             self.exchangeRateMap.JPY = data.JPY;
                             self.exchangeRateMap.CNY = data.CNY;
@@ -627,10 +619,6 @@
 
                     const budgetNumber = parseFloat(String(rawBudget).replace(/,/g, ''));
                     if (isNaN(budgetNumber)) return 0;
-
-                    console.log("budget:", rawBudget);
-                    console.log("parsed:", budgetNumber);
-                    console.log("rate:", self.exchangeRateMap[self.info.currency]);
 
                     if (self.info.currency === 'KRW') {
                         return budgetNumber;

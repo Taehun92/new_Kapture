@@ -634,7 +634,6 @@
                         alert("검색어를 입력해주세요.");
                         return;
                     }
-                    console.log("🔍 검색 키워드:", this.keyword);
                     // 예: 검색 페이지로 이동
                     window.location.href = "/tours/list.do?keyword=" + encodeURIComponent(this.keyword);
                 },
@@ -718,7 +717,6 @@
                         page: (self.page - 1) * self.pageSize,
                         pageSize: self.pageSize,
                     };
-                    console.log(">>>>>>>>>nparmap>>", nparmap);
                     $.ajax({
                         url: "/tours/list.dox",
                         dataType: "json",
@@ -728,7 +726,6 @@
                             self.toursList = data.toursList;
                             self.regionList = data.regionList;
                             self.themeList = data.themeList;
-                            console.log("tourList>>>>>>>>>>>",self.toursList);
                             self.index = Math.ceil(data.count / self.pageSize); // 전체 페이지 수 계산
                             if (self.sessionId && !isNaN(self.sessionId)) {
                                 self.fnGetWishList();
@@ -805,7 +802,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.cartList = data.basketList;
 
                         }
@@ -871,7 +867,6 @@
                         contentType: "application/json",
                         data: JSON.stringify({ cartList: updatedCartList }),
                         success: function (data) {
-                            console.log("장바구니 업데이트 완료", data);
                             localStorage.setItem("basketChanged", Date.now());
                         },
                         error: function (err) {
@@ -934,7 +929,6 @@
                                 self.applyWishlistFilters(wishTourNos);
                             } else {
                                 self.filteredToursList = [];
-                                console.log('찜 목록 해제됨. 전체 상품 목록으로 복원됨.');
                                 self.fnToursList(); // 전체 상품 목록 다시 불러오기
                             }
                         }
@@ -971,7 +965,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 추가됨", res);
                             }
                         });
                     } else {
@@ -983,7 +976,6 @@
                                 tourNo: tour.tourNo
                             },
                             success: function (res) {
-                                console.log("찜 제거됨", res);
                             }
                         });
                     }
@@ -1050,10 +1042,8 @@
                             const tourDate = new Date(tour.tourDate);
                             matchDate = tourDate >= start && tourDate <= end;
                         }
-                        console.log('tour: ' + tour.title + ' lang: ' + tour.language + ' matchLang: ' + matchLanguage + ' selectedLang: ' + self.selectedLanguages);
                         return isWish && matchRegion && matchLanguage && matchTheme && matchDate;
                     });
-                    console.log('applywishlistFilters', self.filteredToursList.length + '개 상품이 찜 목록에 있습니다.');
                     self.index = Math.ceil(self.filteredToursList.length / self.pageSize); // 필터링된 상품 수에 따라 페이지 수 조정
 
 
@@ -1130,7 +1120,6 @@
                     if (this.sessionId && !isNaN(this.sessionId)) {
                         this.fnGetWishList();
                     } else {
-                        console.log("🔒 로그인하지 않은 상태입니다. 찜 목록 조회 생략.");
                     }
                 }, 300);
             }

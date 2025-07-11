@@ -141,9 +141,7 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log("Data : " + data);
                                     self.payList = data.payList;
-                                    console.log(self.payList);
                                     callback();
                                 } else {
                                     console.error("데이터 로드 실패");
@@ -184,7 +182,6 @@
                                 borderColor: colorMapping[item.duration] || "gray"
                             });
                         }
-                        console.log("eventsArray:", eventsArray);
 
                         const calendarEl = this.$refs.calendar;
                         const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -208,7 +205,6 @@
                     });
 
                     this.currentPage = window.location.pathname.split('/').pop();
-                    console.log("Current page:", this.currentPage);
                     // localStorage.removeItem('page');
                 }
 

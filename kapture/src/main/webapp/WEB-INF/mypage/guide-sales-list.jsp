@@ -384,7 +384,6 @@
             data: nparam,
             dataType: 'json',
             success(res) {
-              console.log(res);
               self.transactions = res.list;
               self.siList = res.siList;
               self.themeParentList = res.themeParentList;
@@ -458,7 +457,6 @@
             imgList: JSON.stringify(imageUrls), // URL만 전송
             thumbnailList: JSON.stringify(self.imgList) // 전체 데이터도 전송 (썸네일 구분용)
           };
-          console.log('imgList : ', self.imgList);
           $.ajax({
             url: "/mypage/updateImg.dox",
             dataType: "json",
@@ -466,7 +464,6 @@
             data: nparmap,
             success: function (data) {
               if (data.result == 'success') {
-                console.log("이미지 등록되었습니다.");
                 location.href = "/mypage/guide-sales-list.do";
               }
             }
@@ -619,7 +616,6 @@
             data: { siNo: siNo },
             success: function (data) {
               self.guList = data.guList || [];
-              console.log("🚚 불러온 구 리스트:", self.guList);
               if (typeof callback === "function") callback();
             }
           });
@@ -635,7 +631,6 @@
             data: { themeParentNo: themeParentNo },
             success: function (data) {
               self.themeList = data.themeList || [];
-              console.log("🚚 불러온 테마 리스트:", self.themeList);
               if (typeof callback === "function") callback();
             }
           });

@@ -101,7 +101,6 @@
                             data: { termsId: termsId },
                             dataType: "json",
                             success: function (data) {
-                                console.log(data);
                                 self.selectedTermsId = termsId;
                                 self.quill.root.innerHTML = data.terms.content;
                                 // self.termsList = data.list;

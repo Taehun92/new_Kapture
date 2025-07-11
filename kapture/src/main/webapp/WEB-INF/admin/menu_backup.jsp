@@ -117,7 +117,6 @@
         $(document).ready(function () {
             // 현재 페이지 이름 추출
             let currentPage = window.location.pathname.split('/').pop();
-            console.log("Current page:", currentPage);
             // 거래 관리 하위메뉴: 주문내역 관리, 결제 및 수익 관리
             if (currentPage === "order.do" || currentPage === "pay.do") {
                 // 첫 번째 submenu (거래 관리)에 대해서만 작동

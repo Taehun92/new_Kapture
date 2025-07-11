@@ -462,14 +462,12 @@
                         page: self.page,
                         size: self.size,
                     };
-                    console.log(">>>>>>>>>nparmap>>", nparmap);
                     $.ajax({
                         url: "/admin/toursManagement.dox",
                         dataType: "json",
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.toursList = data.toursList;
                             self.totalCount = data.totalCount;
                             self.totalPages = Math.ceil(self.totalCount / self.size);
@@ -605,7 +603,6 @@
                         data: nparmap,
                         success: function (data) {
                             if (data.result == 'success') {
-                                console.log('data : ', data);
                                 self.showEditModal = false;
                                 self.editTour = {};
                                 alert("수정되었습니다.");
@@ -616,11 +613,9 @@
                                     // 이미지 추가 없을 경우
                                     if (self.thumbnail != "") {
                                         // 본문에 이미지 존재 
-                                        console.log('본문에 이미지 존재');
                                         self.fnSetThumbnail();
                                     } else {
                                         // 썸네일 초기화
-                                        console.log('본문에 이미지 없음');
                                         self.fnResetThumbnail();
                                     }
                                 }
@@ -703,7 +698,6 @@
                         imgList: JSON.stringify(imageUrls), // URL만 전송
                         thumbnailList: JSON.stringify(self.imgList) // 전체 데이터도 전송 (썸네일 구분용)
                     };
-                    console.log('imgList : ', self.imgList);
                     $.ajax({
                         url: "/mypage/updateImg.dox",
                         dataType: "json",
@@ -729,11 +723,9 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.siName = data.si.siName;
                             self.fnSelectGu();
                             self.fnGetGu();
-                            console.log('siName : ', self.siName);
                         }
                     });
 
@@ -752,9 +744,7 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.guName = data.gu.guName;
-                            console.log('guName : ', self.guName);
                         }
                     });
                 },
@@ -770,7 +760,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log('ThemeParentName : ', data);
                             self.themeParent = data.themeParent.themeName;
                             self.fnSelectTheme();
                         }
@@ -788,7 +777,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log('ThemeName : ', data);
                             self.themeName = data.themeName.themeName;
                         }
                     });
@@ -867,7 +855,6 @@
                         } else {
                             self.thumbnail = ""; // 이미지가 없을 경우 썸네일 초기화
                         }
-                        console.log('썸네일 : ', self.thumbnail);
                     });
                 },
 
@@ -929,7 +916,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             if (data.result === "success") {
                                 alert("삭제되었습니다.");
                                 location.reload();

@@ -109,12 +109,10 @@
             type: "POST",
             data: params,
             success: function (data) {
-              console.log(data);
               self.list = data.list.map(item => ({
                 ...item,
                 isOpen: false
               }));
-              console.log(self.list);
               self.index = Math.ceil(data.count / self.pageSize);
             }
           });

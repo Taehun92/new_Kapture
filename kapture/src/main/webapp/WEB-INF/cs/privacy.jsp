@@ -68,7 +68,6 @@ const app = Vue.createApp({
                 data: { termsId : termsId },
                 dataType: "json",
                 success: function (data) {
-                    console.log(data);
                     if (data.terms) {
                         self.htmlContent = data.terms.content;
                     } else {

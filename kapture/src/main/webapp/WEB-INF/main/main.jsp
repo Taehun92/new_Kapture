@@ -318,8 +318,6 @@
                 setTimeout(() => {
                     if (self.sessionId === "${sessionId}") {
                         self.fnGetWishList();
-                    } else {
-                        console.log("세션 로딩이 아직 안됨");
                     }
                 }, 300);
 

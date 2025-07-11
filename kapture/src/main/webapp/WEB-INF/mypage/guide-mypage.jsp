@@ -268,7 +268,6 @@
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log("서버 응답:", data);
 
                                 if (data.result === "success") {
                                     alert("회원정보가 저장되었습니다.");
@@ -278,7 +277,6 @@
                                 }
                             },
                             error: function (err) {
-                                console.log(err);
                                 alert("오류가 발생했습니다.");
                             }
                         });
@@ -288,16 +286,13 @@
                         let nparmap = {
                             sessionId: self.sessionId,
                         };
-                        console.log(self.sessionId);
                         $.ajax({
                             url: "/mypage/guide-info.dox",
                             dataType: "json",
                             type: "POST",
                             data: nparmap,
                             success: function (data) {
-                                console.log("불러온 데이터", data);
                                 if (data.result == "success") {
-                                    console.log("가이드 정보>>>>>>>>",data);
                                     self.userInfo = data.userInfo;
                                 } else {
                                     alert("정보를 가지고 오는데 실패했습니다.");
@@ -311,7 +306,6 @@
                             sessionId: self.sessionId,
                             confirmPassword: self.confirmPassword
                         };
-                        console.log(self.sessionId);
                         $.ajax({
                             url: "/mypage/user-checkPwd.dox",
                             dataType: "json",
@@ -319,7 +313,6 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log(data);
                                     self.pwdCheckFlg = true;
                                 } else if (data.result == "fail") {
                                     alert("비밀번호를 확인해주세요");
@@ -352,7 +345,6 @@
                             newPassword1: self.newPassword1,
                             sessionId: self.sessionId,
                         };
-                        console.log(self.sessionId);
                         $.ajax({
                             url: "/mypage/changePassword.dox",
                             dataType: "json",
@@ -360,7 +352,6 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log(data);
                                     self.showPasswordModal = false;
                                     self.newPassword1 = "";
                                     self.newPassword2 = "";
@@ -395,8 +386,6 @@
                                     self.userInfo.P_FILE_PATH = data.newFilePath;
                                     self.userInfo.pFileNo = data.pFileNo;
 
-                                    console.log("self.userInfo",self.userInfo);
-
                                 } else {
                                     alert('이미지 업로드에 실패했습니다.');
                                 }
@@ -419,13 +408,11 @@
                 mounted() {
                     // 페이지 로드시 필요한 초기화 로직
                     // 세션롤이 가이드가 아니거나 세션아이디가 널이면 알림창
-                    console.log(this.sessionId);
                     if (!this.sessionId || this.sessionRole === 'TOURIST') {
 					    alert("가이드만 이용가능합니다.");
 					    location.href = "http://localhost:8080/main.do";
 				    }
                     this.currentPage = window.location.pathname.split('/').pop();
-                    console.log("Current page:", this.currentPage);
 
                     this.fnGetInfo();
                 }

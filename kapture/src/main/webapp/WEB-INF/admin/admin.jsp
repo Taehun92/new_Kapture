@@ -293,7 +293,6 @@
                         type: "POST",
                         dataType: "json",
                         success: (res) => {
-                            console.log("월별 매출 차트 응답 확인 ✅", res);
 
                             if (!res.monthlyList || res.monthlyList.length === 0) {
                                 $("#chart3").html("<p style='text-align:center;'>데이터가 없습니다</p>");
@@ -302,9 +301,6 @@
 
                             const months = res.monthlyList.map(item => item.MONTH);
                             const totals = res.monthlyList.map(item => item.TOTALSALES);
-
-                            console.log("🗓️ months", months);
-                            console.log("💰 totals", totals);
 
                             const options = {
                                 series: [{
@@ -368,7 +364,6 @@
                         type: "POST",
                         dataType: "json",
                         success: (res) => {
-                            console.log(res);
                             this.reviewList = res.reviews; // ✅ 바인딩만 하면 끝
                         },
                         error: () => {
@@ -386,7 +381,6 @@
                         },
                         dataType: "json",
                         success: (res) => {
-                            console.log("📦 최근 판매 상품:", res);
                             this.salesList = res.salesList;
                         },
                         error: () => {

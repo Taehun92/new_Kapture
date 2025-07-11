@@ -451,8 +451,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log("데이터-=========== ");
-                            console.log(data);
                             if (data.result === "success") {
                                 // 승인대기, 승인거부 목록
                                 self.waitingList = data.waitingList;
@@ -499,7 +497,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             if (data.result === "success") {
                                 alert("변경되었습니다.");
                                 self.fnClosePartnershipModal();

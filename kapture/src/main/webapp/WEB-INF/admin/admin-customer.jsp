@@ -531,7 +531,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result === 'success') {
 								for (let i = 0; i < data.usersList.length; i++) {
 									if (data.usersList[i].birthday && typeof data.usersList[i].birthday === 'string') {
@@ -563,7 +562,6 @@
 					let self = this;
 					self.editUser = user;
 					self.beforeRole = user.role;
-					console.log(user);
 					// 모달 열기
 					self.showEditModal = true;
 				},
@@ -607,7 +605,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result === "success") {
 								alert("수정이 완료되었습니다.");
 								// 모달 닫기
@@ -644,7 +641,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result === "success") {
 								alert("삭제되었습니다.");
 								if (data.guideResult === "fail") {

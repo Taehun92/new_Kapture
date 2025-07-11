@@ -102,8 +102,6 @@
                             self.faqList = data.faqList.map(item => ({ ...item, open: false }));
                             self.qnaList = data.qnaList.map(item => ({ ...item, open: false }));
                             self.loaded = true;
-                            console.log(self.faqList);
-                            console.log(self.qnaList);
                             
                         },
                         error() {
@@ -114,14 +112,11 @@
                 }
             },
             mounted() {
-                console.log("✅ mounted 실행됨");  // 이게 안 찍히면 Vue mount 문제
 
                 const params = new URLSearchParams(location.search);
                 const rawKeyword = params.get("searchKeyword");
-                console.log("🔍 URLSearchParams 결과:", rawKeyword);
 
                 this.searchKeyword = rawKeyword ? decodeURIComponent(rawKeyword) : "";
-                console.log("📌 검색어(searchKeyword):", this.searchKeyword);
 
                 if (this.searchKeyword.trim() !== "") {
                     this.fetchSearchResults();

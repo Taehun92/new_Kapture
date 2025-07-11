@@ -292,7 +292,6 @@
                         page: self.page, size: self.size,
                         userNo: self.sessionId
                     };
-                    console.log(nparmap);
                     
                     $.ajax({
                         url: "/mypage/user-purchase-history.dox",
@@ -300,7 +299,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.transactions = data.list;
                             self.totalCount = data.totalCount;
                             self.totalPages = Math.ceil(data.totalCount / self.size);
@@ -343,7 +341,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             if (data.result === "success") {
                                 alert("환불되었습니다.");
                                 self.fnGetTransactions();
@@ -375,7 +372,6 @@
                     location.href = "/main.do";
                 }
                 this.currentPage = window.location.pathname.split('/').pop();
-                console.log("Current page:", this.currentPage);
                 this.fnGetTransactions();
             }
         });

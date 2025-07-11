@@ -171,7 +171,6 @@
           },
           toggleAll() {
             this.selectedItems = this.selectAll ? [...this.basketList] : [];
-            console.log("✅ 선택된 항목 목록:", this.selectedItems);
           },
           updateSelectAll() {
             this.selectAll = this.selectedItems.length === this.basketList.length;
@@ -200,7 +199,6 @@
             }, function (rsp) {
               if (rsp.success) {
                 alert("✅ 결제 성공!");
-                console.log(rsp);
                 self.fnPaymentSave(rsp.paid_amount, rsp.pay_method, rsp.merchant_uid);
               } else {
                 alert("❌ 결제 실패: " + rsp.error_msg);

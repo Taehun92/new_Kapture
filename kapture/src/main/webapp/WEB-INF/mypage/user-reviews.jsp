@@ -164,10 +164,7 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log("Data : ");
-                                    console.log(data);
                                     self.reviewsList = data.reviewsList;
-                                    console.log(self.reviewsList);
                                 } else {
                                     console.error("데이터 로드 실패");
                                 }
@@ -187,7 +184,6 @@
                     },
                     fnRegisterReviewAlarm(reviewNo) {
                         let self = this;
-                        console.log(self.tourNo);
                         $.ajax({
                             url: "/mypage/registerReviewAlarm.dox", // 백엔드 URL (예시)
                             type: "POST",
@@ -224,9 +220,6 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log("Data : ");
-                                    console.log(data);
-                                    console.log(self.tourNo);
                                     self.fnReviews();
                                     self.editFlg ? alert("리뷰가 수정되었습니다.") : alert("리뷰가 등록되었습니다.");
                                     // 완료 후 모달 닫기
@@ -250,7 +243,6 @@
                     },
                     setRating: function (rating) {
                         this.rating = rating;
-                        console.log("this.rating : " + this.rating);
                     },
                     fnReviewEdit(reviewNo, title, rating, comment) {
                         this.ReviewTitle = title || "";  // 혹시 값이 없으면 빈 문자열
@@ -275,7 +267,6 @@
                             data: nparmap,
                             success: function (data) {
                                 if (data.result == "success") {
-                                    console.log("Data : " + data);
                                     self.fnReviews();
                                     alert("리뷰가 삭제되었습니다.");
                                 } else {
@@ -297,9 +288,7 @@
 
                     // 현재 페이지 파일명 추출 -> 사이드바 active 클래스 적용
                     this.currentPage = window.location.pathname.split('/').pop();
-                    console.log("Current page:", this.currentPage);
                     this.fnReviews();
-                    console.log("쇼모달 " + this.showReviewModal);
                 }
             });
             app.component('star-rating', VueStarRating.default)

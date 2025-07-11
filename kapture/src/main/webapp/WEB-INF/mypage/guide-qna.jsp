@@ -88,7 +88,6 @@
                                 userNo: self.sessionId // 필요하다면
                             },
                             success: function (data) {
-                                console.log(data);
                                 self.inquiryList = data.list;
                             },
                             error: function (err) {

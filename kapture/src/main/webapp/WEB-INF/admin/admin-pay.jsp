@@ -558,7 +558,6 @@
                             type: "POST",
                             dataType: "json",
                             success: function (res) {
-                                // console.log("5번차트=========",res);
                                 if (!res.themeList || res.themeList.length === 0) {
                                     $("#chart5").html("<p style='text-align:center;'>데이터가 없습니다</p>");
                                     return;
@@ -609,60 +608,6 @@
                             }
                         });
                     },
-                    // loadChart6() {
-                    //     $.ajax({
-                    //         url: "/admin/sales/monthly.dox",
-                    //         type: "POST",
-                    //         dataType: "json",
-                    //         success: (res) => {
-                    //             console.log("월별 매출 차트 응답 확인 ✅", res);
-
-                    //             if (!res.monthlyList || res.monthlyList.length === 0) {
-                    //                 $("#chart6").html("<p style='text-align:center;'>데이터가 없습니다</p>");
-                    //                 return;
-                    //             }
-
-                    //             const months = res.monthlyList.map(item => item.MONTH);
-                    //             const totals = res.monthlyList.map(item => item.TOTALSALES);
-
-                    //             console.log("🗓️ months", months);
-                    //             console.log("💰 totals", totals);
-
-                    //             const options = {
-                    //                 series: [{
-                    //                     name: "월별 매출",
-                    //                     data: totals
-                    //                 }],
-                    //                 chart: {
-                    //                     height: '100%',
-                    //                     type: 'line',
-                    //                     zoom: { enabled: false }
-                    //                 },
-                    //                 xaxis: { categories: months },
-                    //                 dataLabels: {
-                    //                     enabled: true,
-                    //                     formatter: function (val) {
-                    //                         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
-                    //                     }
-                    //                 },
-                    //                 tooltip: {
-                    //                     y: {
-                    //                         formatter: function (val) {
-                    //                             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
-                    //                         }
-                    //                     }
-                    //                 },
-                    //                 title: { text: '월별 매출 그래프', align: 'left' }
-                    //             };
-
-                    //             const chart6 = new ApexCharts(document.querySelector("#chart6"), options);
-                    //             chart6.render();
-                    //         },
-                    //         error: () => {
-                    //             console.error("❌ 월 매출 데이터 불러오기 실패");
-                    //         }
-                    //     });
-                    // },
                     setToday() {
                         let self = this;
                         const now = new Date();

@@ -77,7 +77,6 @@
             methods: {
                 selectRegion(id) {
                     this.selectedRegion = id;
-                    console.log("✅ 선택된 지역:", this.regionMap[id]);
                 },
                 getPathData(id) {
                     return this.regionPaths[id] || '';

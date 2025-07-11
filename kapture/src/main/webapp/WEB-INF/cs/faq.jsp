@@ -128,10 +128,8 @@
                 ...item,
                 isOpen: false
               }));
-              console.log('현재 페이지 :', self.page);
               self.index = Math.ceil(data.count / self.pageSize);
               self.filterByCategory(cat);
-              console.log(cat);
             }
           });
         },
@@ -139,7 +137,6 @@
           let self = this;
           self.page = num;
           self.fnMain(self.selectedCategory);
-          console.log('현재 페이지 :', self.page);
         },
         toggleAnswer(item) {
           item.isOpen = !item.isOpen;

@@ -523,20 +523,15 @@
 					let nparmap = {
 						tourNo: self.tourNo,
 					};
-					console.log("파라미터tourNo :",nparmap);
 					$.ajax({
 						url: "/tours/tour-info.dox",
 						dataType: "json",
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log("tourInfo>>>>>>",data);
 							self.tourInfo = data.tourInfo;
 							self.tourInfo.isFavorite = "N";
-							console.log(self.tourInfo);
 							self.reviewsList = data.reviewsList;
-							console.log(self.reviewsList);
-							console.log('투어 날짜 : ', self.tourInfo.tourDate);
 							self.fnGetWishList();
 							document.title = self.tourInfo.title + " | Kapture";
 
@@ -545,11 +540,9 @@
 				},
 				increase() {
 					if (this.count < 4) this.count++;
-					console.log('인원수 : ', this.count);
 				},
 				decrease() {
 					if (this.count > 0) this.count--;
-					console.log('인원수 : ', this.count);
 				},
 				getReviewCount(star) {
 					return this.reviewsList.filter(r => r.rating === star).length;
@@ -568,7 +561,6 @@
 				},
 
 				getImagePath(path) {
-					console.log('원본 path >>>', path);
 					if (!path) return '/img/logo/kapture_Logo.png';
 					if (path.startsWith('http')) return path;
 					return path.replace('..', '');
@@ -674,7 +666,6 @@
 						item.duration === self.tourInfo.duration
 					);
 
-					console.log('existingItem : ', existingItem);
 
 
 					if (existingItem) {
@@ -712,7 +703,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							if (data.result == "success") {
 								alert("장바구니에 담겼습니다.");
 								self.fnGetCart();
@@ -764,7 +754,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log('fnGetMinTourDate 호출', data);
 							if (data.minDate) {
 								// "4월 15, 2025" 형식의 날짜를 Date 객체로 변환
 								const parts = data.minDate.split(' ');
@@ -795,7 +784,6 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log('fnGetMaxTourDate 호출', data);
 							if (data.maxDate) {
 								// "4월 15, 2025" 형식의 날짜를 Date 객체로 변환
 								const parts = data.maxDate.split(' ');
@@ -826,9 +814,7 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.dateList = data.dateList;
-							console.log(self.dateList);
 						}
 					});
 				},
@@ -865,13 +851,11 @@
 						type: "POST",
 						data: nparmap,
 						success: function (data) {
-							console.log(data);
 							self.cartList = data.basketList;
 
 							// ✅ 장바구니가 비어있다면 오늘 날짜로 minDate 초기화
 							if (self.cartList.length === 0) {
 								self.minDate = new Date();
-								console.log("✅ 장바구니 비었으므로 minDate = 오늘", self.minDate);
 							}
 						}
 					});
@@ -896,7 +880,6 @@
 						data: nparmap,
 						dataType: "json",
 						success: function (data) {
-							console.log(data);
 							if (data.count > 0) {
 								self.showCartButton = true;
 							}
@@ -968,7 +951,6 @@
 						contentType: "application/json",
 						data: JSON.stringify({ cartList: updatedCartList }),
 						success: function (data) {
-							console.log("장바구니 업데이트 완료", data);
 							localStorage.setItem("basketChanged", Date.now());
 						},
 						error: function (err) {
@@ -1000,11 +982,8 @@
 						data: nparmap,
 						success: function (data) {
 							const wishTourNos = (data.list || []).map(item => +item.tourNo);
-							console.log("찜목록 tourNo 목록: ", wishTourNos);
 							const currentTourNo = Number(self.tourInfo.tourNo); // 현재 보고 있는 상품 번호
 							self.tourInfo.isFavorite = wishTourNos.includes(currentTourNo) ? "Y" : "N";
-
-							console.log("최종 info 객체: ", self.tourInfo);
 						}
 					});
 				},
@@ -1022,7 +1001,6 @@
 								tourNo: tour.tourNo
 							},
 							success: function (res) {
-								console.log("찜 추가됨", res);
 							}
 						});
 					} else {
@@ -1034,7 +1012,6 @@
 								tourNo: tour.tourNo
 							},
 							success: function (res) {
-								console.log("찜 제거됨", res);
 							}
 						});
 					}

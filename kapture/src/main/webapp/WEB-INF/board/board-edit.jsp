@@ -45,7 +45,6 @@
 					type : "POST", 
 					data : nparmap,
 					success : function(data) { 
-						console.log(data);
                         self.info = data.info;
 					}
 				});
@@ -64,7 +63,6 @@
 					type : "POST", 
 					data : nparmap,
 					success : function(data) { 
-						console.log(data);
                         if(data.result=="success"){
                             alert("수정 되었습니다.");
                             location.href="/board/list.do";

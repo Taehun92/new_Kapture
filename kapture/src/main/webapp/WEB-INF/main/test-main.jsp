@@ -307,7 +307,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log(data);
                             self.toursList = data.list;
                         }
                     });
@@ -326,7 +325,6 @@
                         data: nparmap,
                         success: function(data) {
                             const wishTourNos = (data.list || []).map(item => +item.tourNo);
-                            console.log("찜목록 tourNo 목록: ", wishTourNos);
 
                             self.toursList = self.toursList.map(function(tour) {
                                 const tourNo = Number(tour.tourNo);
@@ -336,7 +334,6 @@
                                 };
                             });
 
-                            console.log("최종 toursList: ", self.toursList);
                         }
                     });
                 },
@@ -354,7 +351,6 @@
                                 tourNo: tour.tourNo 
                             },
                             success: function(res) {
-                                console.log("찜 추가됨", res);
                             }
                         });
                     } else {
@@ -366,7 +362,6 @@
                                 tourNo: tour.tourNo 
                             },
                             success: function(res) {
-                                console.log("찜 제거됨", res);
                             }
                         });
                     }
@@ -387,7 +382,6 @@
                         type: "POST",
                         data: nparmap,
                         success: function (data) {
-                            console.log('리뷰 데이타 : ', data);
                             self.reviewList = data.reviewList;
                         }
                     });
@@ -449,7 +443,6 @@
                     if (self.sessionId === "${sessionId}") {
                         self.fnGetWishList();
                     } else {
-                        console.log("세션 로딩이 아직 안됨");
                     }
                 }, 300);
 
